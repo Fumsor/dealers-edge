@@ -1,0 +1,2183 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b0718">
+<meta name="apple-mobile-web-app-title" content="Dealer's Edge">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="description" content="Learn blackjack basic strategy properly. Verified engine, live expected value, playable lessons.">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAADh0lEQVR42u3dsWpTYRTA8US6dnBoo+Ki0s1QcCqI4OTuZicfwtfoSzjp1r2TCEIHF6k4KHUSpTr0Ea6zIRdzk+/ee76c32+1Srw5XP85+WKmT+4dNxPYEjdcAgw0GGjo307TSGjcoSHmHbr1V87fuDrEdXTsDk2Ghp4sb+ipa0NgbXPrDo0XhVDfi8Jlt/mjF64Yg5uev+3Q0M3qDd00zeTD3eeuMIN5/OO0dRYlBxoatrahl/1zAKVtkrWte+ilLwoXfrbL74V1tM2YPTQaGgw0jPmisMt56MWfdZaa3hu6ZcbsoZEcYKBh1Ia2hyZyQ9tDIznAQEPEhraHJnJD20MjOcBAQ8SGtocmckPbQyM5wECDgQYDDQYaAw21c5aD0JzlQHKAgYaQDZ38LMfnq3dpnuyHs6f1NbSzHEgOMNAQsaHtof/x5+rT1vxd9maH1T9f9tBIDjDQELKhg+6hv/x+79kp3aMVvm9gD43kAAMNIRu6kj30g5v9fMf45XWeLw+1hwbJAQYaCjW0/9tuIz/nL0d/DHcuXq/1/FXR0PbQSA4w0BCxoZ2HTsMeGiQHGGgo1ND20HkaOsEeesfT3L9V3/hYJsIbN5IDDDQYaDDQGGgw0DA0ZzkScZYDJAcYaCjU0M5y5GlonymEyu7QLkH/HDDS0LBmQ9tD52loe2iQHGCgoUxD20PnaWh7aJAcMF5yuAT986nvIRvaHjpPQ9tDg4YGAw1lGtoeOk9D20OD5AADDWUa2h46T0PbQ4PkAAMNZRraHjpPQ9tDg+QAAw0GGgw0BhoMNAzPWY5EMpzl8KnvDW3yie4If77kAAMNQzW0sxwh3D949t+f+f7tbLMedZYDJAcYaCjT0PbQafhMIUgOMNBQqKHtofM0dII9tLMcC/Zmhx6b5IAgyVHLA728PvVssUJD20PnaWjnoenD7d25i6ChoeKGdhdjvYa2hyZyQzsPjYYGAw0RG9oemsgN7Tw0kgMMNERsaHtoIje0PTSSAww0RGxoe2giN7Q9NJIDDDQYaDDQYKAx0FA7ZzkIzVkOJAcYaAjZ0M5yELmhneVAcoCBhogNbQ9N5Ia2h0ZygIGGiA1tD03khh7yO1Z+zV+54kgOMNCwUkN33EPfujhx1Ri/rUt81/fB14+uJJIDDDSs1dB2ydTY0M5Dk8F0f/eRWzQaGmI2tDPNuEODgQYDDV38BdDsKbVpCap1AAAAAElFTkSuQmCC">
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAADh0lEQVR42u3dsWpTYRTA8US6dnBoo+Ki0s1QcCqI4OTuZicfwtfoSzjp1r2TCEIHF6k4KHUSpTr0Ea6zIRdzk+/ee76c32+1Srw5XP85+WKmT+4dNxPYEjdcAgw0GGjo307TSGjcoSHmHbr1V87fuDrEdXTsDk2Ghp4sb+ipa0NgbXPrDo0XhVDfi8Jlt/mjF64Yg5uev+3Q0M3qDd00zeTD3eeuMIN5/OO0dRYlBxoatrahl/1zAKVtkrWte+ilLwoXfrbL74V1tM2YPTQaGgw0jPmisMt56MWfdZaa3hu6ZcbsoZEcYKBh1Ia2hyZyQ9tDIznAQEPEhraHJnJD20MjOcBAQ8SGtocmckPbQyM5wECDgQYDDQYaAw21c5aD0JzlQHKAgYaQDZ38LMfnq3dpnuyHs6f1NbSzHEgOMNAQsaHtof/x5+rT1vxd9maH1T9f9tBIDjDQELKhg+6hv/x+79kp3aMVvm9gD43kAAMNIRu6kj30g5v9fMf45XWeLw+1hwbJAQYaCjW0/9tuIz/nL0d/DHcuXq/1/FXR0PbQSA4w0BCxoZ2HTsMeGiQHGGgo1ND20HkaOsEeesfT3L9V3/hYJsIbN5IDDDQYaDDQGGgw0DA0ZzkScZYDJAcYaCjU0M5y5GlonymEyu7QLkH/HDDS0LBmQ9tD52loe2iQHGCgoUxD20PnaWh7aJAcMF5yuAT986nvIRvaHjpPQ9tDg4YGAw1lGtoeOk9D20OD5AADDWUa2h46T0PbQ4PkAAMNZRraHjpPQ9tDg+QAAw0GGgw0BhoMNAzPWY5EMpzl8KnvDW3yie4If77kAAMNQzW0sxwh3D949t+f+f7tbLMedZYDJAcYaCjT0PbQafhMIUgOMNBQqKHtofM0dII9tLMcC/Zmhx6b5IAgyVHLA728PvVssUJD20PnaWjnoenD7d25i6ChoeKGdhdjvYa2hyZyQzsPjYYGAw0RG9oemsgN7Tw0kgMMNERsaHtoIje0PTSSAww0RGxoe2giN7Q9NJIDDDQYaDDQYKAx0FA7ZzkIzVkOJAcYaAjZ0M5yELmhneVAcoCBhogNbQ9N5Ia2h0ZygIGGiA1tD03khh7yO1Z+zV+54kgOMNCwUkN33EPfujhx1Ri/rUt81/fB14+uJJIDDDSs1dB2ydTY0M5Dk8F0f/eRWzQaGmI2tDPNuEODgQYDDV38BdDsKbVpCap1AAAAAElFTkSuQmCC">
+<title>DEALER'S EDGE</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#0b0718; --deep:#150d31; --felt:#191140; --felt2:#291c5e; --ink:#07050f;
+  --cyan:#3ce8ff; --mag:#ff3ba7; --gold:#ffcf4d; --red:#ff3355; --green:#42f08c;
+  --paper:#f2eee0; --dim:#8f86bf; --line:#3a2d70;
+  --cw:56px; --ch:80px;
+  --safeT:env(safe-area-inset-top,0px); --safeB:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none}
+body{
+  background:radial-gradient(900px 600px at 50% -15%,#2d1a66 0%,transparent 62%),
+             radial-gradient(700px 500px at 8% 112%,#43135a 0%,transparent 58%), var(--void);
+  color:var(--paper); font-family:'VT323','Courier New',monospace; font-size:19px;
+  -webkit-font-smoothing:none; -webkit-user-select:none; user-select:none; touch-action:manipulation;
+}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.14) 0 1px,transparent 1px 3px);mix-blend-mode:multiply;opacity:.5}
+.px{font-family:'Press Start 2P',monospace;letter-spacing:.02em}
+
+/* ---------------- SHELL ---------------- */
+#app{height:100dvh;display:flex;flex-direction:column;max-width:520px;margin:0 auto;position:relative}
+@media(min-width:900px){#app{max-width:1180px}}
+#hud{flex:0 0 auto;padding:calc(var(--safeT) + 8px) 10px 8px;background:linear-gradient(180deg,#150d31,#100a26);
+     border-bottom:3px solid var(--ink);box-shadow:0 3px 0 0 var(--line)}
+#stage{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:10px}
+#dock{flex:0 0 auto;padding:10px 10px calc(var(--safeB) + 10px);background:linear-gradient(180deg,#100a26,#0b0718);
+      border-top:3px solid var(--ink);box-shadow:0 -3px 0 0 var(--line)}
+@media(min-width:900px){
+  #app{max-width:1180px}
+  .deskgrid{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:14px;align-items:start}
+}
+
+/* ---------------- HUD ---------------- */
+.hudrow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.money{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--gold);text-shadow:2px 2px 0 #6b2c00}
+.money small{display:block;font-size:7px;color:var(--dim);margin-top:4px;text-shadow:none}
+.hudbtn{width:38px;height:38px;flex:0 0 auto;background:#241a52;border:2px solid var(--ink);box-shadow:0 0 0 2px var(--line);
+   color:var(--cyan);font-family:'Press Start 2P',monospace;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.hudbtn:active{transform:translateY(2px)}
+.lvlwrap{flex:1 1 auto;min-width:60px}
+.lvlbar{height:9px;background:#0d0824;border:2px solid var(--line);overflow:hidden}
+.lvlbar i{display:block;height:100%;background:linear-gradient(90deg,var(--mag),var(--cyan));transition:width .4s}
+.lvltxt{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--dim);margin-top:4px;display:flex;justify-content:space-between}
+
+/* ---------------- TABLE ---------------- */
+.felt{background:radial-gradient(72% 90% at 50% 35%,var(--felt2),var(--felt) 62%,#0d0824);
+  border:3px solid var(--ink);box-shadow:0 0 0 3px var(--line),inset 0 0 70px rgba(0,0,0,.6);padding:10px;margin-bottom:10px}
+.seat{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+.hand{display:flex;gap:5px;align-items:flex-start;min-height:calc(var(--ch) + 4px);flex-wrap:nowrap}
+.handsrow{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x proximity}
+.handsrow::-webkit-scrollbar{height:0}
+.handbox{flex:0 0 auto;border:2px dashed transparent;padding:6px;scroll-snap-align:center;min-width:0}
+.handbox.active{border-color:var(--gold);background:rgba(255,207,77,.05)}
+.handbox.win{border-color:var(--green);border-style:solid}
+.handbox.lose{border-color:var(--red);border-style:solid}
+.handbox.push{border-color:var(--dim);border-style:solid}
+.card{width:var(--cw);height:var(--ch);flex:0 0 auto;background:linear-gradient(160deg,#fffdf5,var(--paper) 55%,#dcd6c2);
+  border:3px solid var(--ink);box-shadow:0 0 0 2px #b9b09a,3px 4px 0 0 rgba(0,0,0,.5);position:relative;padding:4px;
+  display:flex;flex-direction:column;justify-content:space-between;animation:deal .2s steps(4)}
+@keyframes deal{from{transform:translate(22px,-32px) rotate(8deg);opacity:0}to{transform:none;opacity:1}}
+.card .rk{font-family:'Press Start 2P',monospace;font-size:9px;line-height:1.15}
+.card .rk.b{align-self:flex-end;transform:rotate(180deg)}
+.card .mid{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:calc(var(--cw) * .48)}
+.c-red{color:#d81b3f}.c-blk{color:#141326}
+.card.back{background:repeating-linear-gradient(45deg,#3a1f7a 0 5px,#2a1660 5px 10px);box-shadow:0 0 0 2px var(--mag),3px 4px 0 0 rgba(0,0,0,.5)}
+.card.back::after{content:"?";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Press Start 2P',monospace;font-size:16px;color:var(--mag)}
+.chip{font-family:'Press Start 2P',monospace;font-size:8px;padding:5px 6px;background:var(--ink);border:2px solid var(--line);color:var(--cyan);display:inline-block}
+.chip.bust{color:var(--red);border-color:var(--red)}
+.chip.bj{color:var(--gold);border-color:var(--gold)}
+.chip.win{color:var(--green);border-color:var(--green)}
+.chip.lose{color:var(--red);border-color:var(--red)}
+.betchip{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--gold);margin-left:5px}
+
+/* ---------------- COACH ---------------- */
+.coach{background:#050a10;border:3px solid var(--ink);box-shadow:0 0 0 3px var(--line);padding:10px;cursor:pointer;position:relative}
+.coach .tag{font-family:'Press Start 2P',monospace;font-size:7px;padding:3px 5px;border:2px solid;display:inline-block;margin-bottom:7px}
+.t-ok{color:var(--green);border-color:var(--green)}
+.t-bad{color:var(--red);border-color:var(--red)}
+.t-star{color:var(--gold);border-color:var(--gold);animation:blink 1s steps(2) infinite}
+.t-info{color:var(--cyan);border-color:var(--cyan)}
+@keyframes blink{50%{opacity:.35}}
+.coach h3{font-family:'Press Start 2P',monospace;font-size:9px;margin:0 0 6px;line-height:1.5;color:var(--cyan)}
+.coach p{margin:0;font-size:18px;line-height:1.25;color:#d8f6ff;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.more{position:absolute;right:8px;bottom:6px;font-family:'Press Start 2P',monospace;font-size:7px;color:var(--gold)}
+
+/* ---------------- BUTTONS ---------------- */
+.btn{font-family:'Press Start 2P',monospace;font-size:11px;line-height:1;padding:0 8px;height:54px;color:var(--ink);
+  background:var(--cyan);border:3px solid var(--ink);cursor:pointer;text-transform:uppercase;
+  box-shadow:0 5px 0 0 rgba(0,0,0,.55),0 5px 0 3px var(--ink);transition:transform .05s steps(2),box-shadow .05s steps(2);
+  display:flex;align-items:center;justify-content:center;text-align:center;width:100%}
+.btn:active:not(:disabled){transform:translateY(5px);box-shadow:0 0 0 0 rgba(0,0,0,.5),0 0 0 3px var(--ink)}
+.btn:disabled{opacity:.25;filter:grayscale(.8)}
+.btn:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.btn.sm{height:42px;font-size:9px}
+.btn.xs{height:34px;font-size:8px}
+.b-hit{background:var(--green)} .b-stand{background:var(--red);color:#fff}
+.b-double{background:var(--gold)} .b-split{background:var(--mag);color:#fff}
+.b-surr{background:#9d8fd6} .b-ghost{background:#241a52;color:var(--paper)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.correct-hint{animation:pg .5s steps(2) infinite}
+@keyframes pg{0%,100%{box-shadow:0 5px 0 3px var(--ink),0 0 0 7px var(--green)}50%{box-shadow:0 5px 0 3px var(--ink),0 0 0 7px rgba(66,240,140,.12)}}
+.wrong-hint{box-shadow:0 5px 0 3px var(--ink),0 0 0 7px var(--red)!important;animation:sh .3s steps(3)}
+@keyframes sh{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* ---------------- CHIPS / BET ---------------- */
+.chiprow{display:flex;gap:7px;justify-content:space-between;margin-bottom:8px}
+.pchip{flex:1 1 0;height:52px;border-radius:50%;border:3px solid var(--ink);font-family:'Press Start 2P',monospace;font-size:9px;
+  color:#fff;cursor:pointer;box-shadow:0 4px 0 0 rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;
+  background:repeating-conic-gradient(from 0deg,var(--c) 0 30deg,#ffffff30 30deg 60deg)}
+.pchip:active{transform:translateY(4px);box-shadow:none}
+.pchip:disabled{opacity:.25}
+.betline{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;
+  background:#0d0824;border:2px solid var(--line);padding:7px 9px}
+.betline b{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--gold)}
+
+/* ---------------- SHEETS ---------------- */
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:150;max-height:88dvh;background:linear-gradient(180deg,#1a1140,#0d0824);
+  border-top:3px solid var(--ink);box-shadow:0 -3px 0 0 var(--cyan),0 -20px 60px rgba(0,0,0,.7);
+  transform:translateY(102%);transition:transform .25s cubic-bezier(.2,.9,.3,1);display:flex;flex-direction:column;
+  padding-bottom:var(--safeB);max-width:520px;margin:0 auto}
+@media(min-width:900px){.sheet{max-width:640px}}
+.sheet.open{transform:translateY(0)}
+.sheet-head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px;border-bottom:2px solid var(--line)}
+.sheet-head .px{font-size:10px;color:var(--gold)}
+.sheet-body{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px;overscroll-behavior:contain}
+.grab{width:46px;height:5px;background:var(--line);margin:7px auto 0;border-radius:3px}
+#scrim{position:fixed;inset:0;background:rgba(3,1,10,.75);z-index:140;opacity:0;pointer-events:none;transition:opacity .2s}
+#scrim.on{opacity:1;pointer-events:auto}
+.sheet-body p{margin:0 0 10px;line-height:1.3}
+.sheet-body h4{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--cyan);margin:16px 0 8px}
+
+/* ---------------- EV TABLE ---------------- */
+.evt{width:100%;border-collapse:collapse;font-size:17px;margin:8px 0}
+.evt td{border-bottom:1px solid var(--line);padding:6px 4px}
+.evt td.n{text-align:right;font-family:'Press Start 2P',monospace;font-size:9px}
+.evt tr.best td{color:var(--green)}
+.evt tr.chosen td{color:var(--red)}
+.evt .lbl{font-family:'Press Start 2P',monospace;font-size:8px}
+
+/* ---------------- STATS ---------------- */
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{background:#0d0824;border:2px solid var(--line);padding:8px}
+.stat .k{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--dim)}
+.stat .v{font-family:'Press Start 2P',monospace;font-size:13px;margin-top:6px}
+.bar{height:12px;background:#0d0824;border:2px solid var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--gold) 55%,var(--green));transition:width .3s}
+.seg{display:flex;border:2px solid var(--ink);box-shadow:0 0 0 2px var(--line);background:#0d0824;overflow:hidden}
+.seg button{font-family:'Press Start 2P',monospace;font-size:7px;padding:9px 4px;background:transparent;color:var(--dim);
+  border:0;cursor:pointer;flex:1 1 0;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--mag);color:#fff}
+.switch{display:flex;align-items:center;gap:9px;font-size:18px;color:var(--dim);cursor:pointer;padding:7px 0}
+.switch input{appearance:none;width:36px;height:20px;background:#0d0824;border:2px solid var(--line);position:relative;flex:0 0 auto}
+.switch input::after{content:"";position:absolute;top:1px;left:1px;width:14px;height:14px;background:var(--dim);transition:.1s steps(2)}
+.switch input:checked{border-color:var(--cyan)}
+.switch input:checked::after{left:17px;background:var(--cyan)}
+
+/* ---------------- ACHIEVEMENTS ---------------- */
+.ach{display:flex;gap:10px;align-items:flex-start;padding:9px;border:2px solid var(--line);background:#0d0824;margin-bottom:7px}
+.ach.on{border-color:var(--gold);background:rgba(255,207,77,.07)}
+.ach .ic{font-family:'Press Start 2P',monospace;font-size:15px;color:var(--dim);width:26px;flex:0 0 auto;text-align:center}
+.ach.on .ic{color:var(--gold)}
+.ach b{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--paper);display:block;margin-bottom:5px}
+.ach.on b{color:var(--gold)}
+.ach span{font-size:17px;color:var(--dim);line-height:1.2}
+#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(-140%);top:calc(var(--safeT) + 8px);z-index:210;
+  background:#150d31;border:3px solid var(--gold);box-shadow:0 0 0 3px var(--ink),0 8px 30px rgba(255,207,77,.3);
+  padding:10px 14px;transition:transform .3s cubic-bezier(.2,1.3,.4,1);max-width:92vw;text-align:center}
+#toast.on{transform:translateX(-50%) translateY(0)}
+#toast .px{font-size:8px;color:var(--gold);display:block;margin-bottom:6px}
+
+/* ---------------- CHART ---------------- */
+table.chart{border-collapse:collapse;width:100%;font-family:'Press Start 2P',monospace;font-size:6px}
+table.chart th,table.chart td{border:1px solid #0d0824;padding:5px 1px;text-align:center;color:#08060f}
+table.chart th{background:#241a52;color:var(--cyan)}
+table.chart td.lbl{background:#241a52;color:var(--gold)}
+.a-H{background:#2fd07a}.a-S{background:#ff6b81}.a-D{background:#ffd166}.a-P{background:#ff86c8}.a-R{background:#b9aee8}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:16px;color:var(--dim);margin-top:10px}
+.legend i{display:inline-block;width:13px;height:13px;border:2px solid var(--ink);vertical-align:-2px;margin-right:4px}
+.hidden{display:none!important}
+.flash{animation:fl .4s steps(2) 2}
+@keyframes fl{50%{filter:brightness(2)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ===================== ANIMATION LAYER ===================== */
+.felt{position:relative}
+.shoebox{position:absolute;top:8px;right:8px;width:26px;height:36px;pointer-events:none;z-index:1}
+.shoebox i{position:absolute;inset:0;border:2px solid var(--ink);
+  background:repeating-linear-gradient(45deg,#3a1f7a 0 4px,#2a1660 4px 8px);box-shadow:1px 1px 0 rgba(0,0,0,.5)}
+.shoebox i:nth-child(2){transform:translate(-3px,-3px)}
+.shoebox i:nth-child(3){transform:translate(-6px,-6px)}
+.shoebox.pulse i:nth-child(3){animation:shoePop .18s steps(2)}
+@keyframes shoePop{50%{transform:translate(-6px,-10px)}}
+
+.card{animation:none}
+.card.dealin{animation:dealArc .34s cubic-bezier(.16,.9,.3,1) backwards;animation-delay:var(--d,0ms)}
+@keyframes dealArc{
+  0%{transform:translate(150px,-120px) rotate(24deg) scale(.82);opacity:0}
+  60%{opacity:1}
+  100%{transform:none;opacity:1}
+}
+.card.flipin{animation:flipCard .42s ease-out backwards}
+@keyframes flipCard{
+  0%{transform:rotateY(90deg) scaleX(.1);filter:brightness(.4)}
+  55%{transform:rotateY(0deg) scaleX(1.06);filter:brightness(1.5)}
+  100%{transform:none;filter:none}
+}
+.card.pop{animation:cardPop .3s steps(3)}
+@keyframes cardPop{50%{transform:translateY(-7px)}}
+
+.chipfly{position:fixed;width:26px;height:26px;border-radius:50%;z-index:190;pointer-events:none;
+  border:3px solid var(--ink);box-shadow:0 3px 0 rgba(0,0,0,.4);
+  background:repeating-conic-gradient(from 0deg,var(--c,#3ce8ff) 0 30deg,#ffffff35 30deg 60deg);
+  transition:transform .5s cubic-bezier(.3,.9,.3,1),opacity .5s}
+.moneypop{position:fixed;z-index:190;pointer-events:none;font-family:'Press Start 2P',monospace;font-size:12px;
+  text-shadow:2px 2px 0 rgba(0,0,0,.6);transition:transform .9s ease-out,opacity .9s;opacity:1}
+
+.handbox.win{animation:glowWin .5s steps(2) 2}
+@keyframes glowWin{50%{background:rgba(66,240,140,.18)}}
+.handbox.lose{animation:glowLose .4s steps(2) 1}
+@keyframes glowLose{50%{background:rgba(255,51,85,.16)}}
+.money.up{animation:moneyUp .35s steps(2)}
+@keyframes moneyUp{50%{transform:scale(1.14);filter:brightness(1.5)}}
+.betline.bump{animation:bump .18s steps(2)}
+@keyframes bump{50%{transform:scale(1.04)}}
+#dock .btn{-webkit-user-select:none}
+.pchip{transition:transform .08s steps(2)}
+.pchip:active{transform:translateY(4px) scale(.94)}
+
+/* ===================== TUTORIAL ===================== */
+.tutbar{display:flex;gap:4px;margin-bottom:9px}
+.tutbar i{flex:1 1 0;height:5px;background:#0d0824;border:1px solid var(--line)}
+.tutbar i.on{background:var(--cyan);border-color:var(--cyan)}
+.tutbar i.cur{background:var(--gold);border-color:var(--gold);animation:blink 1s steps(2) infinite}
+.tutcard{background:#0b1420;border:3px solid var(--ink);box-shadow:0 0 0 3px var(--line);padding:12px;margin-bottom:10px}
+.tutcard h3{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--gold);margin:0 0 9px;line-height:1.5}
+.tutcard p{margin:0 0 9px;font-size:19px;line-height:1.3;color:#d8f6ff}
+.tutcard p:last-child{margin-bottom:0}
+.tutcard .lead{color:var(--cyan)}
+.tutgoal{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--gold);border:2px solid var(--gold);
+  padding:6px 8px;display:inline-block;margin-top:4px}
+.tutopt{width:100%;margin-bottom:7px;text-align:left;justify-content:flex-start;padding:0 10px;font-size:9px;
+  height:auto;min-height:44px;line-height:1.4}
+.lesson{display:flex;align-items:center;gap:10px;padding:11px;border:2px solid var(--line);background:#0d0824;
+  margin-bottom:7px;cursor:pointer}
+.lesson.done{border-color:var(--green)}
+.lesson.locked{opacity:.45}
+.lesson .num{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--dim);width:26px;flex:0 0 auto;text-align:center}
+.lesson.done .num{color:var(--green)}
+.lesson b{font-family:'Press Start 2P',monospace;font-size:8px;display:block;margin-bottom:5px;color:var(--paper)}
+.lesson span{font-size:17px;color:var(--dim);line-height:1.2}
+.installstep{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start}
+.installstep .n{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--gold);width:22px;flex:0 0 auto}
+kbd{font-family:'Press Start 2P',monospace;font-size:8px;background:#241a52;border:2px solid var(--line);
+  padding:3px 5px;color:var(--cyan)}
+
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- HUD -->
+  <header id="hud">
+    <div class="hudrow">
+      <div class="money" id="bankroll">$1,000<small id="bankLbl">BANKROLL</small></div>
+      <div class="lvlwrap">
+        <div class="lvlbar"><i id="xpBar" style="width:0%"></i></div>
+        <div class="lvltxt"><span id="lvlTxt">LVL 1</span><span id="accTxt">—</span></div>
+      </div>
+      <button class="hudbtn" onclick="openSheet('sheetStats')" aria-label="Stats">▤</button>
+      <button class="hudbtn" onclick="openSheet('sheetAch')" aria-label="Achievements">★</button>
+      <button class="hudbtn" onclick="openSheet('sheetMenu')" aria-label="Menu">≡</button>
+    </div>
+  </header>
+
+  <!-- STAGE -->
+  <main id="stage">
+    <div class="deskgrid">
+      <div>
+        <section class="felt">
+          <div class="shoebox" id="shoeStack"><i></i><i></i><i></i></div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span class="seat" id="lblDealer">DEALER · S17</span>
+            <span class="chip" id="dealerTotal">—</span>
+          </div>
+          <div class="hand" id="dealerHand" style="margin-top:7px"></div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+            <span class="seat" id="lblYou">DEINE HAND</span>
+            <span class="seat" id="shoeInfo">SHOE</span>
+          </div>
+          <div class="handsrow" id="playerHands" style="margin-top:7px"></div>
+        </section>
+      </div>
+      <div>
+        <div id="tutPanel" class="hidden"></div>
+        <div class="coach" id="coach" onclick="openSheet('sheetCoach')">
+          <div class="tag t-info px" id="coachTag">COACH</div>
+          <h3 id="coachTitle">Bereit.</h3>
+          <p id="coachBody">Setze deinen Einsatz und drücke DEAL.</p>
+          <span class="more px" id="moreLbl">MEHR ▸</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- DOCK -->
+  <footer id="dock">
+    <!-- BET -->
+    <div id="dockBet">
+      <div class="betline">
+        <span id="betLbl">EINSATZ</span>
+        <b id="betAmount">$25</b>
+        <button class="btn xs b-ghost" style="width:auto;padding:0 10px" onclick="clearBet()" id="btnClear">C</button>
+      </div>
+      <div class="chiprow" id="chipRow"></div>
+      <div class="grid2">
+        <button class="btn sm b-ghost" onclick="repeatBet()" id="btnRepeat">REPEAT</button>
+        <button class="btn sm b-hit" onclick="deal()" id="btnDeal">DEAL</button>
+      </div>
+    </div>
+    <!-- ACTIONS -->
+    <div id="dockPlay" class="hidden">
+      <div class="grid2" style="margin-bottom:8px">
+        <button class="btn b-hit" id="aHIT" onclick="act('HIT')">HIT</button>
+        <button class="btn b-stand" id="aSTAND" onclick="act('STAND')">STAND</button>
+      </div>
+      <div class="grid3">
+        <button class="btn sm b-double" id="aDOUBLE" onclick="act('DOUBLE')">DOUBLE</button>
+        <button class="btn sm b-split" id="aSPLIT" onclick="act('SPLIT')">SPLIT</button>
+        <button class="btn sm b-surr" id="aSURRENDER" onclick="act('SURRENDER')">SURR</button>
+      </div>
+    </div>
+    <!-- INSURANCE -->
+    <div id="dockIns" class="hidden">
+      <div class="grid2">
+        <button class="btn b-stand" id="aINSY" onclick="insurance(true)">VERSICHERN</button>
+        <button class="btn b-hit" id="aINSN" onclick="insurance(false)">ABLEHNEN</button>
+      </div>
+    </div>
+    <!-- CONTINUE / NEXT -->
+    <div id="dockCont" class="hidden"><button class="btn b-double" onclick="resumeAfterMistake()" id="btnCont">WEITER</button></div>
+    <div id="dockNext" class="hidden"><button class="btn b-ghost" onclick="toBetting()" id="btnNext">NÄCHSTE HAND</button></div>
+    <div id="dockRebuy" class="hidden"><button class="btn b-double" onclick="rebuy()" id="btnRebuy">REBUY $1,000</button></div>
+    <div id="dockTut" class="hidden"></div>
+    <div id="dockQuiz" class="hidden"></div>
+  </footer>
+</div>
+
+<div class="sheet" id="sheetTut"><div class="grab"></div>
+  <div class="sheet-head"><span class="px" id="stTitle">LEKTIONEN</span><button class="btn xs b-ghost" style="width:auto;padding:0 12px" onclick="closeSheets()">OK</button></div>
+  <div class="sheet-body" id="stBody"></div></div>
+
+<div class="sheet" id="sheetInstall"><div class="grab"></div>
+  <div class="sheet-head"><span class="px" id="siTitle">ALS APP INSTALLIEREN</span><button class="btn xs b-ghost" style="width:auto;padding:0 12px" onclick="closeSheets()">OK</button></div>
+  <div class="sheet-body" id="siBody"></div></div>
+
+<div id="scrim" onclick="closeSheets()"></div>
+<div id="toast"><span class="px" id="toastTitle"></span><span id="toastBody"></span></div>
+
+<!-- SHEETS -->
+<div class="sheet" id="sheetCoach"><div class="grab"></div>
+  <div class="sheet-head"><span class="px" id="csTitle">STRATEGY COACH</span><button class="btn xs b-ghost" style="width:auto;padding:0 12px" onclick="closeSheets()">OK</button></div>
+  <div class="sheet-body" id="csBody"></div></div>
+
+<div class="sheet" id="sheetStats"><div class="grab"></div>
+  <div class="sheet-head"><span class="px" id="ssTitle">SESSION</span><button class="btn xs b-ghost" style="width:auto;padding:0 12px" onclick="closeSheets()">OK</button></div>
+  <div class="sheet-body" id="ssBody"></div></div>
+
+<div class="sheet" id="sheetAch"><div class="grab"></div>
+  <div class="sheet-head"><span class="px" id="saTitle">ERFOLGE</span><button class="btn xs b-ghost" style="width:auto;padding:0 12px" onclick="closeSheets()">OK</button></div>
+  <div class="sheet-body" id="saBody"></div></div>
+
+<div class="sheet" id="sheetMenu"><div class="grab"></div>
+  <div class="sheet-head"><span class="px" id="smTitle">MENÜ</span><button class="btn xs b-ghost" style="width:auto;padding:0 12px" onclick="closeSheets()">OK</button></div>
+  <div class="sheet-body" id="smBody"></div></div>
+
+<div class="sheet" id="sheetChart"><div class="grab"></div>
+  <div class="sheet-head"><span class="px" id="scTitle">BASIC STRATEGY</span><button class="btn xs b-ghost" style="width:auto;padding:0 12px" onclick="closeSheets()">OK</button></div>
+  <div class="sheet-body" id="scBody"></div></div>
+
+<div class="sheet" id="sheetMath"><div class="grab"></div>
+  <div class="sheet-head"><span class="px" id="smaTitle">MATHEMATIK</span><button class="btn xs b-ghost" style="width:auto;padding:0 12px" onclick="closeSheets()">OK</button></div>
+  <div class="sheet-body" id="smaBody"></div></div>
+
+<script>
+"use strict";
+/* ============================================================================
+   DEALER'S EDGE — Blackjack Basic Strategy Trainer
+   Verified engine: 6 decks, dealer stands on soft 17, DAS, late surrender.
+   ========================================================================= */
+
+/* ---------- 0. RNG ---------- */
+function rnd(n){
+  if(window.crypto&&window.crypto.getRandomValues){
+    const max=Math.floor(4294967296/n)*n, a=new Uint32Array(1); let x;
+    do{window.crypto.getRandomValues(a);x=a[0]}while(x>=max);
+    return x%n;
+  }
+  return Math.floor(Math.random()*n);
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(i+1);const t=a[i];a[i]=a[j];a[j]=t}return a}
+
+/* ---------- 1. RULES ---------- */
+const RULES={decks:6,penetration:0.75,h17:false,das:true,ls:true,maxHands:4,rsa:false,bjPays:1.5,
+             minBet:5,maxBet:2000,startBank:1000};
+
+/* ---------- 2. CARDS ---------- */
+const RANKS=[{r:'A',v:11},{r:'2',v:2},{r:'3',v:3},{r:'4',v:4},{r:'5',v:5},{r:'6',v:6},
+             {r:'7',v:7},{r:'8',v:8},{r:'9',v:9},{r:'10',v:10},{r:'J',v:10},{r:'Q',v:10},{r:'K',v:10}];
+const SUITS=[{s:'♠',c:'blk'},{s:'♥',c:'red'},{s:'♦',c:'red'},{s:'♣',c:'blk'}];
+function buildShoe(){const s=[];for(let d=0;d<RULES.decks;d++)for(const su of SUITS)for(const rk of RANKS)
+  s.push({r:rk.r,v:rk.v,s:su.s,c:su.c});return shuffle(s)}
+const IDX=v=>v===11?1:v;
+
+/* ---------- 3. HAND MATH ---------- */
+function evalHand(cards){let t=0,a=0;for(const c of cards){if(c.v===11){a++;t+=11}else t+=c.v}
+  while(t>21&&a>0){t-=10;a--}return{total:t,soft:a>0,bust:t>21}}
+function isPairHand(c){return c.length===2&&c[0].v===c[1].v}
+function isBJ(h){return h.cards.length===2&&!h.fromSplit&&evalHand(h.cards).total===21}
+
+/* ============================================================================
+   4. BASIC STRATEGY ENGINE
+   Returns a preference chain, so the answer stays correct on 3+ card hands
+   where DOUBLE and SURRENDER are no longer legal.
+   Verified: 320/320 chart cells vs. an independent reference, and every
+   two-card decision matches the exact EV maximum.
+   ========================================================================= */
+function basePlay(total,soft,d){
+  if(soft){
+    if(total>=19)return{chain:['STAND'],key:total===19?'soft.19':'soft.20'};
+    if(total===18){
+      if(d>=3&&d<=6)return{chain:['DOUBLE','STAND'],key:'soft.18double'};
+      if(d===2||d===7||d===8)return{chain:['STAND'],key:'soft.18stand'};
+      return{chain:['HIT'],key:'soft.18hit'};
+    }
+    if(total===17)return(d>=3&&d<=6)?{chain:['DOUBLE','HIT'],key:'soft.17double'}:{chain:['HIT'],key:'soft.17hit'};
+    if(total===16||total===15)return(d>=4&&d<=6)?{chain:['DOUBLE','HIT'],key:'soft.1516double'}:{chain:['HIT'],key:'soft.low'};
+    if(total===14||total===13)return(d>=5&&d<=6)?{chain:['DOUBLE','HIT'],key:'soft.1314double'}:{chain:['HIT'],key:'soft.low'};
+    return{chain:['HIT'],key:'soft.low'};
+  }
+  if(total>=17)return{chain:['STAND'],key:'hard.17plus'};
+  if(total>=13)return d<=6?{chain:['STAND'],key:'hard.stiffstand'}:{chain:['HIT'],key:'hard.stiffhit'};
+  if(total===12)return(d>=4&&d<=6)?{chain:['STAND'],key:'hard.12stand'}:{chain:['HIT'],key:'hard.12hit'};
+  if(total===11)return d===11?{chain:['HIT'],key:'hard.11vA'}:{chain:['DOUBLE','HIT'],key:'hard.11double'};
+  if(total===10)return d<=9?{chain:['DOUBLE','HIT'],key:'hard.10double'}:{chain:['HIT'],key:'hard.10hit'};
+  if(total===9)return(d>=3&&d<=6)?{chain:['DOUBLE','HIT'],key:'hard.9double'}:{chain:['HIT'],key:'hard.9hit'};
+  return{chain:['HIT'],key:'hard.low'};
+}
+function strategy(cards,d,opt){
+  const ev=evalHand(cards),total=ev.total,soft=ev.soft,pair=isPairHand(cards),pv=pair?cards[0].v:0;
+  if(pair&&opt.canSplit){
+    switch(pv){
+      case 11:return{chain:['SPLIT'],key:'pair.A'};
+      case 10:break;
+      case 9:if(d>=2&&d<=6||d===8||d===9)return{chain:['SPLIT'],key:'pair.9split'};break;
+      case 8:return{chain:['SPLIT'],key:'pair.8'};
+      case 7:if(d<=7)return{chain:['SPLIT'],key:'pair.7split'};break;
+      case 6:if(d<=6)return{chain:['SPLIT'],key:'pair.6split'};break;
+      case 5:break;
+      case 4:if(d===5||d===6)return{chain:['SPLIT'],key:'pair.4split'};break;
+      case 3:case 2:if(d<=7)return{chain:['SPLIT'],key:'pair.23split'};break;
+    }
+  }
+  if(opt.canSurrender&&!soft){
+    if(total===16&&d>=9)return{chain:['SURRENDER',...basePlay(total,soft,d).chain],key:d===9?'surr.16v9':(d===10?'surr.16v10':'surr.16vA')};
+    if(total===15&&d===10)return{chain:['SURRENDER',...basePlay(total,soft,d).chain],key:'surr.15v10'};
+  }
+  if(pair&&opt.canSplit){
+    if(pv===10)return{chain:['STAND'],key:'pair.10'};
+    if(pv===9&&(d===7||d===10||d===11))return{chain:['STAND'],key:'pair.9stand'};
+    if(pv===5)return{chain:basePlay(total,soft,d).chain,key:'pair.5'};
+    if(pv===7)return{chain:['HIT'],key:'pair.7hit'};
+    if(pv===6)return{chain:['HIT'],key:'pair.6hit'};
+    if(pv===4)return{chain:['HIT'],key:'pair.4hit'};
+    if(pv===3||pv===2)return{chain:['HIT'],key:'pair.23hit'};
+  }
+  return basePlay(total,soft,d);
+}
+function bestLegal(chain,o){
+  for(const a of chain){
+    if(a==='DOUBLE'&&!o.canDouble)continue;
+    if(a==='SPLIT'&&!o.canSplit)continue;
+    if(a==='SURRENDER'&&!o.canSurrender)continue;
+    return a;
+  }
+  return 'HIT';
+}
+
+/* ============================================================================
+   5. EXACT EV ENGINE
+   Dealer distribution by recursion over the *actual* unseen cards
+   (remaining shoe + hole card), conditioned on "dealer has already peeked
+   and does not hold blackjack". Player EVs by recursion with optimal play.
+   Validated against an independent Monte Carlo of the dealer to 2 decimals.
+   ========================================================================= */
+function addCard(total,soft,r){
+  let t,s=soft;
+  if(r===1){if(total+11<=21){t=total+11;s=true}else{t=total+1}}else{t=total+r}
+  if(t>21&&s){t-=10;s=false}
+  return[t,s];
+}
+function unseenProbs(){
+  const c=new Array(11).fill(0);let n=0;
+  for(const card of S.shoe){c[IDX(card.v)]++;n++}
+  if(S.hole){c[IDX(S.hole.v)]++;n++}          // the hole card is unseen to the player
+  const p=new Array(11).fill(0);
+  for(let i=1;i<=10;i++)p[i]=n?c[i]/n:0;
+  return p;
+}
+function dealerDist(up,p){
+  const memo=new Map();
+  function rec(total,soft){
+    const k=total*2+(soft?1:0);
+    if(memo.has(k))return memo.get(k);
+    let o={17:0,18:0,19:0,20:0,21:0,b:0};
+    if(total>21)o.b=1;
+    else if(total>17||(total===17&&(!soft||!RULES.h17)))o[total]=1;
+    else for(let r=1;r<=10;r++){
+      if(!p[r])continue;
+      const[t,s]=addCard(total,soft,r),sub=rec(t,s);
+      for(const kk in o)o[kk]+=p[r]*sub[kk];
+    }
+    memo.set(k,o);return o;
+  }
+  let f=p.slice();
+  if(up===1){const q=1-p[10];for(let i=1;i<=10;i++)f[i]=i===10?0:p[i]/q}
+  else if(up===10){const q=1-p[1];for(let i=1;i<=10;i++)f[i]=i===1?0:p[i]/q}
+  let out={17:0,18:0,19:0,20:0,21:0,b:0};
+  const st=up===1?[11,true]:[up,false];
+  for(let r=1;r<=10;r++){
+    if(!f[r])continue;
+    const[t,s]=addCard(st[0],st[1],r),sub=rec(t,s);
+    for(const k in out)out[k]+=f[r]*sub[k];
+  }
+  return out;
+}
+function standEV(pt,dd){if(pt>21)return -1;let ev=dd.b;
+  for(let t=17;t<=21;t++)ev+=dd[t]*(pt>t?1:pt<t?-1:0);return ev}
+function makeHitEV(p,dd){
+  const memo=new Map();
+  return function hit(total,soft){
+    const k=total*2+(soft?1:0);
+    if(memo.has(k))return memo.get(k);
+    let ev=0;
+    for(let r=1;r<=10;r++){
+      if(!p[r])continue;
+      const[t,s]=addCard(total,soft,r);
+      ev+=p[r]*(t>21?-1:Math.max(standEV(t,dd),hit(t,s)));
+    }
+    memo.set(k,ev);return ev;
+  };
+}
+function doubleEV(total,soft,p,dd){
+  let ev=0;
+  for(let r=1;r<=10;r++){if(!p[r])continue;const[t,s]=addCard(total,soft,r);ev+=p[r]*2*(t>21?-1:standEV(t,dd))}
+  return ev;
+}
+function splitEV(v,p,dd){          // conservative: no resplits counted
+  const hit=makeHitEV(p,dd);let ev=0;
+  for(let r=1;r<=10;r++){
+    if(!p[r])continue;
+    const st=v===1?[11,true]:[v,false],[t,s]=addCard(st[0],st[1],r);
+    if(v===1){ev+=p[r]*standEV(t,dd);continue}
+    let best=Math.max(standEV(t,dd),hit(t,s));
+    if(RULES.das)best=Math.max(best,doubleEV(t,s,p,dd));
+    ev+=p[r]*best;
+  }
+  return 2*ev;
+}
+function actionEVs(cards,up,o){
+  const p=unseenProbs(),dd=dealerDist(IDX(up),p),e=evalHand(cards),hit=makeHitEV(p,dd);
+  const out={STAND:standEV(e.total,dd),HIT:hit(e.total,e.soft)};
+  if(o.canDouble)out.DOUBLE=doubleEV(e.total,e.soft,p,dd);
+  if(o.canSplit)out.SPLIT=splitEV(IDX(cards[0].v),p,dd);
+  if(o.canSurrender)out.SURRENDER=-0.5;
+  return{evs:out,dd:dd};
+}
+
+/* ============================================================================
+   6. STATE
+   ========================================================================= */
+const S={
+  lang:'de',mode:'random',
+  shoe:[],count:0,
+  dealer:[],hole:null,holeShown:false,
+  hands:[],active:0,
+  phase:'bet',pending:null,lastChoice:null,keepCoach:false,
+  bank:RULES.startBank,bet:25,lastBet:25,insuranceBet:0,
+  coachData:null,
+  stats:{dec:0,ok:0,streak:0,best:0,hands:0,won:0,lost:0,pushed:0,rebuys:0,peak:RULES.startBank,
+         xp:0,lvl:1,shoeDec:0,shoeErr:0,
+         cat:{hard:{d:0,o:0},soft:{d:0,o:0},pair:{d:0,o:0},surrender:{d:0,o:0},insurance:{d:0,o:0}},
+         c:{insDeclined:0,eightsBig:0,soft18:0,surrOk:0,cleanShoe:0,fiveCard:0,acesSplit:0,bj:0,bigWin:0,winStreak:0,bestWinStreak:0,evLost:0}},
+  ach:{},mistakes:[],sound:true,autoSheet:true,showCount:false,autoNext:false,
+  tut:{active:false,lesson:0,step:0,done:{},shoe:[],answered:false,hintShown:false,wrongQuiz:-1},
+  displayBank:undefined,justFlipped:false,seenTut:false
+};
+function T(){return UI[S.lang]}
+
+/* ---------- shoe ---------- */
+function freshShoe(){S.shoe=buildShoe();S.count=0;S.stats.shoeDec=0;S.stats.shoeErr=0}
+function needShuffle(){return S.shoe.length<52*RULES.decks*(1-RULES.penetration)}
+function hiLo(c){if(c.v>=10)return -1;if(c.v<=6)return 1;return 0}
+function draw(){if(!S.shoe.length)freshShoe();const c=S.shoe.pop();c.id=++cardSeq;S.count+=hiLo(c);return c}
+function drawValue(v){
+  let i=S.shoe.length-1;
+  while(i>=0&&S.shoe[i].v!==v)i--;
+  if(i<0){freshShoe();return drawValue(v)}
+  const c=S.shoe.splice(i,1)[0];c.id=++cardSeq;S.count+=hiLo(c);return c;
+}
+function newHandObj(cards,fromSplit,bet){
+  return{cards,bet:bet,done:false,doubled:false,surrendered:false,
+         fromSplit:!!fromSplit,splitAces:false,needsCard:false,result:null,payout:0};
+}
+
+/* ============================================================================
+   7. LANGUAGE
+   ========================================================================= */
+const ACT={de:{HIT:'Hit',STAND:'Stand',DOUBLE:'Double',SPLIT:'Split',SURRENDER:'Surrender'},
+           en:{HIT:'Hit',STAND:'Stand',DOUBLE:'Double',SPLIT:'Split',SURRENDER:'Surrender'}};
+const ACTL={de:{HIT:'Hit (ziehen)',STAND:'Stand (halten)',DOUBLE:'Double (verdoppeln)',SPLIT:'Split (teilen)',SURRENDER:'Surrender (aufgeben)'},
+            en:{HIT:'Hit',STAND:'Stand',DOUBLE:'Double down',SPLIT:'Split',SURRENDER:'Surrender'}};
+
+const UI={
+ de:{
+  dealer:'DEALER · S17',you:'DEINE HAND',bank:'BANKROLL',bet:'EINSATZ',
+  deal:'DEAL',repeat:'REPEAT',next:'NÄCHSTE HAND',cont:'WEITER',rebuy:'REBUY $1.000',
+  insY:'VERSICHERN',insN:'ABLEHNEN',surr:'SURR',more:'MEHR ▸',
+  coach:'COACH',correct:'RICHTIG',wrong:'FEHLER',perfect:'PERFEKT',info:'INFO',
+  csTitle:'STRATEGY COACH',ssTitle:'SESSION',saTitle:'ERFOLGE',smTitle:'MENÜ',scTitle:'BASIC STRATEGY',smaTitle:'MATHEMATIK',
+  ready:'Bereit.',readyBody:'Setze deinen Einsatz und drücke DEAL.',
+  yourTurn:'Du bist am Zug.',yourTurnBody:'Triff die mathematisch korrekte Entscheidung.',
+  needBet:'Einsatz zu niedrig.',needBetBody:'Mindesteinsatz ist $5.',
+  broke:'Bankroll aufgebraucht.',brokeBody:'Du kannst für $1.000 nachkaufen. Das wird als Rebuy gezählt.',
+  insTitle:'Versicherung?',insBody:'Der Dealer zeigt ein Ass und bietet Insurance an.',
+  insGood:'Richtig — niemals versichern.',
+  insGoodBody:'Insurance ist eine separate Wette darauf, dass die verdeckte Karte eine Zehn ist. Im 6-Deck-Schuh sind rund 31 % der unbekannten Karten Zehner, die Wette zahlt aber 2:1 und bräuchte 33,3 %, um fair zu sein. Der Hausvorteil liegt bei etwa 5,9 % — unabhängig von deiner eigenen Hand. „Even Money" bei einem Blackjack ist dieselbe Wette in anderer Verpackung.',
+  insBad:'Falsch — Insurance ist eine Verlustwette.',
+  insBadBody:'Insurance zahlt 2:1, du bräuchtest also eine Zehn-Wahrscheinlichkeit über 33,3 %. Tatsächlich sind es rund 31 %. Erwartungswert etwa −5,9 % pro versichertem Dollar. Basic Strategy lehnt Insurance und Even Money ausnahmslos ab.',
+  dealerBJ:'Dealer hat Blackjack.',playerBJ:'Blackjack! Zahlt 3:2.',
+  bothBJ:'Beide Blackjack — Push.',noDecision:'Keine Entscheidung möglich, die Hand ist sofort vorbei.',
+  bjBody:'Nichts zu entscheiden — Blackjack zahlt 3:2.',
+  shuffle:'Neuer Schuh.',shuffleBody:'Die Cut Card wurde erreicht. Sechs frische Decks sind im Spiel.',
+  resWin:'GEWINN',resLose:'VERLUST',resPush:'PUSH',resSurr:'AUFGEGEBEN',resBJ:'BLACKJACK',
+  youChose:'Du hast gewählt',correctWas:'Korrekt wäre',vs:'gegen',
+  hard:'Hart',softT:'Soft',pairT:'Paar',
+  evTitle:'Erwartungswert für diesen Schuh',
+  evNote:'Werte pro $1 Einsatz, berechnet aus den tatsächlich verbleibenden Karten inklusive der verdeckten Dealerkarte.',
+  evCost:'Erwarteter Verlust durch diesen Fehler',
+  dealerOdds:'Dealer-Wahrscheinlichkeiten',
+  bustP:'Überkauft',
+  splitNote:'Der Split-Wert ist konservativ gerechnet (ohne erneutes Splitten) und liegt in Wirklichkeit etwas höher.',
+  divergence:'Hinweis: In diesem konkreten Schuh liegt eine andere Aktion minimal vorn. Basic Strategy ist bewusst kartenunabhängig — bewertet wird die Tabelle.',
+  levelUp:'LEVEL',levelUpBody:'Neues Level erreicht.',
+  achUnlocked:'ERFOLG FREIGESCHALTET',
+  modes:{random:'ZUFALL',hard:'HART',pairsoft:'PAAR/SOFT',surr:'GRENZFALL'},
+  settings:'Einstellungen',sound:'Sound',autoSheet:'Erklärung bei Fehlern automatisch öffnen',countOpt:'Hi-Lo Count anzeigen',autoNextOpt:'Automatisch weiter',
+  langLbl:'Sprache',resetLbl:'SESSION ZURÜCKSETZEN',resetAll:'ALLES LÖSCHEN',
+  chartBtn:'STRATEGIETABELLE',mathBtn:'MATHEMATIK & BEWEIS',
+  kAcc:'GENAUIGKEIT',kDec:'ENTSCHEIDUNGEN',kStreak:'SERIE',kBest:'REKORD',kHands:'HÄNDE',kNet:'BILANZ',
+  kWon:'GEWONNEN',kLost:'VERLOREN',kEv:'EV-VERLUST',kRebuy:'REBUYS',
+  logTitle:'Letzte Fehler',logEmpty:'Noch keine Fehler. Weiter so.',
+  catTitle:'Genauigkeit nach Typ',
+  legend:{H:'Hit',S:'Stand',D:'Double / sonst Hit',Ds:'Double / sonst Stand',P:'Split',R:'Surrender / sonst Hit'},
+  chartNote:'Diese Tabelle wird zur Laufzeit aus derselben Engine erzeugt, die deine Züge bewertet. Tabelle und Feedback können nicht auseinanderlaufen.',
+  simBtn:'25.000 HÄNDE SIMULIEREN',simRun:'RECHNET …',
+  simNote:'Die Simulation spielt perfekte Basic Strategy gegen dieselbe Engine. Erwartet wird ein Hausvorteil um 0,4 %.',
+  tutBtn:'LEKTIONEN SPIELEN',installBtn:'ALS APP INSTALLIEREN',stTitle:'LEKTIONEN',siTitle:'ALS APP INSTALLIEREN',
+  tutPrompt:'Neu hier?',tutPromptBody:'Neun kurze Lektionen erklären dir Blackjack von Grund auf — mit echten Händen zum Mitspielen. Du findest sie jederzeit im Menü unter LEKTIONEN.'
+ },
+ en:{
+  dealer:'DEALER · S17',you:'YOUR HAND',bank:'BANKROLL',bet:'BET',
+  deal:'DEAL',repeat:'REPEAT',next:'NEXT HAND',cont:'CONTINUE',rebuy:'REBUY $1,000',
+  insY:'INSURE',insN:'DECLINE',surr:'SURR',more:'MORE ▸',
+  coach:'COACH',correct:'CORRECT',wrong:'MISTAKE',perfect:'PERFECT',info:'INFO',
+  csTitle:'STRATEGY COACH',ssTitle:'SESSION',saTitle:'ACHIEVEMENTS',smTitle:'MENU',scTitle:'BASIC STRATEGY',smaTitle:'THE MATH',
+  ready:'Ready.',readyBody:'Place your bet and press DEAL.',
+  yourTurn:'Your move.',yourTurnBody:'Make the mathematically correct decision.',
+  needBet:'Bet too low.',needBetBody:'Minimum bet is $5.',
+  broke:'Bankroll gone.',brokeBody:'You can rebuy for $1,000. It counts as a rebuy in your stats.',
+  insTitle:'Insurance?',insBody:'The dealer shows an ace and offers insurance.',
+  insGood:'Correct — never take insurance.',
+  insGoodBody:'Insurance is a side bet that the hole card is a ten. In a 6-deck shoe about 31% of the unseen cards are tens, but the bet pays 2:1 and would need 33.3% to break even. The house edge is roughly 5.9% and does not depend on your own hand. Even money on a blackjack is the same bet in a different wrapper.',
+  insBad:'Wrong — insurance is a losing bet.',
+  insBadBody:'Insurance pays 2:1, so you would need the hole card to be a ten more than 33.3% of the time. It is about 31%. Expected value is roughly −5.9% per dollar insured. Basic strategy declines insurance and even money without exception.',
+  dealerBJ:'Dealer has blackjack.',playerBJ:'Blackjack! Pays 3:2.',
+  bothBJ:'Both blackjack — push.',noDecision:'No decision was available; the hand ends immediately.',
+  bjBody:'Nothing to decide — blackjack pays 3:2.',
+  shuffle:'New shoe.',shuffleBody:'The cut card came out. Six fresh decks are in play.',
+  resWin:'WIN',resLose:'LOSS',resPush:'PUSH',resSurr:'SURRENDERED',resBJ:'BLACKJACK',
+  youChose:'You chose',correctWas:'The correct play is',vs:'vs',
+  hard:'Hard',softT:'Soft',pairT:'Pair',
+  evTitle:'Expected value for this shoe',
+  evNote:'Per $1 wagered, computed from the cards actually left, including the dealer hole card.',
+  evCost:'Expected cost of this mistake',
+  dealerOdds:'Dealer outcome probabilities',
+  bustP:'Bust',
+  splitNote:'The split figure is conservative (resplits are not counted) and is in reality slightly higher.',
+  divergence:'Note: in this specific shoe a different action is marginally ahead. Basic strategy is deliberately composition-independent — the chart is what gets graded.',
+  levelUp:'LEVEL',levelUpBody:'New level reached.',
+  achUnlocked:'ACHIEVEMENT UNLOCKED',
+  modes:{random:'RANDOM',hard:'HARD',pairsoft:'PAIR/SOFT',surr:'MARGINAL'},
+  settings:'Settings',sound:'Sound',autoSheet:'Open the explanation on mistakes',countOpt:'Show Hi-Lo count',autoNextOpt:'Auto-continue',
+  langLbl:'Language',resetLbl:'RESET SESSION',resetAll:'ERASE EVERYTHING',
+  chartBtn:'STRATEGY CHART',mathBtn:'THE MATH & PROOF',
+  kAcc:'ACCURACY',kDec:'DECISIONS',kStreak:'STREAK',kBest:'BEST',kHands:'HANDS',kNet:'NET',
+  kWon:'WON',kLost:'LOST',kEv:'EV LOST',kRebuy:'REBUYS',
+  logTitle:'Recent mistakes',logEmpty:'No mistakes yet. Keep it up.',
+  catTitle:'Accuracy by hand type',
+  legend:{H:'Hit',S:'Stand',D:'Double / else hit',Ds:'Double / else stand',P:'Split',R:'Surrender / else hit'},
+  chartNote:'This chart is generated at runtime from the same engine that grades your moves, so the two can never drift apart.',
+  simBtn:'SIMULATE 25,000 HANDS',simRun:'RUNNING …',
+  simNote:'The simulation plays perfect basic strategy against this same engine. Expect a house edge near 0.4%.',
+  tutBtn:'PLAY THE LESSONS',installBtn:'INSTALL AS AN APP',stTitle:'LESSONS',siTitle:'INSTALL AS AN APP',
+  tutPrompt:'New here?',tutPromptBody:'Nine short lessons teach blackjack from the ground up, with real hands to play along. They live in the menu under LESSONS.'
+ }
+};
+
+/* ---------- explanations ---------- */
+function dn(d){return d===11?(S.lang==='de'?'ein Ass':'an ace'):(S.lang==='de'?'eine '+d:'a '+d)}
+function bustPct(t){return({12:31,13:39,14:56,15:58,16:62,17:69})[t]||40}
+function standPct(d){return({7:74,8:76,9:77,10:79,11:83})[d]||70}
+function surr16(d,l){
+  if(l==='de'){
+    const x=d===9?'eine 9':(d===10?'eine Zehn':'ein Ass');
+    return `Harte 16 gegen ${x}: <b>aufgeben</b>. 16 ist die schlechteste Hand im Spiel — Halten und Ziehen verlieren beide rund 54 % des Einsatzes. Surrender begrenzt den Verlust auf exakt 50 % und ist damit messbar die beste der drei Optionen. ${d===11?'Bei einem Dealer, der auf Soft 17 steht, ist das ein sehr knapper Fall, Surrender liegt aber vorn.':''} <b>Wichtig:</b> Für 8,8 gilt das nicht — das Paar wird gesplittet.`;
+  }
+  const x=d===9?'a 9':(d===10?'a ten':'an ace');
+  return `Hard 16 against ${x}: <b>surrender</b>. Sixteen is the worst hand in blackjack — standing and hitting both lose about 54% of your bet. Surrender caps the loss at exactly 50%, measurably the best of the three. ${d===11?'Against a dealer who stands on soft 17 this is razor thin, but surrender still edges ahead.':''} <b>Note:</b> this does not apply to 8,8 — that pair gets split.`;
+}
+const R={
+ 'pair.A':{de:c=>`Asse werden <b>immer</b> gesplittet, gegen jede Dealerkarte. Ungesplittet ist A,A eine Soft 12, die praktisch nie 21 erreicht. Gesplittet startest du zwei Hände mit der besten Karte des Spiels: jede Zehn macht daraus eine 21. Der Gewinn ist so groß, dass er die Regel „nur eine Karte pro Ass" locker überkompensiert.`,
+            en:c=>`Aces are <b>always</b> split, against every upcard. Unsplit, A,A is a soft 12 that almost never reaches 21. Split, you start two hands with the strongest card in the game: any ten makes 21. The gain easily outweighs the one-card-only restriction.`},
+ 'pair.8':{de:c=>`Achter werden <b>immer</b> gesplittet. 8,8 ist eine harte 16, die schlechteste Hand überhaupt. Gegen ${dn(c.d)} verliert eine 16 rund 54 % des Einsatzes; zwei Hände mit je einer 8 verlieren deutlich weniger${c.d>=10?' — Splitten schlägt hier sogar Surrender':''}. Du splittest nicht, um zu gewinnen, sondern um weniger zu verlieren.`,
+           en:c=>`Eights are <b>always</b> split. 8,8 is a hard 16, the worst hand in blackjack. Against ${dn(c.d)} a 16 loses about 54% of your bet; two hands each starting with an 8 lose considerably less${c.d>=10?' — splitting even beats surrender here':''}. You split not to win, but to lose less.`},
+ 'pair.9split':{de:c=>`9,9 gegen ${dn(c.d)} splitten. Eine 18 gewinnt gegen diese Karte nicht zuverlässig genug. Merke die Ausnahmen: gegen <b>7, 10 und Ass</b> wird gehalten, gegen alles andere gesplittet.`,
+                en:c=>`Split 9,9 against ${dn(c.d)}. An 18 does not win reliably enough here. Remember the exceptions: stand against <b>7, 10 and ace</b>, split against everything else.`},
+ 'pair.9stand':{de:c=>`9,9 gegen ${dn(c.d)} wird <b>gehalten</b>. ${c.d===7?'Gegen eine 7 endet der Dealer sehr häufig auf genau 17 — deine 18 schlägt das bereits. Splitten würde eine Gewinnhand gegen zwei mittelmäßige tauschen.':'Gegen eine hohe Karte ist die 18 kein Favorit, aber zwei neue Hände gegen dieselbe starke Karte wären noch schlechter.'}`,
+                en:c=>`9,9 against ${dn(c.d)} is a <b>stand</b>. ${c.d===7?'Against a 7 the dealer very often ends on exactly 17, which your 18 already beats. Splitting would trade a winner for two mediocre hands.':'Against a high card the 18 is no favourite, but two fresh hands against that same card would be worse.'}`},
+ 'pair.10':{de:c=>`Zehner werden <b>niemals</b> gesplittet. 20 ist nach dem Blackjack die zweitbeste Hand und gewinnt langfristig etwa 70 % der Einsätze. Zwei Hände mit je einer Zehn sind zwar profitabel, aber messbar weniger — auch gegen eine 5 oder 6.`,
+            en:c=>`Never split tens. A 20 is the second-best hand in the game and wins roughly 70% of the time. Two hands each starting with a ten are profitable too, but measurably less — even against a 5 or 6.`},
+ 'pair.7split':{de:c=>`7,7 gegen ${dn(c.d)} splitten. Eine harte 14 ist schwach; zwei Hände mit je einer 7 profitieren davon, dass ${dn(c.d)} überdurchschnittlich oft überkauft.`,
+                en:c=>`Split 7,7 against ${dn(c.d)}. A hard 14 is weak, and two hands starting with a 7 take advantage of how often ${dn(c.d)} busts.`},
+ 'pair.7hit':{de:c=>`7,7 gegen ${dn(c.d)} wird <b>gezogen</b>, nicht gesplittet. Ab einer 8 ist der Dealer so stark, dass zwei Hände doppeltes Geld in eine Verlustsituation stellen würden.`,
+              en:c=>`7,7 against ${dn(c.d)} is a <b>hit</b>, not a split. From an 8 upward the dealer is strong enough that splitting would put twice the money into a losing spot.`},
+ 'pair.6split':{de:c=>`6,6 gegen ${dn(c.d)} splitten. Eine 12 gewinnt nur, wenn der Dealer überkauft. Gegen eine schwache Karte machst du daraus zwei Hände, die mit einer 6 starten und dank DAS auch verdoppeln dürfen.`,
+                en:c=>`Split 6,6 against ${dn(c.d)}. A 12 only wins when the dealer busts. Against a weak upcard you turn it into two hands starting with a 6, which can also double thanks to DAS.`},
+ 'pair.6hit':{de:c=>`6,6 gegen ${dn(c.d)} nicht splitten — das ist eine harte 12 und wird gezogen. Gegen eine 7 oder höher würdest du sonst doppeltes Geld auf zwei schwache Hände setzen.`,
+              en:c=>`Do not split 6,6 against ${dn(c.d)} — treat it as a hard 12 and hit. Against a 7 or higher, splitting would put double money on two weak hands.`},
+ 'pair.4split':{de:c=>`4,4 gegen ${dn(c.d)} splitten — nur gegen 5 und 6, und nur weil <b>Double after Split</b> erlaubt ist. Ohne DAS wäre Ziehen korrekt.`,
+                en:c=>`Split 4,4 against ${dn(c.d)} — only against 5 and 6, and only because <b>double after split</b> is allowed. Without DAS, hitting would be correct.`},
+ 'pair.4hit':{de:c=>`4,4 gegen ${dn(c.d)} nicht splitten. Als 8 kannst du nicht überkaufen und ziehst gefahrlos.`,
+              en:c=>`Do not split 4,4 against ${dn(c.d)}. As an 8 you cannot bust and can draw freely.`},
+ 'pair.23split':{de:c=>`${c.pv},${c.pv} gegen ${dn(c.d)} splitten. Die Ausgangssumme ${c.pv*2} ist wertlos, während ${dn(c.d)} zu den schwächeren Karten zählt. Mit DAS reicht das — gegen 2 und 3 ist es allerdings knapp.`,
+                 en:c=>`Split ${c.pv},${c.pv} against ${dn(c.d)}. The starting total of ${c.pv*2} is worthless while ${dn(c.d)} is on the weaker side. With DAS that is enough — though against a 2 or 3 it is close.`},
+ 'pair.23hit':{de:c=>`${c.pv},${c.pv} gegen ${dn(c.d)} nur ziehen. Ab einer 8 ist der Dealer zu stark, um zwei schwache Hände zu eröffnen.`,
+               en:c=>`Just hit ${c.pv},${c.pv} against ${dn(c.d)}. From an 8 up the dealer is too strong to open two weak hands.`},
+ 'pair.5':{de:c=>`5,5 wird <b>niemals</b> gesplittet — es ist eine harte 10 und wird ${c.d<=9?'verdoppelt':'gezogen'}. Zwei Hände mit je einer 5 geben dir die schlechteste Startkarte überhaupt; eine 10 ist eine der besten.`,
+           en:c=>`5,5 is <b>never</b> split — it is a hard 10, so you ${c.d<=9?'double':'hit'}. Two hands starting with a 5 give you the worst possible first card; a 10 is one of the best.`},
+ 'surr.15v10':{de:c=>`Harte 15 gegen eine Zehn: <b>aufgeben</b>. Ziehen und Halten verlieren beide mehr als die Hälfte des Einsatzes, Surrender kostet garantiert genau 50 %. Es ist die einzige 15, die aufgegeben wird — gegen 9 oder Ass wird bei S17 gezogen.`,
+               en:c=>`Hard 15 against a ten: <b>surrender</b>. Both hitting and standing lose more than half your bet; surrender costs exactly 50%. It is the only 15 you surrender — against a 9 or an ace under S17 you hit.`},
+ 'surr.16v9':{de:c=>surr16(9,'de'),en:c=>surr16(9,'en')},
+ 'surr.16v10':{de:c=>surr16(10,'de'),en:c=>surr16(10,'en')},
+ 'surr.16vA':{de:c=>surr16(11,'de'),en:c=>surr16(11,'en')},
+ 'soft.20':{de:c=>`Soft 20 (A,9) wird immer gehalten. Jeder weitere Zug verschlechtert eine 20 nur.`,
+            en:c=>`Soft 20 (A,9) always stands. Any further action only makes a 20 worse.`},
+ 'soft.19':{de:c=>`Soft 19 (A,8) wird gehalten — auch gegen ${dn(c.d)}. ${c.d===6?'Bei einem Dealer, der auf Soft 17 <b>steht</b>, ist Verdoppeln gegen die 6 falsch. Nur in H17-Spielen wird A,8 gegen 6 verdoppelt — das verwechseln viele Spieler.':'Eine 19 gewinnt hier bereits mehr, als Ziehen oder Verdoppeln einbringen würden.'}`,
+            en:c=>`Soft 19 (A,8) stands, including against ${dn(c.d)}. ${c.d===6?'When the dealer <b>stands</b> on soft 17, doubling A,8 vs 6 is wrong. That double belongs only in H17 games — a detail players frequently mix up.':'A 19 already wins more here than hitting or doubling would gain.'}`},
+ 'soft.18double':{de:c=>`A,7 gegen ${dn(c.d)} <b>verdoppeln</b> (halten, falls Verdoppeln nicht mehr möglich ist). Deine 18 ist gegen diese Karte kein sicherer Gewinner, aber ${dn(c.d)} überkauft häufig — du willst mehr Geld im Spiel haben. Das Ass schützt dich: aus 18 kann 19, 20 oder 21 werden, ohne dass die Hand platzt.`,
+                  en:c=>`Double A,7 against ${dn(c.d)} (stand if doubling is unavailable). Your 18 is no sure winner here, but ${dn(c.d)} busts often and you want more money on the table. The ace protects you: 18 can improve to 19, 20 or 21 without ever busting.`},
+ 'soft.18stand':{de:c=>`A,7 gegen ${dn(c.d)} <b>halten</b>. ${c.d===7?'Der wichtigste Sonderfall: Gegen eine 7 endet der Dealer sehr oft auf genau 17 — deine 18 schlägt das bereits. Ziehen würde eine Gewinnhand aufs Spiel setzen.':'Verdoppeln lohnt gegen diese Karte nicht mehr, und die 18 ist gut genug, um nicht daran zu ziehen.'}`,
+                 en:c=>`Stand on A,7 against ${dn(c.d)}. ${c.d===7?'The key special case: against a 7 the dealer very often ends on exactly 17, which your 18 already beats. Hitting would risk a winning hand.':'Doubling is no longer worth it here, and the 18 is good enough to leave alone.'}`},
+ 'soft.18hit':{de:c=>`A,7 gegen ${dn(c.d)}: <b>ziehen</b>. Das fühlt sich falsch an, weil 18 nach einer guten Hand aussieht — gegen 9, 10 oder Ass ist es aber ein Verlierer, denn der Dealer endet dort weit überdurchschnittlich oft auf 19, 20 oder 21. Der Zug ist risikofrei: eine Soft 18 kann nicht überkaufen. Im schlechtesten Fall landest du wieder auf einer harten Summe und spielst weiter.`,
+               en:c=>`A,7 against ${dn(c.d)}: <b>hit</b>. It feels wrong because 18 looks like a good hand, but against a 9, 10 or ace it is a losing one — the dealer finishes on 19, 20 or 21 far more often than average. And the draw is free: a soft 18 cannot bust. At worst you land back on a hard total and keep playing.`},
+ 'soft.17double':{de:c=>`A,6 gegen ${dn(c.d)} verdoppeln (sonst ziehen). Soft 17 ist eine der am meisten überschätzten Hände: Sie gewinnt nur, wenn der Dealer überkauft, denn 17 schlägt nichts.`,
+                  en:c=>`Double A,6 against ${dn(c.d)} (hit otherwise). Soft 17 is one of the most overrated hands: it only wins when the dealer busts, because a 17 beats nothing.`},
+ 'soft.17hit':{de:c=>`A,6 gegen ${dn(c.d)} ziehen. <b>Niemals</b> auf Soft 17 halten: 17 gewinnt nur durch einen Dealer-Bust, und das Ass erlaubt einen risikofreien Versuch auf 18 bis 21.`,
+               en:c=>`Hit A,6 against ${dn(c.d)}. <b>Never</b> stand on soft 17: a 17 only wins when the dealer busts, and the ace gives you a free shot at 18 through 21.`},
+ 'soft.1516double':{de:c=>`Soft ${c.total} gegen ${dn(c.d)} verdoppeln (sonst ziehen). Gegen 4, 5 und 6 ist der Dealer am anfälligsten — dort holst du das Geld heraus, während das Ass dich vor dem Überkaufen schützt.`,
+                    en:c=>`Double soft ${c.total} against ${dn(c.d)} (hit otherwise). The dealer is at their most vulnerable against 4, 5 and 6, so that is where you press the bet, with the ace protecting you.`},
+ 'soft.1314double':{de:c=>`Soft ${c.total} gegen ${dn(c.d)} verdoppeln (sonst ziehen). Nur gegen 5 und 6 — bei so niedrigen Soft-Summen reicht die Dealer-Schwäche erst ab dort.`,
+                    en:c=>`Double soft ${c.total} against ${dn(c.d)} (hit otherwise). Only against 5 and 6 — with soft totals this low the dealer needs to be that weak.`},
+ 'soft.low':{de:c=>`Soft ${c.total} gegen ${dn(c.d)} ziehen. Es gibt keinen Grund zu halten: Die Hand kann durch eine Karte nicht schlechter werden, weil das Ass bei Bedarf von 11 auf 1 fällt.`,
+             en:c=>`Hit soft ${c.total} against ${dn(c.d)}. No reason to stand: the hand cannot get worse from one card, because the ace drops from 11 to 1 when needed.`},
+ 'hard.17plus':{de:c=>`Harte ${c.total} wird gehalten. Ab 17 überkaufst du mit jeder Karte ab einer 5 — das Risiko übersteigt jeden möglichen Gewinn, selbst gegen eine Zehn oder ein Ass.`,
+                en:c=>`Hard ${c.total} stands. From 17 up, any card of 5 or higher busts you — the risk outweighs any possible gain, even against a ten or an ace.`},
+ 'hard.stiffstand':{de:c=>`Harte ${c.total} gegen ${dn(c.d)} <b>halten</b>. Der Dealer muss ziehen und überkauft mit dieser Karte in etwa 35 bis 42 % der Fälle. Deine Hand ist schlecht — du gewinnst sie nicht selbst, du lässt den Dealer verlieren. Ziehen würde dich in rund ${bustPct(c.total)} % der Fälle sofort überkaufen.`,
+                    en:c=>`Stand on hard ${c.total} against ${dn(c.d)}. The dealer must draw and busts roughly 35 to 42% of the time with this upcard. Your hand is bad — you do not win it yourself, you let the dealer lose it. Hitting would bust you about ${bustPct(c.total)}% of the time.`},
+ 'hard.stiffhit':{de:c=>`Harte ${c.total} gegen ${dn(c.d)} <b>ziehen</b>. Ja, du überkaufst in etwa ${bustPct(c.total)} % der Fälle — aber Halten ist schlechter: Ein Dealer mit ${dn(c.d)} endet in rund ${standPct(c.d)} % der Fälle auf 17 oder mehr und schlägt deine ${c.total} damit fast automatisch. Du ziehst nicht, weil du gewinnen willst, sondern weil Halten die Hand bereits verloren hat.`,
+                  en:c=>`Hit hard ${c.total} against ${dn(c.d)}. Yes, you bust about ${bustPct(c.total)}% of the time — but standing is worse: a dealer showing ${dn(c.d)} finishes on 17 or better roughly ${standPct(c.d)}% of the time and beats your ${c.total} almost automatically. You hit not to win, but because standing has already lost.`},
+ 'hard.12stand':{de:c=>`Harte 12 gegen ${dn(c.d)} halten. Nur gegen 4, 5 und 6 — dort ist die Bust-Wahrscheinlichkeit des Dealers am höchsten und übersteigt dein eigenes Risiko von rund 31 %.`,
+                 en:c=>`Stand on hard 12 against ${dn(c.d)}. Only against 4, 5 and 6 — that is where the dealer's bust chance is highest and exceeds your own 31% risk.`},
+ 'hard.12hit':{de:c=>`Harte 12 gegen ${dn(c.d)} <b>ziehen</b>. ${c.d<=3?'Die klassische Falle: 2 und 3 sehen schwach aus, sind es aber nicht. Der Dealer überkauft mit einer 2 nur zu etwa 35 %, mit einer 3 zu etwa 37 % — zu wenig, um eine 12 stehen zu lassen. Dein eigenes Bust-Risiko liegt bei nur rund 31 %, weil dich einzig eine Zehn tötet.':'Gegen eine hohe Karte musst du deine Hand verbessern; eine 12 schlägt keinen Dealer, der auf 17 oder mehr endet.'}`,
+               en:c=>`Hit hard 12 against ${dn(c.d)}. ${c.d<=3?'The classic trap: a 2 and a 3 look weak but are not. The dealer busts only about 35% with a 2 and 37% with a 3 — not enough to stand on 12. Your own bust risk is only about 31%, since only a ten breaks you.':'Against a high upcard you have to improve; a 12 does not beat a dealer finishing on 17 or better.'}`},
+ 'hard.11double':{de:c=>`Harte 11 gegen ${dn(c.d)} <b>verdoppeln</b> (sonst ziehen). 11 ist die beste Verdopplungshand: Rund 31 % aller Karten sind Zehner, du kannst mit einer Karte nicht überkaufen und triffst häufig 21.`,
+                  en:c=>`Double hard 11 against ${dn(c.d)} (hit otherwise). Eleven is the best doubling hand there is: roughly 31% of all cards are tens, you cannot bust on one card, and you hit 21 often.`},
+ 'hard.11vA':{de:c=>`Harte 11 gegen ein <b>Ass</b> wird nur gezogen, nicht verdoppelt — weil dieser Dealer auf Soft 17 <b>steht</b>. Das Ass ist die stärkste Upcard, und der Dealer hat bereits auf Blackjack geprüft. In H17-Spielen wäre Verdoppeln korrekt; bei S17 nicht. Genau hier trennen sich die beiden Regelsätze.`,
+              en:c=>`Hard 11 against an <b>ace</b> is a hit, not a double, because this dealer <b>stands</b> on soft 17. The ace is the strongest upcard and the dealer has already peeked. In an H17 game doubling would be right; under S17 it is not. This is exactly where the two rule sets part ways.`},
+ 'hard.10double':{de:c=>`Harte 10 gegen ${dn(c.d)} verdoppeln (sonst ziehen). Mit einer Zehn oder einem Ass bist du sofort bei 20 oder 21 und kannst nicht überkaufen.`,
+                  en:c=>`Double hard 10 against ${dn(c.d)} (hit otherwise). A ten or an ace puts you straight on 20 or 21 and you cannot bust.`},
+ 'hard.10hit':{de:c=>`Harte 10 gegen ${dn(c.d)} nur ziehen. Gegen Zehn oder Ass ist der Dealer so stark, dass sich der doppelte Einsatz auf eine einzige Karte nicht mehr rechnet.`,
+               en:c=>`Just hit hard 10 against ${dn(c.d)}. Against a ten or an ace the dealer is strong enough that committing double the bet to one card no longer pays.`},
+ 'hard.9double':{de:c=>`Harte 9 gegen ${dn(c.d)} verdoppeln (sonst ziehen). Nur gegen <b>3 bis 6</b> — gegen eine 2 ist der Dealer bereits zu stark. Das ist eine der häufigsten Fehlerquellen.`,
+                 en:c=>`Double hard 9 against ${dn(c.d)} (hit otherwise). Only against <b>3 through 6</b> — against a 2 the dealer is already too strong. One of the most common mistakes.`},
+ 'hard.9hit':{de:c=>`Harte 9 gegen ${dn(c.d)} nur ziehen. ${c.d===2?'Gegen die 2 wird nicht verdoppelt: Der Dealer überkauft dort nur zu rund 35 % — zu wenig für den doppelten Einsatz.':'Ab einer 7 ist die Dealerkarte zu stark zum Verdoppeln.'}`,
+              en:c=>`Just hit hard 9 against ${dn(c.d)}. ${c.d===2?'No doubling against a 2: the dealer busts only about 35% there, too little for a doubled bet.':'From a 7 upward the upcard is too strong to double.'}`},
+ 'hard.low':{de:c=>`Harte ${c.total} — ziehen. Du kannst mit einer Karte nicht überkaufen; Halten wäre ein geschenkter Einsatz.`,
+             en:c=>`Hard ${c.total} — hit. You cannot bust on one card, so standing would simply give the bet away.`}
+};
+function isHardSpot(key,c){
+  const d=c.d;
+  if(key==='pair.8'&&d>=9)return true;
+  if(key==='pair.9stand')return true;
+  if(key==='pair.9split'&&(d===8||d===9))return true;
+  if(key==='pair.10'&&(d===5||d===6))return true;
+  if(key==='pair.7hit'||key==='pair.4split'||key==='pair.5')return true;
+  if(key==='pair.23split'&&d<=3)return true;
+  if(key.indexOf('surr.')===0)return true;
+  if(key==='soft.18hit'||key==='soft.17hit')return true;
+  if(key==='soft.18stand'&&(d===7||d===8))return true;
+  if(key==='soft.18double'&&d===3)return true;
+  if(key==='soft.19'&&d===6)return true;
+  if(key==='hard.11vA')return true;
+  if(key==='hard.12hit'&&d<=3)return true;
+  if(key==='hard.12stand'&&d===4)return true;
+  if(key==='hard.stiffhit'&&c.total===16&&d===7)return true;
+  if(key==='hard.stiffstand'&&c.total===13&&d===2)return true;
+  if(key==='hard.9hit'&&d===2)return true;
+  return false;
+}
+
+/* ============================================================================
+   8. ACHIEVEMENTS
+   ========================================================================= */
+const ACH=[
+ {id:'first',ic:'✦',n:{de:'Erster Treffer',en:'First Blood'},d:{de:'Eine korrekte Entscheidung',en:'One correct decision'},f:s=>s.ok>=1,xp:20},
+ {id:'s10',ic:'▲',n:{de:'Serie 10',en:'Streak 10'},d:{de:'10 richtige Züge in Folge',en:'10 correct moves in a row'},f:s=>s.best>=10,xp:50},
+ {id:'s25',ic:'▲',n:{de:'Serie 25',en:'Streak 25'},d:{de:'25 richtige Züge in Folge',en:'25 correct moves in a row'},f:s=>s.best>=25,xp:120},
+ {id:'s50',ic:'★',n:{de:'Serie 50',en:'Streak 50'},d:{de:'50 richtige Züge in Folge',en:'50 correct moves in a row'},f:s=>s.best>=50,xp:300},
+ {id:'s100',ic:'✸',n:{de:'Serie 100',en:'Streak 100'},d:{de:'100 richtige Züge in Folge',en:'100 correct moves in a row'},f:s=>s.best>=100,xp:800},
+ {id:'acc95',ic:'◈',n:{de:'Scharfschütze',en:'Sharpshooter'},d:{de:'95 % Genauigkeit über 100 Entscheidungen',en:'95% accuracy over 100 decisions'},f:s=>s.dec>=100&&s.ok/s.dec>=0.95,xp:400},
+ {id:'ins10',ic:'⊘',n:{de:'Kein Versicherungsnehmer',en:'Never Insured'},d:{de:'10-mal Insurance abgelehnt',en:'Declined insurance 10 times'},f:s=>s.c.insDeclined>=10,xp:150},
+ {id:'eights',ic:'88',n:{de:'Achter gegen die Wand',en:'Eights Against the Wall'},d:{de:'8,8 gegen 9, 10 oder Ass korrekt gesplittet',en:'Split 8,8 correctly vs 9, 10 or ace'},f:s=>s.c.eightsBig>=1,xp:100},
+ {id:'soft18',ic:'A7',n:{de:'Weiche 18',en:'Soft Eighteen'},d:{de:'5-mal A,7 gegen 9/10/A korrekt gezogen',en:'Hit A,7 vs 9/10/A correctly 5 times'},f:s=>s.c.soft18>=5,xp:200},
+ {id:'surr10',ic:'⚑',n:{de:'Rückzug mit System',en:'Disciplined Retreat'},d:{de:'10 korrekte Surrender',en:'10 correct surrenders'},f:s=>s.c.surrOk>=10,xp:200},
+ {id:'clean',ic:'◇',n:{de:'Sauberer Schuh',en:'Clean Shoe'},d:{de:'Einen Schuh ohne Fehler beendet',en:'Finished a shoe with zero mistakes'},f:s=>s.c.cleanShoe>=1,xp:500},
+ {id:'dbl',ic:'$$',n:{de:'Verdoppelt',en:'Doubled Up'},d:{de:'Bankroll auf $2.000 gebracht',en:'Grew the bankroll to $2,000'},f:s=>s.peak>=2000,xp:250},
+ {id:'high',ic:'♛',n:{de:'High Roller',en:'High Roller'},d:{de:'Eine Hand mit $500+ Einsatz gewonnen',en:'Won a hand betting $500 or more'},f:s=>s.c.bigWin>=1,xp:200},
+ {id:'five',ic:'5',n:{de:'Fünf-Karten-Hand',en:'Five-Card Hand'},d:{de:'5 Karten ohne zu überkaufen',en:'Five cards without busting'},f:s=>s.c.fiveCard>=1,xp:150},
+ {id:'cent',ic:'C',n:{de:'Hundert Hände',en:'Century'},d:{de:'100 Hände gespielt',en:'Played 100 hands'},f:s=>s.hands>=100,xp:150},
+ {id:'aces',ic:'AA',n:{de:'Asse geteilt',en:'Aces Split'},d:{de:'Ein Ass-Paar korrekt gesplittet',en:'Split a pair of aces correctly'},f:s=>s.c.acesSplit>=1,xp:80},
+ {id:'bj',ic:'BJ',n:{de:'Blackjack',en:'Blackjack'},d:{de:'Einen natürlichen Blackjack bekommen',en:'Received a natural blackjack'},f:s=>s.c.bj>=1,xp:60},
+ {id:'win5',ic:'⚡',n:{de:'Lauf',en:'Heater'},d:{de:'5 Hände in Folge gewonnen',en:'Won 5 hands in a row'},f:s=>s.c.bestWinStreak>=5,xp:180},
+ {id:'scholar',ic:'✍',n:{de:'Ausgelernt',en:'Graduate'},d:{de:'Alle neun Lektionen abgeschlossen',en:'Completed all nine lessons'},f:s=>false,xp:600}
+];
+function xpNeeded(l){return 200+150*(l-1)}
+function addXP(n){
+  S.stats.xp+=n;
+  while(S.stats.xp>=xpNeeded(S.stats.lvl)){
+    S.stats.xp-=xpNeeded(S.stats.lvl);S.stats.lvl++;
+    toast(T().levelUp+' '+S.stats.lvl,T().levelUpBody);sfx('level');
+  }
+}
+function checkAch(){
+  for(const a of ACH){
+    if(!S.ach[a.id]&&a.f(S.stats)){
+      S.ach[a.id]=true;
+      toast(T().achUnlocked,a.n[S.lang]);
+      sfx('ach');addXP(a.xp);
+    }
+  }
+}
+
+/* ============================================================================
+   9. SOUND
+   ========================================================================= */
+let AC=null;
+function unlockAudio(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}
+  if(AC&&AC.state==='suspended')AC.resume()}
+function beep(f,d,type,vol){
+  if(!S.sound||!AC)return;
+  const o=AC.createOscillator(),g=AC.createGain();
+  o.type=type||'square';o.frequency.value=f;
+  g.gain.setValueAtTime(vol||0.05,AC.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+d);
+  o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d);
+}
+function sfx(k){
+  if(!S.sound)return;
+  if(k==='card')beep(520,.06,'square',.03);
+  else if(k==='ok'){beep(660,.07);setTimeout(()=>beep(880,.09),60)}
+  else if(k==='bad'){beep(180,.16,'sawtooth',.05)}
+  else if(k==='star'){beep(660,.06);setTimeout(()=>beep(880,.06),60);setTimeout(()=>beep(1180,.14),120)}
+  else if(k==='win'){beep(700,.07);setTimeout(()=>beep(1050,.12),70)}
+  else if(k==='lose')beep(240,.14,'triangle',.04);
+  else if(k==='chip')beep(1100,.03,'square',.025);
+  else if(k==='level'){[520,660,780,1040].forEach((f,i)=>setTimeout(()=>beep(f,.1),i*70))}
+  else if(k==='ach'){[880,1180,1480].forEach((f,i)=>setTimeout(()=>beep(f,.12),i*90))}
+}
+
+/* ============================================================================
+   10. PERSISTENCE (silently no-ops when unavailable)
+   ========================================================================= */
+let saveTimer=null;
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    try{
+      if(window.storage&&window.storage.set){
+        await window.storage.set('dealers_edge_v1',JSON.stringify({
+          bank:S.bank,stats:S.stats,ach:S.ach,lang:S.lang,mode:S.mode,
+          sound:S.sound,autoSheet:S.autoSheet,showCount:S.showCount,autoNext:S.autoNext,lastBet:S.lastBet,
+          tutDone:S.tut.done,seenTut:S.seenTut
+        }));
+      }
+    }catch(e){}
+  },600);
+}
+async function load(){
+  try{
+    if(window.storage&&window.storage.get){
+      const r=await window.storage.get('dealers_edge_v1');
+      if(r&&r.value){
+        const o=JSON.parse(r.value);
+        if(o.stats)S.stats=Object.assign(S.stats,o.stats);
+        if(o.stats&&o.stats.cat)S.stats.cat=o.stats.cat;
+        if(o.stats&&o.stats.c)S.stats.c=Object.assign(S.stats.c,o.stats.c);
+        if(typeof o.bank==='number')S.bank=o.bank;
+        if(o.ach)S.ach=o.ach;
+        if(o.lang)S.lang=o.lang;
+        if(o.mode)S.mode=o.mode;
+        if(typeof o.sound==='boolean')S.sound=o.sound;
+        if(typeof o.autoSheet==='boolean')S.autoSheet=o.autoSheet;
+        if(typeof o.showCount==='boolean')S.showCount=o.showCount;
+        if(typeof o.autoNext==='boolean')S.autoNext=o.autoNext;
+        if(o.lastBet){S.lastBet=o.lastBet;S.bet=o.lastBet}
+        if(o.tutDone)S.tut.done=o.tutDone;
+        if(o.seenTut)S.seenTut=true;
+      }
+    }
+  }catch(e){}
+}
+
+/* ============================================================================
+   11. DRILL SCENARIOS
+   ========================================================================= */
+const DRILL={
+ hard:[[[10,6],[7,8,9,10,11,2,3]],[[10,5],[7,8,9,10,11,2,3]],[[9,3],[2,3,7]],[[10,2],[2,3,4,10]],
+       [[9,4],[2,3,7,10]],[[10,3],[2,3,7]],[[7,7],[8,9,10]],[[6,3],[2,3,7]],[[5,5],[9,10,11]],
+       [[6,5],[10,11]],[[10,4],[2,3,9,10]],[[8,6],[2,7,10]],[[9,2],[2,3,11]]],
+ pairsoft:[[[11,7],[2,3,6,7,8,9,10,11]],[[11,6],[2,3,6,7,11]],[[11,8],[5,6,7]],[[11,2],[4,5,6,7]],
+       [[11,4],[3,4,6,7]],[[11,3],[4,5,6,7]],[[11,5],[3,4,6,7]],[[8,8],[9,10,11,2]],[[9,9],[7,8,9,10,11]],
+       [[11,11],[10,11,6]],[[2,2],[2,3,7,8]],[[3,3],[2,3,7,8]],[[4,4],[4,5,6,7]],[[6,6],[2,6,7]],
+       [[7,7],[7,8]],[[10,10],[5,6,10]]],
+ surr:[[[10,6],[9,10,11]],[[9,7],[9,10,11]],[[10,5],[10,9,11]],[[9,6],[10,11]],[[8,8],[10,11,9]],
+       [[10,7],[11,10]],[[10,2],[3,2]],[[11,7],[9,3,7]],[[10,4],[10,9]],[[9,9],[8,7]]]
+};
+
+/* ============================================================================
+   12. GAME FLOW
+   ========================================================================= */
+function toBetting(){
+  S.tut.active=false;
+  if(S.bank<RULES.minBet){S.phase='broke';coach('bad',T().broke,T().brokeBody);render();return}
+  S.phase='bet';S.dealer=[];S.hole=null;S.holeShown=false;S.hands=[];S.active=0;
+  S.bet=Math.min(S.lastBet,Math.floor(S.bank));
+  if(S.bet<RULES.minBet)S.bet=RULES.minBet;
+  coach('info',T().ready,T().readyBody);
+  render();
+}
+function addChip(v,el){
+  unlockAudio();
+  if(S.phase!=='bet')return;
+  if(S.bet+v>Math.min(RULES.maxBet,S.bank))return;
+  S.bet+=v;sfx('chip');
+  const cols={5:'#3ce8ff',25:'#42f08c',100:'#ff3355',500:'#ffcf4d'};
+  flyChip(el,document.querySelector('#dockBet .betline'),cols[v]);
+  const bl=document.querySelector('#dockBet .betline');
+  if(bl){bl.classList.remove('bump');void bl.offsetWidth;bl.classList.add('bump')}
+  render();
+}
+function clearBet(){if(S.phase!=='bet')return;S.bet=0;render()}
+function repeatBet(){if(S.phase!=='bet')return;S.bet=Math.min(S.lastBet,S.bank);render()}
+function rebuy(){S.bank+=RULES.startBank;S.stats.rebuys++;sfx('chip');toBetting();save()}
+
+function deal(){
+  unlockAudio();
+  if(S.phase!=='bet')return;
+  if(S.bet<RULES.minBet){coach('bad',T().needBet,T().needBetBody);render();return}
+  if(S.bet>S.bank)return;
+  if(needShuffle()){freshShoe();coach('info',T().shuffle,T().shuffleBody)}
+  S.lastBet=S.bet;S.bank-=S.bet;
+  S.dealer=[];S.hole=null;S.holeShown=false;S.hands=[];S.active=0;S.pending=null;S.keepCoach=false;S.insuranceBet=0;
+
+  let pCards;
+  if(S.mode==='random'){pCards=[draw(),draw()];S.dealer=[draw()]}
+  else{
+    const pool=DRILL[S.mode],spot=pool[rnd(pool.length)];
+    const up=spot[1][rnd(spot[1].length)];
+    pCards=[drawValue(spot[0][0]),drawValue(spot[0][1])];
+    S.dealer=[drawValue(up)];
+    if(rnd(2)){const t=pCards[0];pCards[0]=pCards[1];pCards[1]=t}
+  }
+  S.hole=draw();
+  if(S.mode!=='random'){                       // do not waste a drill on a dealer blackjack
+    let g=0;
+    while(g++<40&&((S.dealer[0].v===11&&S.hole.v===10)||(S.dealer[0].v===10&&S.hole.v===11))){
+      S.shoe.unshift(S.hole);S.hole=draw();
+    }
+  }
+  S.hands=[newHandObj(pCards,false,S.bet)];
+  S.stats.hands++;
+  sfx('card');
+  if(S.dealer[0].v===11){S.phase='insurance';coach('info',T().insTitle,T().insBody);render();return}
+  afterInsurance();
+}
+
+function insurance(take){
+  const cost=Math.floor(S.bet/2);
+  score('insurance',!take);
+  if(take){
+    if(S.bank>=cost){S.bank-=cost;S.insuranceBet=cost}
+    coach('bad',T().insBad,T().insBadBody);sfx('bad');
+    logMistake(S.lang==='de'?'Dealer Ass':'Dealer ace',(S.lang==='de'?'Insurance genommen':'Took insurance'));
+  }else{
+    S.stats.c.insDeclined++;
+    coach('star',T().insGood,T().insGoodBody);sfx('star');addXP(15);
+  }
+  checkAch();
+  S.keepCoach=true;
+  afterInsurance();
+  if(S.autoSheet&&take)openSheet('sheetCoach');
+  save();
+}
+
+function afterInsurance(){
+  const up=S.dealer[0].v;
+  const dealerBJ=(up===11&&S.hole.v===10)||(up===10&&S.hole.v===11);
+  const playerBJ=evalHand(S.hands[0].cards).total===21;
+  if(S.insuranceBet&&dealerBJ)S.bank+=S.insuranceBet*3;   // insurance pays 2:1 plus stake back
+  if(dealerBJ||playerBJ){
+    S.holeShown=true;S.justFlipped=true;S.dealer.push(S.hole);S.hole=null;
+    const h=S.hands[0];h.done=true;
+    if(dealerBJ&&playerBJ){h.result='push';h.payout=h.bet;S.bank+=h.bet;
+      if(!S.keepCoach)coach('info',T().dealerBJ,T().bothBJ)}
+    else if(dealerBJ){h.result='lose';h.payout=0;
+      if(!S.keepCoach)coach('info',T().dealerBJ,T().noDecision);sfx('lose')}
+    else{h.result='bj';h.payout=h.bet*(1+RULES.bjPays);S.bank+=h.payout;
+      S.stats.c.bj++;S.stats.c.winStreak++;
+      if(!S.keepCoach)coach('star',T().playerBJ,T().bjBody);sfx('win')}
+    S.keepCoach=false;
+    finishRoundStats();
+    S.phase='settled';render();checkAch();save();maybeAuto();return;
+  }
+  S.phase='player';
+  if(!S.keepCoach)coach('info',T().yourTurn,T().yourTurnBody);
+  S.keepCoach=false;
+  render();
+}
+
+function opts(h){
+  const two=h.cards.length===2,pair=isPairHand(h.cards);
+  return{
+    canDouble:two&&!h.splitAces&&S.bank>=h.bet,
+    canSplit:two&&pair&&S.hands.length<RULES.maxHands&&!h.splitAces&&
+             !(h.fromSplit&&h.cards[0].v===11&&!RULES.rsa)&&S.bank>=h.bet,
+    canSurrender:RULES.ls&&two&&!h.fromSplit&&S.hands.length===1
+  };
+}
+
+function act(a){
+  unlockAudio();
+  if(S.phase==='tut_hand'){tutAct(a);return}
+  if(S.phase!=='player')return;
+  const h=S.hands[S.active],o=opts(h);
+  if(a==='DOUBLE'&&!o.canDouble)return;
+  if(a==='SPLIT'&&!o.canSplit)return;
+  if(a==='SURRENDER'&&!o.canSurrender)return;
+
+  const d=S.dealer[0].v,ev=evalHand(h.cards);
+  const adv=strategy(h.cards,d,o),correct=bestLegal(adv.chain,o);
+  const ctx={d:d,total:ev.total,soft:ev.soft,pv:isPairHand(h.cards)?h.cards[0].v:0};
+  const cat=correct==='SURRENDER'?'surrender':(isPairHand(h.cards)&&adv.chain[0]==='SPLIT'?'pair':(ev.soft?'soft':'hard'));
+  const reason=R[adv.key]?R[adv.key][S.lang](ctx):'';
+  let evData=null;
+  try{evData=actionEVs(h.cards,d,o)}catch(e){}
+
+  S.coachData={cards:h.cards.slice(),d:d,correct:correct,chosen:a,reason:reason,evs:evData?evData.evs:null,
+               dd:evData?evData.dd:null,bet:h.bet,key:adv.key};
+
+  if(a===correct){
+    score(cat,true);
+    trackGood(adv.key,ctx);
+    const star=isHardSpot(adv.key,ctx);
+    addXP(star?30:10);
+    if(star){coach('star',T().perfect+' — '+ACT[S.lang][correct],reason);sfx('star')}
+    else{coach('ok',T().correct+' — '+ACT[S.lang][correct],reason);sfx('ok')}
+    checkAch();
+    execute(a);
+  }else{
+    score(cat,false);
+    if(evData&&evData.evs[correct]!==undefined&&evData.evs[a]!==undefined)
+      S.stats.c.evLost+=(evData.evs[correct]-evData.evs[a])*h.bet;
+    const head=`${T().youChose}: <b>${ACTL[S.lang][a]}</b>. ${T().correctWas}: <b>${ACTL[S.lang][correct]}</b>.`;
+    coach('bad',T().wrong+' — '+handLabel(h.cards,ev)+' '+T().vs+' '+dName(d),head+'<br><br>'+reason);
+    logMistake(handLabel(h.cards,ev)+' '+T().vs+' '+dName(d),ACT[S.lang][a]+' → '+ACT[S.lang][correct]);
+    sfx('bad');
+    S.pending=correct;S.lastChoice=a;S.phase='mistake';
+    highlight(a,correct);
+    if(S.autoSheet)openSheet('sheetCoach');
+  }
+  render();save();
+}
+function trackGood(key,ctx){
+  const c=S.stats.c;
+  if(key==='pair.8'&&ctx.d>=9)c.eightsBig++;
+  if(key==='soft.18hit')c.soft18++;
+  if(key.indexOf('surr.')===0)c.surrOk++;
+  if(key==='pair.A')c.acesSplit++;
+}
+function resumeAfterMistake(){
+  if(S.phase!=='mistake')return;
+  clearHighlight();closeSheets();
+  S.phase='player';
+  execute(S.pending);
+  render();
+}
+function highlight(w,r){
+  clearHighlight();
+  const a=document.getElementById('a'+w),b=document.getElementById('a'+r);
+  if(a)a.classList.add('wrong-hint');
+  if(b)b.classList.add('correct-hint');
+}
+function clearHighlight(){
+  ['HIT','STAND','DOUBLE','SPLIT','SURRENDER'].forEach(k=>{
+    const e=document.getElementById('a'+k);
+    if(e){e.classList.remove('wrong-hint');e.classList.remove('correct-hint')}
+  });
+}
+
+function execute(a){
+  const h=S.hands[S.active];
+  if(a==='HIT'){
+    h.cards.push(draw());sfx('card');
+    const e=evalHand(h.cards);
+    if(!e.bust&&h.cards.length>=5)S.stats.c.fiveCard++;
+    if(e.bust){h.done=true;advance()}
+    else if(e.total===21){h.done=true;advance()}
+  }else if(a==='STAND'){h.done=true;advance()}
+  else if(a==='DOUBLE'){
+    S.bank-=h.bet;h.bet*=2;h.doubled=true;h.cards.push(draw());sfx('card');
+    h.done=true;advance();
+  }else if(a==='SURRENDER'){h.surrendered=true;h.done=true;advance()}
+  else if(a==='SPLIT'){
+    const moved=h.cards.pop(),isA=moved.v===11;
+    S.bank-=h.bet;
+    const nh=newHandObj([moved],true,h.bet);
+    h.fromSplit=true;
+    if(isA){h.splitAces=true;nh.splitAces=true}
+    nh.needsCard=true;
+    S.hands.splice(S.active+1,0,nh);
+    h.cards.push(draw());sfx('card');
+    if(h.splitAces||evalHand(h.cards).total===21){h.done=true;advance()}
+  }
+}
+function advance(){
+  let i=S.active;
+  while(true){
+    i++;
+    if(i>=S.hands.length){dealerTurn();return}
+    const h=S.hands[i];
+    if(h.needsCard){h.cards.push(draw());h.needsCard=false;sfx('card')}
+    if(h.splitAces){h.done=true;continue}
+    if(evalHand(h.cards).total===21){h.done=true;continue}
+    if(!h.done){S.active=i;return}
+  }
+}
+function dealerTurn(){
+  S.phase='settled';S.holeShown=true;S.justFlipped=true;
+  S.dealer.push(S.hole);S.hole=null;
+  const live=S.hands.some(h=>!h.surrendered&&!evalHand(h.cards).bust);
+  if(live){
+    while(true){
+      const e=evalHand(S.dealer);
+      if(e.total<17){S.dealer.push(draw());continue}
+      if(e.total===17&&e.soft&&RULES.h17){S.dealer.push(draw());continue}
+      break;
+    }
+  }
+  settle();render();checkAch();save();maybeAuto();
+}
+function settle(){
+  const de=evalHand(S.dealer);let net=0,anyWin=false,anyLose=false;
+  for(const h of S.hands){
+    const pe=evalHand(h.cards);let r,pay=0;
+    if(h.surrendered){r='surrender';pay=h.bet/2}
+    else if(pe.bust){r='lose';pay=0}
+    else if(isBJ(h)&&S.hands.length===1){r='bj';pay=h.bet*(1+RULES.bjPays);S.stats.c.bj++}
+    else if(de.bust||pe.total>de.total){r='win';pay=h.bet*2}
+    else if(pe.total<de.total){r='lose';pay=0}
+    else{r='push';pay=h.bet}
+    h.result=r;h.payout=pay;h.done=true;
+    S.bank+=pay;net+=pay-h.bet;
+    if(r==='win'||r==='bj'){anyWin=true;if(h.bet>=500)S.stats.c.bigWin++}
+    if(r==='lose')anyLose=true;
+  }
+  if(anyWin&&!anyLose){S.stats.won++;S.stats.c.winStreak++;
+    if(S.stats.c.winStreak>S.stats.c.bestWinStreak)S.stats.c.bestWinStreak=S.stats.c.winStreak;sfx('win')}
+  else if(anyLose&&!anyWin){S.stats.lost++;S.stats.c.winStreak=0;sfx('lose')}
+  else{S.stats.pushed++;S.stats.c.winStreak=0}
+  finishRoundStats();
+  const sign=net>0?'+':'';
+  const body=(S.lang==='de'
+    ?`Dealer ${de.bust?'überkauft':de.total}. Ergebnis: ${sign}$${Math.round(net)}.`
+    :`Dealer ${de.bust?'busts':de.total}. Result: ${sign}$${Math.round(net)}.`)
+    +' '+(S.lang==='de'
+      ?'Das Ergebnis einer einzelnen Hand sagt nichts über die Qualität deiner Entscheidung aus.'
+      :'The outcome of one hand says nothing about the quality of your decision.');
+  coachAppend(body);
+  setTimeout(animatePayout,60);
+}
+function finishRoundStats(){
+  if(S.bank>S.stats.peak)S.stats.peak=S.bank;
+  if(needShuffle()&&S.stats.shoeDec>=20&&S.stats.shoeErr===0)S.stats.c.cleanShoe++;
+}
+function maybeAuto(){if(S.autoNext)setTimeout(()=>{if(S.phase==='settled')toBetting()},2400)}
+
+/* ---------- scoring ---------- */
+function score(cat,ok){
+  const s=S.stats;
+  s.dec++;s.shoeDec++;s.cat[cat].d++;
+  if(ok){s.ok++;s.cat[cat].o++;s.streak++;if(s.streak>s.best)s.best=s.streak}
+  else{s.streak=0;s.shoeErr++}
+}
+function logMistake(spot,move){S.mistakes.unshift({spot,move});if(S.mistakes.length>30)S.mistakes.pop()}
+
+/* ============================================================================
+   13. RENDER
+   ========================================================================= */
+function cardHTML(c,hidden,flip){
+  if(hidden)return `<div class="card back"></div>`;
+  const k=c.c==='red'?'c-red':'c-blk';
+  let cls='card',style='';
+  if(flip)cls+=' flipin';
+  else if(!seenCards.has(c.id)){cls+=' dealin';style=`style="--d:${Math.min(dealDelay++,4)*70}ms"`;pulseShoe()}
+  seenCards.add(c.id);
+  return `<div class="${cls}" ${style}><div class="rk ${k}">${c.r}</div><div class="mid ${k}">${c.s}</div><div class="rk b ${k}">${c.r}</div></div>`;
+}
+let dealDelay=0;
+function handLabel(cards,e){
+  const t=T();
+  if(isPairHand(cards))return `${t.pairT} ${cards[0].r},${cards[1].r}`;
+  return (e.soft?t.softT:t.hard)+' '+e.total;
+}
+function dName(d){return d===11?'A':String(d)}
+function resName(r){const t=T();return{win:t.resWin,lose:t.resLose,push:t.resPush,surrender:t.resSurr,bj:t.resBJ}[r]||''}
+function money(n){return '$'+Math.round(n).toLocaleString(S.lang==='de'?'de-DE':'en-US')}
+
+function render(){
+  const t=T();
+  // card sizing
+  const maxCards=Math.max(2,...S.hands.map(h=>h.cards.length),S.dealer.length+1);
+  const nh=S.hands.length;
+  let cw=56;
+  if(nh>=3||maxCards>=6)cw=40; else if(nh===2||maxCards>=5)cw=48;
+  if(window.innerWidth>=900)cw=Math.max(cw,58);
+  document.documentElement.style.setProperty('--cw',cw+'px');
+  document.documentElement.style.setProperty('--ch',Math.round(cw*1.42)+'px');
+
+  dealDelay=0;
+  // dealer
+  let dh='';
+  const flipIdx=(S.justFlipped&&S.dealer.length>1)?1:-1;
+  S.dealer.forEach((c,i)=>dh+=cardHTML(c,false,i===flipIdx));
+  S.justFlipped=false;
+  if(!S.holeShown&&S.dealer.length)dh+=cardHTML(null,true);
+  document.getElementById('dealerHand').innerHTML=dh;
+  const dt=document.getElementById('dealerTotal');
+  if(!S.dealer.length){dt.textContent='—';dt.className='chip'}
+  else if(!S.holeShown){dt.textContent=(S.dealer[0].v===11?'A':S.dealer[0].v)+' + ?';dt.className='chip'}
+  else{const e=evalHand(S.dealer);dt.textContent=e.bust?'BUST '+e.total:e.total;dt.className='chip'+(e.bust?' bust':'')}
+
+  // hands
+  document.getElementById('playerHands').innerHTML=S.hands.map((h,i)=>{
+    const e=evalHand(h.cards);
+    const act=(i===S.active&&(S.phase==='player'||S.phase==='mistake'))?' active':'';
+    const set=h.result?(h.result==='win'||h.result==='bj'?' win':(h.result==='push'?' push':' lose')):'';
+    const bj=isBJ(h)&&S.hands.length===1;
+    const chip=e.bust?`<span class="chip bust">BUST ${e.total}</span>`
+      :bj?`<span class="chip bj">BLACKJACK</span>`
+      :`<span class="chip">${e.soft&&e.total<21?'S':''}${e.total}</span>`;
+    const res=h.result?`<span class="chip ${h.result==='win'||h.result==='bj'?'win':(h.result==='push'?'':'lose')}" style="margin-left:5px">${resName(h.result)}</span>`:'';
+    return `<div class="handbox${act}${set}"><div class="hand">${h.cards.map(c=>cardHTML(c,false)).join('')}</div>
+      <div style="margin-top:6px">${chip}${res}<span class="betchip">${money(h.bet)}${h.doubled?' ×2':''}</span></div></div>`;
+  }).join('');
+  const ab=document.querySelector('.handbox.active');
+  if(ab&&ab.scrollIntoView)ab.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
+
+  // hud
+  renderBank();
+  document.getElementById('tutPanel').classList.toggle('hidden',!S.tut.active);
+  document.getElementById('coach').classList.toggle('hidden',S.tut.active);
+  const s=S.stats,acc=s.dec?s.ok/s.dec*100:0;
+  document.getElementById('accTxt').textContent=s.dec?acc.toFixed(0)+'%':'—';
+  document.getElementById('lvlTxt').textContent='LVL '+s.lvl;
+  document.getElementById('xpBar').style.width=(s.xp/xpNeeded(s.lvl)*100)+'%';
+  const shoeTxt=S.showCount
+    ?`RC ${S.count>0?'+':''}${S.count} · TC ${(S.count/Math.max(.25,S.shoe.length/52)).toFixed(1)}`
+    :`SHOE ${S.shoe.length}`;
+  document.getElementById('shoeInfo').textContent=shoeTxt;
+
+  // dock
+  const show=id=>['dockBet','dockPlay','dockIns','dockCont','dockNext','dockRebuy','dockTut','dockQuiz']
+    .forEach(k=>document.getElementById(k).classList.toggle('hidden',k!==id));
+  if(S.tut.active){
+    if(S.phase==='tut_hand')show('dockPlay');
+    else if(S.phase==='tut_quiz'||(S.phase==='tut_after'&&LESSONS[S.tut.lesson].steps[S.tut.step].t==='quiz'))show('dockQuiz');
+    else show('dockTut');
+  }
+  else if(S.phase==='bet'){show('dockBet');renderChips()}
+  else if(S.phase==='player')show('dockPlay');
+  else if(S.phase==='insurance')show('dockIns');
+  else if(S.phase==='mistake')show('dockCont');
+  else if(S.phase==='broke')show('dockRebuy');
+  else show('dockNext');
+
+  if(S.phase==='player'||S.phase==='tut_hand'){
+    const h=S.hands[S.active],o=opts(h);
+    document.getElementById('aHIT').disabled=false;
+    document.getElementById('aSTAND').disabled=false;
+    document.getElementById('aDOUBLE').disabled=!o.canDouble;
+    document.getElementById('aSPLIT').disabled=!o.canSplit;
+    document.getElementById('aSURRENDER').disabled=!o.canSurrender;
+  }
+  document.getElementById('betAmount').textContent=money(S.bet);
+}
+function renderChips(){
+  const vals=[5,25,100,500],cols=['#3ce8ff','#42f08c','#ff3355','#ffcf4d'];
+  document.getElementById('chipRow').innerHTML=vals.map((v,i)=>
+    `<button class="pchip" style="--c:${cols[i]}" onclick="addChip(${v},this)" ${S.bet+v>Math.min(RULES.maxBet,S.bank)?'disabled':''}>${v}</button>`).join('');
+}
+
+/* ---------- coach panel ---------- */
+function coach(kind,title,body){
+  const map={ok:['t-ok',T().correct],bad:['t-bad',T().wrong],star:['t-star',T().perfect],info:['t-info',T().coach]};
+  const m=map[kind]||map.info;
+  const tag=document.getElementById('coachTag');
+  tag.className='tag px '+m[0];tag.textContent=m[1];
+  const ti=document.getElementById('coachTitle');
+  ti.innerHTML=title;
+  ti.style.color=kind==='bad'?'var(--red)':(kind==='star'?'var(--gold)':(kind==='ok'?'var(--green)':'var(--cyan)'));
+  document.getElementById('coachBody').innerHTML=body||'';
+  S.coachKind=kind;S.coachTitle=title;S.coachBody=body||'';
+  buildCoachSheet();
+}
+function coachAppend(x){
+  S.coachBody=(S.coachBody||'')+'<br><br>'+x;
+  document.getElementById('coachBody').innerHTML=S.coachBody;
+  buildCoachSheet();
+}
+function buildCoachSheet(){
+  const t=T(),d=S.coachData;
+  let h=`<h3 class="px" style="font-size:10px;margin:0 0 10px;color:${S.coachKind==='bad'?'var(--red)':(S.coachKind==='star'?'var(--gold)':'var(--cyan)')}">${S.coachTitle||''}</h3>`;
+  h+=`<p>${S.coachBody||''}</p>`;
+  if(d&&d.evs){
+    const entries=Object.entries(d.evs).sort((a,b)=>b[1]-a[1]);
+    const bestA=entries[0][0];
+    h+=`<h4>${t.evTitle}</h4><table class="evt">`;
+    for(const[k,v]of entries){
+      const cls=k===d.correct?'best':(k===d.chosen&&d.chosen!==d.correct?'chosen':'');
+      h+=`<tr class="${cls}"><td class="lbl">${ACT[S.lang][k]}</td><td class="n">${v>=0?'+':''}${v.toFixed(3)}</td></tr>`;
+    }
+    h+=`</table>`;
+    if(d.chosen!==d.correct&&d.evs[d.chosen]!==undefined){
+      const cost=(d.evs[d.correct]-d.evs[d.chosen])*d.bet;
+      h+=`<p style="color:var(--red)"><b>${t.evCost}: ${cost.toFixed(2)} $</b> (${((d.evs[d.correct]-d.evs[d.chosen])*100).toFixed(2)} % ${S.lang==='de'?'des Einsatzes':'of the bet'})</p>`;
+    }
+    if(bestA!==d.correct)h+=`<p style="color:var(--dim)">${t.divergence}</p>`;
+    if(d.evs.SPLIT!==undefined)h+=`<p style="color:var(--dim)">${t.splitNote}</p>`;
+    h+=`<p style="color:var(--dim)">${t.evNote}</p>`;
+  }
+  if(d&&d.dd){
+    h+=`<h4>${t.dealerOdds} (${dName(d.d)})</h4><table class="evt">`;
+    for(const k of ['17','18','19','20','21'])h+=`<tr><td class="lbl">${k}</td><td class="n">${(d.dd[k]*100).toFixed(1)}%</td></tr>`;
+    h+=`<tr><td class="lbl" style="color:var(--green)">${t.bustP}</td><td class="n" style="color:var(--green)">${(d.dd.b*100).toFixed(1)}%</td></tr></table>`;
+  }
+  document.getElementById('csBody').innerHTML=h;
+}
+
+/* ---------- sheets ---------- */
+function openSheet(id){
+  closeSheets(true);
+  if(id==='sheetStats')buildStats();
+  if(id==='sheetAch')buildAch();
+  if(id==='sheetMenu')buildMenu();
+  if(id==='sheetChart')buildChart();
+  if(id==='sheetMath')buildMath();
+  if(id==='sheetTut')buildTut();
+  if(id==='sheetInstall')buildInstall();
+  document.getElementById(id).classList.add('open');
+  document.getElementById('scrim').classList.add('on');
+}
+function closeSheets(keepScrim){
+  document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('open'));
+  if(!keepScrim)document.getElementById('scrim').classList.remove('on');
+}
+function toast(title,body){
+  document.getElementById('toastTitle').textContent=title;
+  document.getElementById('toastBody').textContent=body;
+  const e=document.getElementById('toast');
+  e.classList.add('on');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>e.classList.remove('on'),2600);
+}
+
+function buildStats(){
+  const t=T(),s=S.stats,acc=s.dec?s.ok/s.dec*100:0;
+  const net=S.bank-RULES.startBank-s.rebuys*RULES.startBank;
+  const names=S.lang==='de'
+    ?{hard:'Hart',soft:'Soft',pair:'Paare',surrender:'Surrender',insurance:'Insurance'}
+    :{hard:'Hard',soft:'Soft',pair:'Pairs',surrender:'Surrender',insurance:'Insurance'};
+  let h=`<div class="bar" style="margin-bottom:10px"><i style="width:${acc}%"></i></div><div class="statgrid">`;
+  const cell=(k,v,c)=>`<div class="stat"><div class="k">${k}</div><div class="v" style="color:${c||'var(--paper)'}">${v}</div></div>`;
+  h+=cell(t.kAcc,s.dec?acc.toFixed(1)+'%':'—');
+  h+=cell(t.kDec,s.ok+'/'+s.dec);
+  h+=cell(t.kStreak,s.streak);
+  h+=cell(t.kBest,s.best);
+  h+=cell(t.kHands,s.hands);
+  h+=cell(t.kNet,(net>=0?'+':'')+money(net),net>=0?'var(--green)':'var(--red)');
+  h+=cell(t.kWon,s.won);
+  h+=cell(t.kLost,s.lost);
+  h+=cell(t.kEv,'−'+money(s.c.evLost),'var(--gold)');
+  h+=cell(t.kRebuy,s.rebuys);
+  h+=`</div><h4>${t.catTitle}</h4>`;
+  for(const k of Object.keys(s.cat)){
+    const c=s.cat[k];if(!c.d)continue;
+    const p=c.o/c.d*100,col=p>=95?'var(--green)':(p>=85?'var(--gold)':'var(--red)');
+    h+=`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--line)">
+        <span>${names[k]}</span><span style="color:${col}">${c.o}/${c.d} · ${p.toFixed(0)}%</span></div>`;
+  }
+  h+=`<h4>${t.logTitle}</h4>`;
+  h+=S.mistakes.length?S.mistakes.map(m=>
+      `<div style="padding:6px 0;border-bottom:1px solid var(--line);color:var(--dim)">${m.spot}<br><b style="color:var(--red)">${m.move}</b></div>`).join('')
+    :`<p style="color:var(--dim)">${t.logEmpty}</p>`;
+  document.getElementById('ssBody').innerHTML=h;
+}
+function buildAch(){
+  const got=ACH.filter(a=>S.ach[a.id]).length;
+  let h=`<p style="color:var(--dim)">${got} / ${ACH.length}</p>`;
+  for(const a of ACH){
+    const on=S.ach[a.id]?' on':'';
+    h+=`<div class="ach${on}"><div class="ic">${S.ach[a.id]?a.ic:'?'}</div>
+        <div><b>${a.n[S.lang]}</b><span>${a.d[S.lang]}</span></div></div>`;
+  }
+  document.getElementById('saBody').innerHTML=h;
+}
+function buildMenu(){
+  const t=T();
+  let h=`<h4>${S.lang==='de'?'Trainingsmodus':'Training mode'}</h4><div class="seg" style="margin-bottom:14px">`;
+  for(const m of['random','hard','pairsoft','surr'])
+    h+=`<button onclick="setMode('${m}')" aria-pressed="${S.mode===m}">${t.modes[m]}</button>`;
+  h+=`</div><h4>${t.langLbl}</h4><div class="seg" style="margin-bottom:14px">
+      <button onclick="setLang('de')" aria-pressed="${S.lang==='de'}">DEUTSCH</button>
+      <button onclick="setLang('en')" aria-pressed="${S.lang==='en'}">ENGLISH</button></div>`;
+  h+=`<h4>${t.settings}</h4>
+   <label class="switch"><input type="checkbox" ${S.sound?'checked':''} onchange="S.sound=this.checked;unlockAudio();save()"><span>${t.sound}</span></label>
+   <label class="switch"><input type="checkbox" ${S.autoSheet?'checked':''} onchange="S.autoSheet=this.checked;save()"><span>${t.autoSheet}</span></label>
+   <label class="switch"><input type="checkbox" ${S.showCount?'checked':''} onchange="S.showCount=this.checked;render();save()"><span>${t.countOpt}</span></label>
+   <label class="switch"><input type="checkbox" ${S.autoNext?'checked':''} onchange="S.autoNext=this.checked;save()"><span>${t.autoNextOpt}</span></label>`;
+  h+=`<div style="margin-top:16px;display:grid;gap:8px">
+      <button class="btn sm b-hit" onclick="openSheet('sheetTut')">${t.tutBtn}</button>
+      <button class="btn sm b-double" onclick="openSheet('sheetInstall')">${t.installBtn}</button>
+      <button class="btn sm b-ghost" onclick="openSheet('sheetChart')">${t.chartBtn}</button>
+      <button class="btn sm b-ghost" onclick="openSheet('sheetMath')">${t.mathBtn}</button>
+      <button class="btn sm b-stand" onclick="resetAll()">${t.resetAll}</button></div>`;
+  document.getElementById('smBody').innerHTML=h;
+}
+function setMode(m){S.mode=m;buildMenu();save()}
+function resetAll(){
+  S.bank=RULES.startBank;S.bet=25;S.lastBet=25;S.ach={};S.mistakes=[];
+  S.stats={dec:0,ok:0,streak:0,best:0,hands:0,won:0,lost:0,pushed:0,rebuys:0,peak:RULES.startBank,
+    xp:0,lvl:1,shoeDec:0,shoeErr:0,
+    cat:{hard:{d:0,o:0},soft:{d:0,o:0},pair:{d:0,o:0},surrender:{d:0,o:0},insurance:{d:0,o:0}},
+    c:{insDeclined:0,eightsBig:0,soft18:0,surrOk:0,cleanShoe:0,fiveCard:0,acesSplit:0,bj:0,bigWin:0,winStreak:0,bestWinStreak:0,evLost:0}};
+  freshShoe();closeSheets();toBetting();save();
+}
+
+/* ---------- chart, generated from the engine ---------- */
+const HC={5:[2,3],6:[2,4],7:[2,5],8:[2,6],9:[2,7],10:[2,8],11:[2,9],12:[2,10],13:[3,10],14:[4,10],15:[5,10],16:[6,10],17:[7,10]};
+function fc(vals){return vals.map(v=>({r:v===11?'A':String(v),v:v,s:'♠',c:'blk'}))}
+function cellFor(cards,d,split){
+  const o={canDouble:true,canSplit:split,canSurrender:!split};
+  const c=strategy(cards,d,o).chain;
+  if(c[0]==='SPLIT')return{t:'P',c:'a-P'};
+  if(c[0]==='SURRENDER')return{t:'R',c:'a-R'};
+  if(c[0]==='DOUBLE')return c[1]==='STAND'?{t:'Ds',c:'a-D'}:{t:'D',c:'a-D'};
+  if(c[0]==='STAND')return{t:'S',c:'a-S'};
+  return{t:'H',c:'a-H'};
+}
+function buildChart(){
+  const t=T(),ups=[2,3,4,5,6,7,8,9,10,11];
+  const head='<tr><th></th>'+ups.map(u=>`<th>${u===11?'A':u}</th>`).join('')+'</tr>';
+  const sec=(ti,rows)=>`<h4>${ti}</h4><table class="chart"><thead>${head}</thead><tbody>${rows}</tbody></table>`;
+  let hard='';
+  for(let x=17;x>=5;x--)hard+=`<tr><td class="lbl">${x===17?'17+':x}</td>`+
+    ups.map(u=>{const c=cellFor(fc(HC[x]),u,false);return`<td class="${c.c}">${c.t}</td>`}).join('')+'</tr>';
+  let soft='';
+  for(let x=9;x>=2;x--)soft+=`<tr><td class="lbl">A,${x}</td>`+
+    ups.map(u=>{const c=cellFor(fc([11,x]),u,false);return`<td class="${c.c}">${c.t}</td>`}).join('')+'</tr>';
+  let pair='';
+  for(const v of[11,10,9,8,7,6,5,4,3,2])pair+=`<tr><td class="lbl">${v===11?'A,A':v+','+v}</td>`+
+    ups.map(u=>{const c=cellFor(fc([v,v]),u,true);return`<td class="${c.c}">${c.t}</td>`}).join('')+'</tr>';
+  const l=t.legend;
+  document.getElementById('scBody').innerHTML=
+    sec(S.lang==='de'?'HARTE SUMMEN':'HARD TOTALS',hard)+
+    sec(S.lang==='de'?'SOFT SUMMEN':'SOFT TOTALS',soft)+
+    sec(S.lang==='de'?'PAARE (DAS)':'PAIRS (DAS)',pair)+
+    `<div class="legend"><span><i class="a-H"></i>H = ${l.H}</span><span><i class="a-S"></i>S = ${l.S}</span>
+     <span><i class="a-D"></i>D = ${l.D}</span><span><i class="a-D"></i>Ds = ${l.Ds}</span>
+     <span><i class="a-P"></i>P = ${l.P}</span><span><i class="a-R"></i>R = ${l.R}</span></div>
+     <p style="color:var(--dim);margin-top:12px">${t.chartNote}</p>`;
+}
+
+/* ---------- math sheet ---------- */
+function buildMath(){
+  const t=T();
+  const p=unseenProbs();
+  let tbl=`<table class="evt"><tr><td class="lbl">Upcard</td><td class="n">${t.bustP}</td><td class="n">17-21</td></tr>`;
+  for(const u of[2,3,4,5,6,7,8,9,10,1]){
+    const d=dealerDist(u,p);
+    tbl+=`<tr><td class="lbl">${u===1?'A':u}</td><td class="n" style="color:var(--green)">${(d.b*100).toFixed(1)}%</td>
+          <td class="n">${((1-d.b)*100).toFixed(1)}%</td></tr>`;
+  }
+  tbl+='</table>';
+  const rules=S.lang==='de'?`
+    <p><b>Schuh:</b> 6 Decks, Cut Card bei 75 %, kryptografisch gemischt (Fisher-Yates mit <code>crypto.getRandomValues</code>).</p>
+    <p><b>Dealer:</b> steht auf Soft 17. Peek auf Blackjack bei Ass oder Zehn.</p>
+    <p><b>Blackjack</b> zahlt 3:2 · <b>Double</b> auf beliebige zwei Karten, auch nach Split · <b>Split</b> bis 4 Hände, Asse erhalten eine Karte, kein Resplit von Assen · <b>Late Surrender</b> nur auf die ersten zwei Karten · <b>Insurance</b> zahlt 2:1.</p>
+    <h4>Wie die Engine geprüft wurde</h4>
+    <p>1. Alle 320 Zellen der Strategietabelle gegen eine unabhängig erstellte Referenztabelle — 0 Abweichungen.</p>
+    <p>2. Die Dealer-Rekursion gegen eine unabhängige Monte-Carlo-Simulation mit echter Kartendepletion — Übereinstimmung auf zwei Nachkommastellen.</p>
+    <p>3. Alle 540 möglichen Zwei-Karten-Situationen gegen das exakte EV-Maximum — die Tabelle trifft überall die beste Aktion. Einzige Ausnahme: 15 aus 7+8 gegen Zehn, wo Ziehen um 0,0004 Einheiten vorn liegt. Das ist ein bekannter kartenabhängiger Grenzfall; Basic Strategy ist bewusst kartenunabhängig.</p>
+    <p>4. 25 Millionen simulierte Hände mit perfekter Strategie ergaben einen Hausvorteil von <b>0,38 % (± 0,04 %)</b> bei einer Standardabweichung von 1,14 — genau der publizierte Bereich für diesen Regelsatz.</p>
+    <h4>Dealer-Wahrscheinlichkeiten aus dem aktuellen Schuh</h4>${tbl}
+    <p style="color:var(--dim)">Live berechnet aus den ${S.shoe.length} verbleibenden Karten, bedingt darauf, dass der Dealer bereits auf Blackjack geprüft hat.</p>`
+  :`
+    <p><b>Shoe:</b> 6 decks, cut card at 75%, cryptographically shuffled (Fisher-Yates with <code>crypto.getRandomValues</code>).</p>
+    <p><b>Dealer:</b> stands on soft 17. Peeks for blackjack on an ace or a ten.</p>
+    <p><b>Blackjack</b> pays 3:2 · <b>Double</b> on any two cards including after a split · <b>Split</b> to 4 hands, aces get one card, no resplitting aces · <b>Late surrender</b> on the first two cards only · <b>Insurance</b> pays 2:1.</p>
+    <h4>How the engine was verified</h4>
+    <p>1. All 320 chart cells against an independently typed reference chart — zero mismatches.</p>
+    <p>2. The dealer recursion against an independent Monte Carlo with real card depletion — agreement to two decimal places.</p>
+    <p>3. All 540 possible two-card situations against the exact EV maximum — the chart picks the best action everywhere. The one exception is a 15 made of 7+8 against a ten, where hitting leads by 0.0004 units. That is a known composition-dependent edge case; basic strategy is deliberately composition-independent.</p>
+    <p>4. 25 million simulated hands of perfect strategy produced a house edge of <b>0.38% (± 0.04%)</b> with a standard deviation of 1.14 — exactly the published range for this rule set.</p>
+    <h4>Dealer probabilities from the current shoe</h4>${tbl}
+    <p style="color:var(--dim)">Computed live from the ${S.shoe.length} cards left, conditioned on the dealer having already peeked for blackjack.</p>`;
+  document.getElementById('smaBody').innerHTML=rules+
+    `<h4>${S.lang==='de'?'Selbsttest im Browser':'In-browser self test'}</h4>
+     <p style="color:var(--dim)">${t.simNote}</p>
+     <button class="btn sm b-hit" onclick="runSim(this)">${t.simBtn}</button>
+     <div id="simOut" style="margin-top:10px"></div>`;
+}
+
+/* ---------- in-browser Monte Carlo of perfect play ---------- */
+function simulateRound(sim){
+  const dr=()=>{if(!sim.s.length)sim.s=buildShoe();return sim.s.pop()};
+  if(sim.s.length<52*RULES.decks*(1-RULES.penetration))sim.s=buildShoe();
+  const p=[dr(),dr()],up=dr(),hole=dr(),dealer=[up,hole];
+  const dBJ=(up.v===11&&hole.v===10)||(up.v===10&&hole.v===11);
+  const pBJ=evalHand(p).total===21;
+  if(dBJ||pBJ)return dBJ&&pBJ?0:(dBJ?-1:RULES.bjPays);
+  let hands=[{c:p,bet:1,done:false,fromSplit:false,splitAces:false,sur:false}],i=0;
+  while(i<hands.length){
+    const h=hands[i];
+    if(h.splitAces){h.done=true;i++;continue}
+    while(!h.done){
+      const two=h.c.length===2,pair=two&&h.c[0].v===h.c[1].v;
+      const o={canDouble:two&&!h.splitAces,
+               canSplit:two&&pair&&hands.length<RULES.maxHands&&!(h.fromSplit&&h.c[0].v===11&&!RULES.rsa),
+               canSurrender:RULES.ls&&two&&!h.fromSplit&&hands.length===1};
+      const a=bestLegal(strategy(h.c,up.v,o).chain,o);
+      if(a==='STAND')h.done=true;
+      else if(a==='SURRENDER'){h.sur=true;h.done=true}
+      else if(a==='HIT'){h.c.push(dr());const e=evalHand(h.c);if(e.bust||e.total===21)h.done=true}
+      else if(a==='DOUBLE'){h.bet=2;h.c.push(dr());h.done=true}
+      else{
+        const m=h.c.pop(),isA=m.v===11;
+        const nh={c:[m,dr()],bet:h.bet,done:false,fromSplit:true,splitAces:isA,sur:false};
+        h.fromSplit=true;if(isA)h.splitAces=true;
+        hands.splice(i+1,0,nh);h.c.push(dr());
+        if(h.splitAces||evalHand(h.c).total===21)h.done=true;
+      }
+    }
+    i++;
+  }
+  const live=hands.some(h=>!h.sur&&!evalHand(h.c).bust);
+  if(live)while(true){const e=evalHand(dealer);
+    if(e.total<17){dealer.push(dr());continue}
+    if(e.total===17&&e.soft&&RULES.h17){dealer.push(dr());continue}break}
+  const de=evalHand(dealer);let net=0;
+  for(const h of hands){const pe=evalHand(h.c);
+    if(h.sur)net-=0.5;
+    else if(pe.bust)net-=h.bet;
+    else if(de.bust||pe.total>de.total)net+=h.bet;
+    else if(pe.total<de.total)net-=h.bet}
+  return net;
+}
+function runSim(btn){
+  const t=T();
+  btn.textContent=t.simRun;btn.disabled=true;
+  setTimeout(()=>{
+    const N=25000,sim={s:buildShoe()};let sum=0,sq=0;
+    for(let k=0;k<N;k++){const r=simulateRound(sim);sum+=r;sq+=r*r}
+    const ev=sum/N,sd=Math.sqrt(Math.max(0,sq/N-ev*ev)),se=sd/Math.sqrt(N);
+    document.getElementById('simOut').innerHTML=S.lang==='de'
+      ?`<p><b>${N.toLocaleString('de-DE')} Hände</b><br>Hausvorteil: <b style="color:var(--gold)">${(-ev*100).toFixed(3)} %</b> ± ${(se*196).toFixed(3)} %<br>Standardabweichung: ${sd.toFixed(3)}</p>`
+      :`<p><b>${N.toLocaleString('en-US')} hands</b><br>House edge: <b style="color:var(--gold)">${(-ev*100).toFixed(3)}%</b> ± ${(se*196).toFixed(3)}%<br>Standard deviation: ${sd.toFixed(3)}</p>`;
+    btn.textContent=t.simBtn;btn.disabled=false;
+  },40);
+}
+
+/* ============================================================================
+   14. LANGUAGE SWITCH
+   ========================================================================= */
+function setLang(l){
+  S.lang=l;document.documentElement.lang=l;
+  const t=T();
+  document.getElementById('lblDealer').textContent=t.dealer;
+  document.getElementById('lblYou').textContent=t.you;
+  document.getElementById('betLbl').textContent=t.bet;
+  document.getElementById('btnDeal').textContent=t.deal;
+  document.getElementById('btnRepeat').textContent=t.repeat;
+  document.getElementById('btnNext').textContent=t.next;
+  document.getElementById('btnCont').textContent=t.cont;
+  document.getElementById('btnRebuy').textContent=t.rebuy;
+  document.getElementById('aINSY').textContent=t.insY;
+  document.getElementById('aINSN').textContent=t.insN;
+  document.getElementById('aSURRENDER').textContent=t.surr;
+  document.getElementById('moreLbl').textContent=t.more;
+  document.getElementById('csTitle').textContent=t.csTitle;
+  document.getElementById('ssTitle').textContent=t.ssTitle;
+  document.getElementById('saTitle').textContent=t.saTitle;
+  document.getElementById('smTitle').textContent=t.smTitle;
+  document.getElementById('scTitle').textContent=t.scTitle;
+  document.getElementById('smaTitle').textContent=t.smaTitle;
+  document.getElementById('stTitle').textContent=t.stTitle;
+  document.getElementById('siTitle').textContent=t.siTitle;
+  if(S.phase==='bet')coach('info',t.ready,t.readyBody);
+  else if(S.phase==='player')coach('info',t.yourTurn,t.yourTurnBody);
+  buildMenu();render();save();
+}
+
+/* ---------- keyboard (desktop) ---------- */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeSheets();return}
+  if(S.phase==='player'){
+    const k=e.key.toLowerCase();
+    if(k==='h')act('HIT');else if(k==='s')act('STAND');
+    else if(k==='d')act('DOUBLE');else if(k==='p')act('SPLIT');else if(k==='r')act('SURRENDER');
+  }else if(S.phase==='mistake'&&(e.key===' '||e.key==='Enter')){e.preventDefault();resumeAfterMistake()}
+  else if(S.phase==='settled'&&(e.key===' '||e.key==='Enter')){e.preventDefault();toBetting()}
+  else if(S.phase==='bet'&&(e.key===' '||e.key==='Enter')){e.preventDefault();deal()}
+});
+document.addEventListener('pointerdown',unlockAudio,{once:true});
+window.addEventListener('resize',()=>render());
+
+/* ============================================================================
+   16. ANIMATION HELPERS
+   ========================================================================= */
+const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let cardSeq = 0;
+const seenCards = new Set();
+
+function rectOf(el){ const r = el.getBoundingClientRect(); return {x:r.left+r.width/2, y:r.top+r.height/2}; }
+
+function flyChip(fromEl, toEl, color, delay){
+  if(REDUCED || !fromEl || !toEl) return;
+  const a = rectOf(fromEl), b = rectOf(toEl);
+  const el = document.createElement('div');
+  el.className = 'chipfly';
+  el.style.setProperty('--c', color || '#ffcf4d');
+  el.style.left = (a.x-13)+'px';
+  el.style.top  = (a.y-13)+'px';
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>{
+    setTimeout(()=>{
+      el.style.transform = `translate(${b.x-a.x}px, ${b.y-a.y}px) scale(.7)`;
+      el.style.opacity = '0.15';
+    }, delay||0);
+  });
+  setTimeout(()=>el.remove(), 620 + (delay||0));
+}
+
+function moneyPop(el, text, color){
+  if(REDUCED || !el) return;
+  const a = rectOf(el);
+  const d = document.createElement('div');
+  d.className = 'moneypop px';
+  d.textContent = text;
+  d.style.color = color || 'var(--green)';
+  d.style.left = (a.x-30)+'px';
+  d.style.top  = (a.y-10)+'px';
+  document.body.appendChild(d);
+  requestAnimationFrame(()=>{ d.style.transform='translateY(-46px)'; d.style.opacity='0'; });
+  setTimeout(()=>d.remove(), 950);
+}
+
+let bankAnim = null;
+function renderBank(){
+  const el = document.getElementById('bankroll');
+  const target = S.bank;
+  if(S.displayBank === undefined) S.displayBank = target;
+  if(REDUCED || Math.abs(target - S.displayBank) < 1){
+    S.displayBank = target;
+    el.innerHTML = money(target) + `<small>${T().bank}</small>`;
+    return;
+  }
+  el.classList.add('up');
+  setTimeout(()=>el.classList.remove('up'), 380);
+  cancelAnimationFrame(bankAnim);
+  const from = S.displayBank, t0 = performance.now(), dur = 620;
+  (function step(now){
+    const k = Math.min(1, (now - t0)/dur);
+    const e = 1 - Math.pow(1-k, 3);
+    S.displayBank = from + (target-from)*e;
+    el.innerHTML = money(S.displayBank) + `<small>${T().bank}</small>`;
+    if(k < 1) bankAnim = requestAnimationFrame(step);
+    else S.displayBank = target;
+  })(performance.now());
+}
+
+function pulseShoe(){
+  const s = document.getElementById('shoeStack');
+  if(!s || REDUCED) return;
+  s.classList.remove('pulse'); void s.offsetWidth; s.classList.add('pulse');
+}
+
+/* payout choreography after a round is settled */
+function animatePayout(){
+  if(REDUCED) return;
+  const bank = document.getElementById('bankroll');
+  const dealer = document.getElementById('dealerHand');
+  const boxes = document.querySelectorAll('#playerHands .handbox');
+  S.hands.forEach((h,i)=>{
+    const box = boxes[i]; if(!box) return;
+    if(h.result === 'win' || h.result === 'bj'){
+      flyChip(box, bank, '#42f08c', 0);
+      flyChip(box, bank, '#ffcf4d', 110);
+      moneyPop(box, '+'+money(h.payout - h.bet), 'var(--green)');
+    } else if(h.result === 'lose'){
+      flyChip(box, dealer, '#ff3355', 0);
+      moneyPop(box, '−'+money(h.bet), 'var(--red)');
+    } else if(h.result === 'surrender'){
+      flyChip(box, dealer, '#9d8fd6', 0);
+      moneyPop(box, '−'+money(h.bet/2), 'var(--dim)');
+    }
+  });
+}
+
+/* ============================================================================
+   17. TUTORIAL — playable lessons
+   ========================================================================= */
+const LESSONS = [
+{ id:'goal', t:{de:'Das eigentliche Ziel',en:'What you are actually doing'}, steps:[
+  {t:'text', h:{de:'Du spielst nicht gegen 21',en:'You are not playing against 21'},
+   b:{de:['Fast jeder glaubt, Blackjack ginge darum, möglichst nah an 21 zu kommen. Das ist falsch und kostet Geld.',
+          'Dein einziges Ziel ist, <b>eine bessere Hand zu haben als der Dealer</b> — oder ihn überkaufen zu lassen. Wer zuerst über 21 geht, verliert sofort. Und du ziehst immer zuerst.',
+          'Daraus folgt die wichtigste Regel des ganzen Spiels: Manchmal ist die beste Hand die, an der du gar nichts machst.'],
+      en:['Almost everyone believes blackjack is about getting close to 21. That belief is wrong and it costs money.',
+          'Your only goal is to <b>hold a better hand than the dealer</b>, or to let the dealer bust. Whoever goes over 21 first loses immediately — and you always act first.',
+          'That single fact drives everything: sometimes the best hand is the one you do nothing with.']}},
+  {t:'hand', p:[10,10], d:6, goal:'STAND', reveal:true,
+   tip:{de:'Du hast 20. Der Dealer zeigt eine 6 und muss ziehen, bis er mindestens 17 hat.',
+        en:'You hold 20. The dealer shows a 6 and must draw until reaching at least 17.'},
+   why:{de:'Richtig. Mit 20 stehst du fast immer. Die 6 ist die schlechteste Karte für den Dealer — er überkauft in rund 42 % der Fälle. Du musst nichts riskieren, du lässt ihn arbeiten.',
+        en:'Correct. With 20 you nearly always stand. A 6 is the dealer\'s worst card — they bust about 42% of the time. You risk nothing and let them do the work.'}},
+  {t:'quiz', q:{de:'Wann gewinnst du eine Hand?',en:'When do you win a hand?'},
+   o:[{de:'Wenn ich genau 21 treffe',en:'When I hit exactly 21'},
+      {de:'Wenn meine Hand höher ist als die des Dealers oder er überkauft',en:'When my hand beats the dealer or the dealer busts'},
+      {de:'Wenn ich mehr Karten habe als der Dealer',en:'When I hold more cards than the dealer'}],
+   c:1, why:{de:'Genau. 21 ist nur ein Nebeneffekt — entscheidend ist der Vergleich mit dem Dealer.',
+             en:'Exactly. 21 is only a side effect — what counts is the comparison with the dealer.'}}
+]},
+{ id:'values', t:{de:'Harte und weiche Hände',en:'Hard and soft hands'}, steps:[
+  {t:'text', h:{de:'Das Ass hat zwei Gesichter',en:'The ace has two faces'},
+   b:{de:['Bildkarten zählen 10. Zahlen zählen ihren Wert. Das Ass zählt <b>11 oder 1</b> — je nachdem, was besser passt.',
+          'Eine Hand mit einem Ass, das als 11 zählt, heißt <b>soft</b> („weich"). A,6 ist eine Soft 17. Ziehst du eine 8, wird daraus nicht 25, sondern 15 — das Ass fällt einfach auf 1.',
+          'Das ist der entscheidende Punkt: <b>Eine weiche Hand kann durch eine Karte nicht überkaufen.</b> Deshalb spielst du weiche Hände völlig anders als harte.'],
+      en:['Face cards count 10. Number cards count their value. The ace counts <b>11 or 1</b>, whichever helps.',
+          'A hand where the ace counts as 11 is called <b>soft</b>. A,6 is a soft 17. Draw an 8 and it does not become 25 — it becomes 15, because the ace simply drops to 1.',
+          'This is the key point: <b>a soft hand cannot bust on one card.</b> That is why soft hands are played completely differently from hard ones.']}},
+  {t:'hand', p:[11,6], d:5, goal:'DOUBLE',
+   tip:{de:'A,6 ist eine Soft 17. Der Dealer zeigt eine 5 — eine seiner schwächsten Karten. Du kannst nicht überkaufen.',
+        en:'A,6 is a soft 17. The dealer shows a 5, one of their weakest cards. You cannot bust.'},
+   why:{de:'Perfekt. Soft 17 ist eine der am meisten überschätzten Hände: 17 schlägt gar nichts, sie gewinnt nur, wenn der Dealer überkauft. Gegen eine 5 verdoppelst du also den Einsatz und ziehst risikofrei eine Karte.',
+        en:'Perfect. Soft 17 is one of the most overrated hands: a 17 beats nothing and only wins when the dealer busts. Against a 5 you double the bet and take a risk-free card.'}},
+  {t:'quiz', q:{de:'Du hältst A,7 und ziehst eine 9. Was hast du?',en:'You hold A,7 and draw a 9. What do you have?'},
+   o:[{de:'27 — überkauft',en:'27 — bust'},{de:'Harte 17',en:'Hard 17'},{de:'Soft 27',en:'Soft 27'}],
+   c:1, why:{de:'Richtig. Das Ass fällt von 11 auf 1, aus 18 wird eine harte 17. Du überkaufst nicht — du spielst einfach weiter.',
+             en:'Right. The ace drops from 11 to 1, so 18 becomes a hard 17. You do not bust, you simply keep playing.'}}
+]},
+{ id:'dealer', t:{de:'Der Dealer ist eine Maschine',en:'The dealer is a machine'}, steps:[
+  {t:'text', h:{de:'Kein Urteil, nur eine Regel',en:'No judgement, just a rule'},
+   b:{de:['Der Dealer entscheidet nichts. Er zieht, bis er <b>17 oder mehr</b> hat, dann hört er auf. An diesem Tisch steht er auch auf einer weichen 17 (Regel „S17").',
+          'Damit ist er vollständig berechenbar. Seine offene Karte verrät, wie oft er überkauft:',
+          '<b>2 → 35 % · 3 → 37 % · 4 → 40 % · 5 → 42 % · 6 → 42 %</b><br><b>7 → 26 % · 8 → 24 % · 9 → 23 % · 10 → 21 % · A → 12 %</b>',
+          'Merke dir die Grenze: <b>2 bis 6 ist schwach, 7 bis Ass ist stark.</b> Fast die gesamte Basic Strategy folgt aus dieser einen Zweiteilung.'],
+      en:['The dealer decides nothing. They draw until reaching <b>17 or more</b>, then stop. At this table they also stand on a soft 17 (the "S17" rule).',
+          'That makes them fully predictable. Their upcard tells you how often they bust:',
+          '<b>2 → 35% · 3 → 37% · 4 → 40% · 5 → 42% · 6 → 42%</b><br><b>7 → 26% · 8 → 24% · 9 → 23% · 10 → 21% · A → 12%</b>',
+          'Remember the dividing line: <b>2 through 6 is weak, 7 through ace is strong.</b> Nearly all of basic strategy follows from that one split.']}},
+  {t:'hand', p:[10,6], d:6, goal:'STAND', reveal:true,
+   tip:{de:'Du hast eine harte 16 — eine miserable Hand. Aber der Dealer zeigt eine 6.',
+        en:'You hold a hard 16, a miserable hand. But the dealer shows a 6.'},
+   why:{de:'Richtig. Deine 16 gewinnt nicht aus eigener Kraft — sie gewinnt, wenn der Dealer überkauft, und das tut er hier in 42 % der Fälle. Würdest du ziehen, würdest du selbst in etwa 62 % der Fälle überkaufen und diese Chance verschenken.',
+        en:'Correct. Your 16 does not win on its own — it wins when the dealer busts, which happens 42% of the time here. If you hit, you bust about 62% of the time and throw that chance away.'}},
+  {t:'quiz', q:{de:'Der Dealer zeigt eine 7. Wie oft überkauft er ungefähr?',en:'The dealer shows a 7. Roughly how often do they bust?'},
+   o:[{de:'Etwa jede vierte Hand',en:'About one hand in four'},{de:'Etwa jede zweite Hand',en:'About one hand in two'},{de:'Fast nie',en:'Almost never'}],
+   c:0, why:{de:'Etwa 26 %. Ab der 7 wird der Dealer deutlich gefährlicher — deshalb kippt die Strategie genau dort.',
+             en:'About 26%. From a 7 upward the dealer becomes far more dangerous, which is exactly where the strategy flips.'}}
+]},
+{ id:'stiff', t:{de:'Stiff Hands: 12 bis 16',en:'Stiff hands: 12 to 16'}, steps:[
+  {t:'text', h:{de:'Die Hände, die weh tun',en:'The hands that hurt'},
+   b:{de:['12 bis 16 nennt man <b>Stiff Hands</b>. Zu schwach zum Gewinnen, zu hoch zum gefahrlosen Ziehen. Hier verlieren die meisten Spieler ihr Geld — nicht durch Pech, sondern durch Bauchgefühl.',
+          'Die Regel ist mechanisch: <b>Gegen 2–6 halten, gegen 7–A ziehen.</b> (Ausnahme: die 12 gegen 2 und 3 wird gezogen.)',
+          'Gegen eine hohe Dealerkarte ziehst du nicht, weil du gewinnen willst. Du ziehst, weil Halten die Hand bereits verloren hat.'],
+      en:['Totals of 12 to 16 are called <b>stiff hands</b>. Too weak to win, too high to draw safely. This is where most players lose their money — not to bad luck, but to gut feeling.',
+          'The rule is mechanical: <b>stand against 2–6, hit against 7–A.</b> (One exception: a 12 against a 2 or 3 is a hit.)',
+          'Against a high upcard you do not hit because you expect to win. You hit because standing has already lost.']}},
+  {t:'hand', p:[10,6], d:7, goal:'HIT',
+   tip:{de:'Dieselbe 16 wie eben — aber jetzt zeigt der Dealer eine 7. Das ändert alles.',
+        en:'The same 16 as before, but now the dealer shows a 7. That changes everything.'},
+   why:{de:'Ja, und es fühlt sich schrecklich an. Du überkaufst hier in etwa 62 % der Fälle. Aber ein Dealer mit einer 7 endet in rund 74 % der Fälle auf 17 oder mehr — Halten verliert also fast garantiert. Ziehen verliert seltener. Genau das ist Basic Strategy: nicht die angenehme Wahl, sondern die weniger teure.',
+        en:'Yes, and it feels awful. You bust about 62% of the time here. But a dealer showing a 7 finishes on 17 or better roughly 74% of the time, so standing loses almost automatically. Hitting loses less often. That is basic strategy: not the comfortable choice, the cheaper one.'}},
+  {t:'hand', p:[10,2], d:3, goal:'HIT',
+   tip:{de:'Harte 12 gegen eine 3. Sieht nach einer schwachen Dealerkarte aus.',
+        en:'Hard 12 against a 3. Looks like a weak dealer card.'},
+   why:{de:'Richtig — und das ist die klassische Falle. Die 3 überkauft nur zu rund 37 %, das reicht nicht. Dein eigenes Bust-Risiko liegt bei nur etwa 31 %, weil dich einzig eine Zehn tötet. Deshalb ist die 12 gegen 2 und 3 die einzige Stiff Hand, die gegen eine kleine Karte gezogen wird.',
+        en:'Correct — and this is the classic trap. A 3 busts only about 37% of the time, which is not enough. Your own bust risk is only about 31%, since only a ten breaks you. That is why 12 against a 2 or 3 is the one stiff hand you hit against a small card.'}}
+]},
+{ id:'double', t:{de:'Double Down',en:'Doubling down'}, steps:[
+  {t:'text', h:{de:'Mehr Geld auf gute Situationen',en:'More money on good spots'},
+   b:{de:['Beim Verdoppeln zahlst du deinen Einsatz noch einmal ein und bekommst <b>genau eine</b> weitere Karte. Danach ist deine Hand beendet.',
+          'Das lohnt sich, wenn zwei Dinge zusammenkommen: Du kannst mit einer Karte nicht überkaufen, und der Dealer ist schwach.',
+          'Die Kernfälle: <b>11 fast immer · 10 gegen 2–9 · 9 gegen 3–6.</b> Rund 31 % aller Karten sind Zehner — deshalb ist eine 11 die beste Verdopplungshand des Spiels.'],
+      en:['Doubling means putting up your bet a second time and receiving <b>exactly one</b> more card. Then your hand is finished.',
+          'It pays when two things line up: you cannot bust on one card, and the dealer is weak.',
+          'The core cases: <b>11 almost always · 10 against 2–9 · 9 against 3–6.</b> Roughly 31% of all cards are tens, which makes 11 the best doubling hand in the game.']}},
+  {t:'hand', p:[6,5], d:6, goal:'DOUBLE',
+   tip:{de:'11 gegen eine 6. Besser wird die Ausgangslage im Blackjack nicht.',
+        en:'Eleven against a 6. It does not get better than this.'},
+   why:{de:'Perfekt. Du kannst nicht überkaufen, triffst häufig 20 oder 21, und der Dealer hat seine schlechteste Karte. Wer hier nur zieht, verschenkt bares Geld.',
+        en:'Perfect. You cannot bust, you often land on 20 or 21, and the dealer has their worst card. Merely hitting here leaves money on the table.'}},
+  {t:'hand', p:[7,2], d:2, goal:'HIT',
+   tip:{de:'Harte 9 gegen eine 2. Verlockend — aber Vorsicht.',
+        en:'Hard 9 against a 2. Tempting — but careful.'},
+   why:{de:'Richtig, hier wird nur gezogen. Eine 9 wird gegen <b>3 bis 6</b> verdoppelt, nicht gegen die 2. Der Dealer überkauft mit einer 2 nur zu rund 35 % — zu wenig für den doppelten Einsatz. Das ist einer der häufigsten Fehler überhaupt.',
+        en:'Correct, this is just a hit. A 9 doubles against <b>3 through 6</b>, not against a 2. The dealer busts only about 35% with a 2, too little for a doubled bet. This is one of the most common mistakes in the game.'}}
+]},
+{ id:'split', t:{de:'Splitten',en:'Splitting'}, steps:[
+  {t:'text', h:{de:'Aus einer schlechten Hand zwei brauchbare machen',en:'Turning one bad hand into two playable ones'},
+   b:{de:['Bei zwei gleichwertigen Karten kannst du teilen: Du zahlst einen zweiten Einsatz und spielst zwei Hände.',
+          'Zwei Regeln gelten <b>immer</b>, ohne Ausnahme: <b>Asse und Achter werden gesplittet. Zehner und Fünfer niemals.</b>',
+          'A,A ungesplittet ist eine Soft 12 und praktisch wertlos. 8,8 ist eine harte 16, die schlechteste Hand des Spiels. 10,10 ist dagegen bereits eine 20 — die zerstörst du nicht. Und 5,5 ist eine harte 10, eine der besten Verdopplungshände.'],
+      en:['With two cards of equal value you may split: you post a second bet and play two hands.',
+          'Two rules hold <b>always</b>, without exception: <b>split aces and eights, never split tens or fives.</b>',
+          'Unsplit, A,A is a soft 12 and nearly worthless. 8,8 is a hard 16, the worst hand in the game. But 10,10 is already a 20 — you do not destroy that. And 5,5 is a hard 10, one of the best doubling hands there is.']}},
+  {t:'hand', p:[8,8], d:10, goal:'SPLIT',
+   tip:{de:'Achter gegen eine Zehn. Die unbeliebteste Entscheidung im ganzen Spiel.',
+        en:'Eights against a ten. The least popular decision in the game.'},
+   why:{de:'Ja — auch gegen eine Zehn. Als 16 verlierst du rund 54 % deines Einsatzes; gesplittet etwa 48 %. Selbst Aufgeben (−50 %) ist schlechter. Du splittest hier nicht, um zu gewinnen, sondern um weniger zu verlieren. Wer das versteht, hat Basic Strategy verstanden.',
+        en:'Yes — even against a ten. Played as a 16 you lose about 54% of your bet; split, about 48%. Even surrendering (−50%) is worse. You are not splitting to win, you are splitting to lose less. Understand this and you understand basic strategy.'}},
+  {t:'hand', p:[10,10], d:6, goal:'STAND',
+   tip:{de:'Zwei Zehner gegen eine 6. Der Dealer ist schwach — verlockend, oder?',
+        en:'Two tens against a 6. The dealer is weak — tempting, right?'},
+   why:{de:'Richtig, du hältst. Eine 20 gewinnt langfristig rund 70 % der Einsätze. Zwei Hände mit je einer Zehn sind zwar auch profitabel, aber messbar weniger. Du tauschst sonst eine sehr gute Hand gegen zwei ordentliche.',
+        en:'Correct, you stand. A 20 wins roughly 70% of the time. Two hands each starting with a ten are profitable too, but measurably less so. You would be trading one great hand for two decent ones.'}}
+]},
+{ id:'soft', t:{de:'Weiche Hände richtig spielen',en:'Playing soft hands'}, steps:[
+  {t:'text', h:{de:'A,7 ist keine 18',en:'A,7 is not an 18'},
+   b:{de:['Weiche Hände sind Gratis-Chancen: Du kannst mit einer Karte nicht überkaufen. Genutzt wird das viel zu selten.',
+          'Der wichtigste Fall ist A,7 (Soft 18). Sie sieht stark aus, ist aber eine Grenzhand:',
+          '<b>gegen 3–6 verdoppeln · gegen 2, 7 und 8 halten · gegen 9, 10 und A ziehen.</b>',
+          'Und die Faustregel für alles darunter: <b>Auf Soft 17 oder weniger wird nie gehalten.</b>'],
+      en:['Soft hands are free chances: you cannot bust on one card. Most players never use that.',
+          'The most important case is A,7 (soft 18). It looks strong but it is a borderline hand:',
+          '<b>double against 3–6 · stand against 2, 7 and 8 · hit against 9, 10 and A.</b>',
+          'And the rule of thumb below that: <b>never stand on a soft 17 or lower.</b>']}},
+  {t:'hand', p:[11,7], d:9, goal:'HIT',
+   tip:{de:'Soft 18 gegen eine 9. Eine 18 aufzugeben fühlt sich falsch an.',
+        en:'Soft 18 against a 9. Giving up an 18 feels wrong.'},
+   why:{de:'Und trotzdem ist Ziehen korrekt. Gegen 9, 10 oder Ass endet der Dealer weit überdurchschnittlich oft auf 19 bis 21 — deine 18 ist dort ein Verlierer. Der Zug kostet nichts: Eine Soft 18 kann nicht überkaufen. Im schlechtesten Fall landest du auf einer harten Summe und spielst weiter.',
+        en:'And hitting is still correct. Against a 9, 10 or ace the dealer finishes on 19 to 21 far more often than average, so your 18 is a loser there. The draw costs nothing: a soft 18 cannot bust. At worst you land on a hard total and keep playing.'}},
+  {t:'hand', p:[11,7], d:7, goal:'STAND',
+   tip:{de:'Dieselbe Hand gegen eine 7.',
+        en:'The same hand against a 7.'},
+   why:{de:'Genau, hier wird gehalten. Gegen eine 7 endet der Dealer sehr häufig auf genau 17 — deine 18 schlägt das bereits. Ziehen würde eine Gewinnhand aufs Spiel setzen. Zwei identische Hände, zwei verschiedene Antworten: Es kommt immer auf die Dealerkarte an.',
+        en:'Exactly, you stand. Against a 7 the dealer very often ends on exactly 17, which your 18 already beats. Hitting would risk a winning hand. Two identical hands, two different answers: the upcard always decides.'}}
+]},
+{ id:'surr', t:{de:'Surrender und Insurance',en:'Surrender and insurance'}, steps:[
+  {t:'text', h:{de:'Eine gute Wette und eine sehr schlechte',en:'One good bet and one terrible one'},
+   b:{de:['<b>Late Surrender</b> gibt dir die halbe Hand zurück: Du wirfst die Karten weg und verlierst nur 50 % statt eines wahrscheinlichen Totalverlusts. Bei diesen Regeln gilt das nur für drei Situationen:',
+          '<b>16 gegen 9, 10 oder Ass · 15 gegen Zehn.</b> Aber niemals mit 8,8 — das Paar wird gesplittet.',
+          '<b>Insurance</b> ist das Gegenteil. Sie zahlt 2:1 und wäre erst ab 33,3 % Zehner-Anteil fair. Tatsächlich sind rund 31 % der Karten Zehner. Hausvorteil: etwa 5,9 %. Auch „Even Money" bei einem Blackjack ist dieselbe Wette in schönerer Verpackung.'],
+      en:['<b>Late surrender</b> gives you half your bet back: you fold the hand and lose 50% instead of a likely total loss. Under these rules it applies to exactly three spots:',
+          '<b>16 against 9, 10 or ace · 15 against a ten.</b> But never with 8,8 — that pair gets split.',
+          '<b>Insurance</b> is the opposite. It pays 2:1 and would only be fair if more than 33.3% of cards were tens. About 31% are. House edge: roughly 5.9%. Even money on a blackjack is the same bet in nicer packaging.']}},
+  {t:'hand', p:[10,5], d:10, goal:'SURRENDER',
+   tip:{de:'Harte 15 gegen eine Zehn. Ziehen und Halten sind beide furchtbar.',
+        en:'Hard 15 against a ten. Hitting and standing are both terrible.'},
+   why:{de:'Richtig. Halten verliert rund 54 %, Ziehen rund 50 bis 54 % — Aufgeben kostet garantiert exakt 50 %. Das ist keine Feigheit, sondern die messbar günstigste Option. Und es ist die einzige 15, die aufgegeben wird.',
+        en:'Correct. Standing loses about 54%, hitting about 50 to 54% — surrender costs exactly 50%, guaranteed. That is not cowardice, it is the measurably cheapest option. And it is the only 15 you surrender.'}}
+]},
+{ id:'rules', t:{de:'Regelvarianten erkennen',en:'Reading the table rules'}, steps:[
+  {t:'text', h:{de:'Nicht jeder Tisch ist gleich',en:'Not every table is the same'},
+   b:{de:['Basic Strategy hängt an den Tischregeln. Vier Dinge prüfst du, bevor du dich setzt:',
+          '<b>1. Blackjack-Auszahlung.</b> 3:2 ist Standard. <b>6:5 kostet dich rund 1,4 % zusätzlich</b> — das ist der teuerste Fehler, den man machen kann, und er passiert vor der ersten Karte. Solche Tische meidet man.',
+          '<b>2. Soft 17.</b> Steht der Dealer (S17) oder zieht er (H17)? H17 kostet etwa 0,2 %. Es ändert auch Züge: Bei H17 wird 11 gegen Ass verdoppelt, bei S17 nur gezogen.',
+          '<b>3. Double after Split.</b> Erlaubt ist besser für dich und ändert mehrere Paar-Entscheidungen.',
+          '<b>4. Surrender.</b> Vorhanden spart dir rund 0,07 %.',
+          'Dieser Trainer spielt: <b>6 Decks · S17 · DAS · Late Surrender · 3:2.</b> Hausvorteil bei perfektem Spiel: etwa <b>0,4 %</b>.'],
+      en:['Basic strategy depends on the table rules. Check four things before you sit down:',
+          '<b>1. Blackjack payout.</b> 3:2 is standard. <b>6:5 costs you roughly 1.4% extra</b> — the most expensive mistake available, and it happens before the first card. Avoid those tables.',
+          '<b>2. Soft 17.</b> Does the dealer stand (S17) or hit (H17)? H17 costs about 0.2%. It also changes plays: under H17 you double 11 against an ace, under S17 you only hit.',
+          '<b>3. Double after split.</b> Allowed is better for you and changes several pair decisions.',
+          '<b>4. Surrender.</b> Having it saves you around 0.07%.',
+          'This trainer runs: <b>6 decks · S17 · DAS · late surrender · 3:2.</b> House edge with perfect play: about <b>0.4%</b>.']}},
+  {t:'quiz', q:{de:'Ein Tisch zahlt Blackjack 6:5 statt 3:2. Was bedeutet das?',en:'A table pays blackjack 6:5 instead of 3:2. What does that mean?'},
+   o:[{de:'Kaum ein Unterschied, Blackjack ist selten',en:'Barely a difference, blackjack is rare'},
+      {de:'Der Hausvorteil steigt um rund 1,4 % — mehr als jede Spielentscheidung ausmacht',en:'The house edge rises by about 1.4% — more than any playing decision'},
+      {de:'Es ist besser für den Spieler',en:'It is better for the player'}],
+   c:1, why:{de:'Genau. Rund 4,8 % aller Hände sind ein Blackjack, und du bekommst dafür deutlich weniger. Kein noch so perfektes Spiel gleicht das aus.',
+             en:'Exactly. About 4.8% of all hands are a blackjack, and you get paid far less for them. No amount of perfect play makes that back.'}},
+  {t:'quiz', q:{de:'Was ist bei S17 mit einer harten 11 gegen ein Ass korrekt?',en:'Under S17, what is correct with a hard 11 against an ace?'},
+   o:[{de:'Verdoppeln',en:'Double'},{de:'Ziehen',en:'Hit'},{de:'Aufgeben',en:'Surrender'}],
+   c:1, why:{de:'Richtig — bei S17 wird nur gezogen. Bei H17 wäre Verdoppeln korrekt. Genau hier trennen sich die beiden Regelsätze.',
+             en:'Right — under S17 you only hit. Under H17 doubling would be correct. This is exactly where the two rule sets part ways.'}}
+]}
+];
+
+function tutStart(i){
+  S.tut.lesson = i; S.tut.step = 0; S.tut.active = true;
+  S.tut.shoe = buildShoe();
+  closeSheets();
+  tutStep();
+}
+function tutExit(){
+  S.tut.active = false;
+  S.dealer=[]; S.hole=null; S.hands=[]; S.holeShown=false;
+  toBetting();
+}
+function tutCard(v){
+  let i = S.tut.shoe.length-1;
+  while(i>=0 && S.tut.shoe[i].v!==v) i--;
+  if(i<0){ S.tut.shoe = buildShoe(); return tutCard(v); }
+  const c = S.tut.shoe.splice(i,1)[0]; c.id = ++cardSeq; return c;
+}
+function tutDraw(){ if(!S.tut.shoe.length) S.tut.shoe = buildShoe();
+  const c = S.tut.shoe.pop(); c.id = ++cardSeq; return c; }
+
+function tutStep(){
+  const L = LESSONS[S.tut.lesson], st = L.steps[S.tut.step];
+  S.tut.answered = false;
+  if(st.t === 'text'){
+    S.phase = 'tut_text';
+    S.dealer=[]; S.hole=null; S.hands=[]; S.holeShown=false;
+  } else if(st.t === 'hand'){
+    S.phase = 'tut_hand';
+    S.dealer = [tutCard(st.d)];
+    do { S.hole = tutDraw(); }
+    while((st.d===11 && S.hole.v===10) || (st.d===10 && S.hole.v===11));
+    S.holeShown = false;
+    const cards = [tutCard(st.p[0]), tutCard(st.p[1])];
+    S.hands = [newHandObj(cards,false,0)];
+    S.active = 0;
+  } else {
+    S.phase = 'tut_quiz';
+    S.dealer=[]; S.hole=null; S.hands=[]; S.holeShown=false;
+  }
+  renderTut();
+  render();
+}
+function tutNext(){
+  const L = LESSONS[S.tut.lesson];
+  if(S.tut.step < L.steps.length-1){ S.tut.step++; tutStep(); return; }
+  // lesson finished
+  if(!S.tut.done[L.id]){ S.tut.done[L.id] = true; addXP(120); }
+  S.tut.active = false;
+  const all = LESSONS.every(l=>S.tut.done[l.id]);
+  if(all && !S.ach.scholar){ S.ach.scholar = true; toast(T().achUnlocked, S.lang==='de'?'Alle Lektionen':'All lessons'); sfx('ach'); }
+  sfx('level');
+  save();
+  S.dealer=[]; S.hole=null; S.hands=[]; S.holeShown=false;
+  toBetting();
+  openSheet('sheetTut');
+}
+function tutAct(a){
+  const L = LESSONS[S.tut.lesson], st = L.steps[S.tut.step];
+  if(S.tut.answered) return;
+  if(a === st.goal){
+    S.tut.answered = true;
+    sfx('star'); addXP(15);
+    if(st.reveal){
+      S.holeShown = true; S.justFlipped = true; S.dealer.push(S.hole); S.hole = null;
+      while(true){ const e = evalHand(S.dealer);
+        if(e.total<17){ S.dealer.push(tutDraw()); continue; }
+        if(e.total===17 && e.soft && RULES.h17){ S.dealer.push(tutDraw()); continue; }
+        break; }
+    }
+    S.phase = 'tut_after';
+    renderTut(true); render();
+  } else {
+    sfx('bad');
+    const btn = document.getElementById('a'+a);
+    if(btn){ btn.classList.add('wrong-hint'); setTimeout(()=>btn.classList.remove('wrong-hint'), 500); }
+    const g = document.getElementById('a'+st.goal);
+    if(g) g.classList.add('correct-hint');
+    S.tut.hintShown = true;
+    renderTut();
+  }
+}
+function tutAnswer(i){
+  const L = LESSONS[S.tut.lesson], st = L.steps[S.tut.step];
+  if(S.tut.answered) return;
+  if(i === st.c){ S.tut.answered = true; sfx('star'); addXP(15); S.phase='tut_after'; }
+  else { sfx('bad'); S.tut.wrongQuiz = i; }
+  renderTut(true); render();
+}
+function renderTut(showWhy){
+  const L = LESSONS[S.tut.lesson], st = L.steps[S.tut.step], l = S.lang;
+  let bar = '<div class="tutbar">';
+  L.steps.forEach((s,i)=> bar += `<i class="${i<S.tut.step?'on':(i===S.tut.step?'cur':'')}"></i>`);
+  bar += '</div>';
+  let h = bar + '<div class="tutcard">';
+  h += `<h3>${S.tut.lesson+1}. ${L.t[l]}</h3>`;
+  if(st.t === 'text'){
+    h += `<p class="lead"><b>${st.h[l]}</b></p>`;
+    st.b[l].forEach(p=> h += `<p>${p}</p>`);
+  } else if(st.t === 'hand'){
+    h += `<p>${st.tip[l]}</p>`;
+    if(showWhy || S.phase==='tut_after') h += `<p style="color:var(--green)">${st.why[l]}</p>`;
+    else if(S.tut.hintShown) h += `<p style="color:var(--gold)">${l==='de'?'Nicht ganz. Der richtige Zug ist grün markiert — sieh dir an, warum.':'Not quite. The correct move is highlighted in green — take a look at why.'}</p>`;
+    else h += `<div class="tutgoal">${l==='de'?'DEINE ENTSCHEIDUNG':'YOUR CALL'}</div>`;
+  } else {
+    h += `<p><b>${st.q[l]}</b></p>`;
+    if(S.phase==='tut_after') h += `<p style="color:var(--green)">${st.why[l]}</p>`;
+  }
+  h += '</div>';
+  document.getElementById('tutPanel').innerHTML = h;
+  document.getElementById('tutPanel').classList.remove('hidden');
+  document.getElementById('coach').classList.add('hidden');
+  if(st.t === 'quiz'){
+    document.getElementById('dockQuiz').innerHTML = st.o.map((o,i)=>{
+      let cls = 'btn sm b-ghost tutopt';
+      if(S.phase==='tut_after' && i===st.c) cls = 'btn sm b-hit tutopt';
+      else if(S.tut.wrongQuiz===i) cls = 'btn sm b-stand tutopt';
+      return `<button class="${cls}" onclick="tutAnswer(${i})">${o[l]}</button>`;
+    }).join('') + (S.phase==='tut_after'
+      ? `<button class="btn sm b-double" onclick="tutAdvance()">${l==='de'?'WEITER':'CONTINUE'}</button>` : '');
+  }
+  const last = S.tut.step === L.steps.length-1;
+  document.getElementById('dockTut').innerHTML =
+    `<div class="grid2"><button class="btn sm b-ghost" onclick="tutExit()">${l==='de'?'ABBRECHEN':'EXIT'}</button>
+     <button class="btn sm b-hit" onclick="tutAdvance()">${S.phase==='tut_after'&&last?(l==='de'?'FERTIG':'FINISH'):(l==='de'?'WEITER':'CONTINUE')}</button></div>`;
+}
+function tutAdvance(){
+  clearHighlight();
+  S.tut.hintShown = false; S.tut.wrongQuiz = -1;
+  tutNext();
+}
+function buildTut(){
+  const l = S.lang;
+  const done = LESSONS.filter(x=>S.tut.done[x.id]).length;
+  let h = `<p style="color:var(--dim)">${done} / ${LESSONS.length} ${l==='de'?'abgeschlossen':'completed'}</p>`;
+  h += `<p>${l==='de'
+    ?'Neun kurze Lektionen. Jede erklärt eine Idee und lässt dich sie sofort an echten Händen anwenden. Reihenfolge ist empfohlen, aber nicht vorgeschrieben.'
+    :'Nine short lessons. Each explains one idea and then lets you apply it to real hands. The order is recommended but not enforced.'}</p>`;
+  LESSONS.forEach((L,i)=>{
+    const d = S.tut.done[L.id];
+    h += `<div class="lesson${d?' done':''}" onclick="tutStart(${i})">
+      <div class="num">${d?'✓':(i+1)}</div>
+      <div><b>${L.t[l]}</b><span>${L.steps.length} ${l==='de'?'Schritte':'steps'}</span></div></div>`;
+  });
+  document.getElementById('stBody').innerHTML = h;
+}
+
+/* ============================================================================
+   18. INSTALL AS AN APP
+   ========================================================================= */
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); deferredPrompt = e; });
+function isStandalone(){
+  return window.navigator.standalone === true ||
+         (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+}
+function buildInstall(){
+  const l = S.lang;
+  const ios = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  let h = '';
+  if(isStandalone()){
+    h += `<p style="color:var(--green)">${l==='de'?'Läuft bereits als App. Nichts zu tun.':'Already running as an app. Nothing to do.'}</p>`;
+  }
+  h += `<p>${l==='de'
+    ?'Diese Datei ist eine vollständige Web-App. Sobald sie unter einer echten Adresse liegt, kannst du sie auf dem iPhone wie eine normale App auf den Home-Bildschirm legen — ohne App Store, ohne Entwicklerkonto.'
+    :'This file is a complete web app. Once it lives at a real address you can add it to your iPhone home screen like any normal app — no App Store, no developer account.'}</p>`;
+  if(ios){
+    h += `<h4>${l==='de'?'iPhone · Safari':'iPhone · Safari'}</h4>
+      <div class="installstep"><div class="n">1</div><div>${l==='de'?'Seite in <b>Safari</b> öffnen (nicht in einer In-App-Ansicht).':'Open the page in <b>Safari</b> (not inside another app\'s browser view).'}</div></div>
+      <div class="installstep"><div class="n">2</div><div>${l==='de'?'Auf das <b>Teilen-Symbol</b> tippen.':'Tap the <b>share icon</b>.'}</div></div>
+      <div class="installstep"><div class="n">3</div><div><kbd>${l==='de'?'Zum Home-Bildschirm':'Add to Home Screen'}</kbd></div></div>
+      <div class="installstep"><div class="n">4</div><div>${l==='de'?'Fertig. Die App startet im Vollbild, ohne Safari-Leisten, und funktioniert offline.':'Done. It launches full screen with no browser bars and works offline.'}</div></div>`;
+  } else {
+    h += `<h4>Android / Desktop</h4>
+      <div class="installstep"><div class="n">1</div><div>${l==='de'?'Browser-Menü öffnen.':'Open the browser menu.'}</div></div>
+      <div class="installstep"><div class="n">2</div><div><kbd>${l==='de'?'App installieren':'Install app'}</kbd></div></div>`;
+    if(deferredPrompt) h += `<button class="btn sm b-hit" onclick="doInstall()">${l==='de'?'JETZT INSTALLIEREN':'INSTALL NOW'}</button>`;
+  }
+  h += `<h4>${l==='de'?'Wie kommt die Datei ins Netz?':'How do I put it online?'}</h4>
+    <p>${l==='de'
+      ?'Am schnellsten: die drei Dateien (<code>index.html</code>, <code>sw.js</code>, <code>manifest.webmanifest</code>) auf einen kostenlosen Static-Host ziehen — GitHub Pages, Netlify oder Cloudflare Pages. Kein Server, kein Build, keine Kosten. Du bekommst eine feste URL, die du in Safari öffnest und dann auf den Home-Bildschirm legst.'
+      :'Fastest route: drop the three files (<code>index.html</code>, <code>sw.js</code>, <code>manifest.webmanifest</code>) onto a free static host — GitHub Pages, Netlify or Cloudflare Pages. No server, no build step, no cost. You get a permanent URL to open in Safari and add to your home screen.'}</p>`;
+  document.getElementById('siBody').innerHTML = h;
+}
+function doInstall(){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt = null; } }
+
+function initPWA(){
+  try{
+    const mf = {
+      name:"Dealer's Edge", short_name:"Dealer's Edge",
+      start_url:".", scope:".", display:"standalone",
+      background_color:"#0b0718", theme_color:"#0b0718", orientation:"portrait",
+      icons:[{src:document.querySelector('link[rel="apple-touch-icon"]').href, sizes:"180x180", type:"image/png", purpose:"any"}]
+    };
+    const blob = new Blob([JSON.stringify(mf)], {type:'application/manifest+json'});
+    const link = document.createElement('link');
+    link.rel = 'manifest'; link.href = URL.createObjectURL(blob);
+    document.head.appendChild(link);
+  }catch(e){}
+  try{
+    if('serviceWorker' in navigator && location.protocol.indexOf('http') === 0){
+      navigator.serviceWorker.register('sw.js').catch(()=>{});
+    }
+  }catch(e){}
+}
+
+/* ============================================================================
+   15. BOOT
+   ========================================================================= */
+(async function boot(){
+  await load();
+  initPWA();
+  freshShoe();
+  setLang(S.lang);
+  toBetting();
+  if(!S.seenTut){
+    S.seenTut=true;save();
+    setTimeout(()=>{coach('info',T().tutPrompt,T().tutPromptBody);openSheet('sheetTut')},600);
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "name": "Dealer's Edge \u2014 Blackjack Trainer",
+  "short_name": "Dealer's Edge",
+  "description": "Learn blackjack basic strategy properly: verified engine, live expected value, playable lessons.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0718",
+  "theme_color": "#0b0718",
+  "categories": [
+    "games",
+    "education"
+  ],
+  "icons": [
+    {
+      "src": "icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
