@@ -21,9 +21,19 @@
   --void:#0b0718; --deep:#150d31; --felt:#191140; --felt2:#291c5e; --ink:#07050f;
   --cyan:#3ce8ff; --mag:#ff3ba7; --gold:#ffcf4d; --red:#ff3355; --green:#42f08c;
   --paper:#f2eee0; --dim:#8f86bf; --line:#3a2d70;
-  --cw:56px; --ch:80px;
+  /* Kartenmass leitet sich aus der Viewportbreite ab, statt fest zu stehen.
+     393pt (iPhone 16) -> 51.9px, 402pt (16 Pro) -> 53.1px, Desktop deckelt bei 58px. */
+  --cw:clamp(42px, 13.2vw, 58px); --ch:calc(var(--cw) * 1.43);
   --safeT:env(safe-area-inset-top,0px); --safeB:env(safe-area-inset-bottom,0px);
+  --safeL:env(safe-area-inset-left,0px); --safeR:env(safe-area-inset-right,0px);
+  /* Polsterung mit Mindestabstand: nichts klebt an der Dynamic Island oder am Home-Indikator. */
+  --padT:max(var(--safeT), 10px);
+  --padB:max(var(--safeB), 10px);
+  --gutter:10px;
 }
+/* Sicherheitsnetz: meldet iOS im Standalone-Modus faelschlich 0 zurueck,
+   bleibt trotzdem Platz fuer die Statusleiste. */
+@media (display-mode:standalone){ :root{ --padT:max(var(--safeT), 34px) } }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none}
 body{
@@ -37,12 +47,13 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
 .px{font-family:'Press Start 2P',monospace;letter-spacing:.02em}
 
 /* ---------------- SHELL ---------------- */
-#app{height:100dvh;display:flex;flex-direction:column;max-width:520px;margin:0 auto;position:relative}
+#app{height:100vh;height:100dvh;display:flex;flex-direction:column;max-width:520px;margin:0 auto;position:relative;
+     padding-left:var(--safeL);padding-right:var(--safeR)}
 @media(min-width:900px){#app{max-width:1180px}}
-#hud{flex:0 0 auto;padding:calc(var(--safeT) + 8px) 10px 8px;background:linear-gradient(180deg,#150d31,#100a26);
+#hud{flex:0 0 auto;padding:calc(var(--padT) + 10px) var(--gutter) 8px;background:linear-gradient(180deg,#150d31,#100a26);
      border-bottom:3px solid var(--ink);box-shadow:0 3px 0 0 var(--line)}
-#stage{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:10px}
-#dock{flex:0 0 auto;padding:10px 10px calc(var(--safeB) + 10px);background:linear-gradient(180deg,#100a26,#0b0718);
+#stage{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:var(--gutter)}
+#dock{flex:0 0 auto;padding:8px var(--gutter) var(--padB);background:linear-gradient(180deg,#100a26,#0b0718);
       border-top:3px solid var(--ink);box-shadow:0 -3px 0 0 var(--line)}
 @media(min-width:900px){
   #app{max-width:1180px}
@@ -67,6 +78,12 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
 .seat{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
 .hand{display:flex;gap:5px;align-items:flex-start;min-height:calc(var(--ch) + 4px);flex-wrap:nowrap}
 .handsrow{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x proximity}
+/* Die Kartengroesse selbst kommt aus render(), damit es nur eine Quelle gibt.
+   Hier wird nur der Abstand nachgezogen, wenn viele Haende nebeneinander liegen. */
+.handsrow:has(.handbox:nth-child(3)){gap:5px}
+.handsrow:has(.handbox:nth-child(3)) .handbox{padding:4px}
+.handsrow:has(.handbox:nth-child(4)){gap:4px}
+.handsrow:has(.handbox:nth-child(4)) .card .rk{font-size:8px}
 .handsrow::-webkit-scrollbar{height:0}
 .handbox{flex:0 0 auto;border:2px dashed transparent;padding:6px;scroll-snap-align:center;min-width:0}
 .handbox.active{border-color:var(--gold);background:rgba(255,207,77,.05)}
@@ -136,10 +153,11 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
 .betline b{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--gold)}
 
 /* ---------------- SHEETS ---------------- */
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:150;max-height:88dvh;background:linear-gradient(180deg,#1a1140,#0d0824);
+.sheet{position:fixed;left:var(--safeL);right:var(--safeR);bottom:0;z-index:150;
+  max-height:calc(100dvh - var(--padT) - 14px);background:linear-gradient(180deg,#1a1140,#0d0824);
   border-top:3px solid var(--ink);box-shadow:0 -3px 0 0 var(--cyan),0 -20px 60px rgba(0,0,0,.7);
   transform:translateY(102%);transition:transform .25s cubic-bezier(.2,.9,.3,1);display:flex;flex-direction:column;
-  padding-bottom:var(--safeB);max-width:520px;margin:0 auto}
+  padding-bottom:var(--padB);max-width:520px;margin:0 auto}
 @media(min-width:900px){.sheet{max-width:640px}}
 .sheet.open{transform:translateY(0)}
 .sheet-head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px;border-bottom:2px solid var(--line)}
@@ -184,9 +202,10 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
 .ach b{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--paper);display:block;margin-bottom:5px}
 .ach.on b{color:var(--gold)}
 .ach span{font-size:17px;color:var(--dim);line-height:1.2}
-#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(-140%);top:calc(var(--safeT) + 8px);z-index:210;
+#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(-140%);top:calc(var(--padT) + 10px);z-index:210;
   background:#150d31;border:3px solid var(--gold);box-shadow:0 0 0 3px var(--ink),0 8px 30px rgba(255,207,77,.3);
-  padding:10px 14px;transition:transform .3s cubic-bezier(.2,1.3,.4,1);max-width:92vw;text-align:center}
+  padding:10px 14px;transition:transform .3s cubic-bezier(.2,1.3,.4,1);text-align:center;
+  max-width:calc(100vw - var(--safeL) - var(--safeR) - 24px)}
 #toast.on{transform:translateX(-50%) translateY(0)}
 #toast .px{font-size:8px;color:var(--gold);display:block;margin-bottom:6px}
 
@@ -198,6 +217,58 @@ table.chart td.lbl{background:#241a52;color:var(--gold)}
 .a-H{background:#2fd07a}.a-S{background:#ff6b81}.a-D{background:#ffd166}.a-P{background:#ff86c8}.a-R{background:#b9aee8}
 .legend{display:flex;gap:10px;flex-wrap:wrap;font-size:16px;color:var(--dim);margin-top:10px}
 .legend i{display:inline-block;width:13px;height:13px;border:2px solid var(--ink);vertical-align:-2px;margin-right:4px}
+/* ===================== KARRIERE ===================== */
+#careerBar{background:#0d0824;border:3px solid var(--ink);box-shadow:0 0 0 3px var(--gold);
+  padding:9px 10px;margin-bottom:10px}
+.cbtop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
+.cbtop .lv{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--gold)}
+.cbtop .rd{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--dim)}
+.cbgoal{display:flex;align-items:center;justify-content:space-between;font-family:'Press Start 2P',monospace;
+  font-size:8px;color:var(--dim);margin-bottom:5px}
+.cbgoal b{color:var(--cyan)}
+.cbbar{height:11px;background:#07050f;border:2px solid var(--line);overflow:hidden}
+.cbbar i{display:block;height:100%;background:linear-gradient(90deg,var(--mag),var(--gold));transition:width .4s}
+.cbbar.hit i{background:linear-gradient(90deg,var(--green),var(--cyan))}
+.cbjok{display:flex;align-items:center;gap:5px;margin-top:7px;font-family:'Press Start 2P',monospace;font-size:7px;color:var(--dim)}
+.cbjok i{width:13px;height:13px;border:2px solid var(--gold);background:var(--gold);display:inline-block;
+  transform:rotate(45deg);font-style:normal}
+.cbjok i.used{background:transparent;border-color:var(--line)}
+
+.lvitem{display:flex;align-items:center;gap:11px;padding:11px;border:2px solid var(--line);background:#0d0824;
+  margin-bottom:7px;cursor:pointer;width:100%;text-align:left;color:var(--paper);font-family:'VT323',monospace}
+.lvitem.done{border-color:var(--green)}
+.lvitem.locked{opacity:.4;cursor:not-allowed}
+.lvitem .num{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--dim);width:28px;flex:0 0 auto;text-align:center}
+.lvitem.done .num{color:var(--green)}
+.lvitem b{font-family:'Press Start 2P',monospace;font-size:8px;display:block;margin-bottom:5px;color:var(--paper)}
+.lvitem span{font-size:17px;color:var(--dim);line-height:1.2;display:block}
+.lvitem .st{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--gold);flex:0 0 auto;letter-spacing:2px}
+.coinline{display:flex;align-items:center;justify-content:space-between;background:#0d0824;border:2px solid var(--gold);
+  padding:9px 11px;margin-bottom:12px}
+.coinline .k{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--dim)}
+.coinline .v{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--gold)}
+.endbig{font-family:'Press Start 2P',monospace;font-size:13px;text-align:center;margin:6px 0 12px;line-height:1.6}
+.endstars{text-align:center;font-family:'Press Start 2P',monospace;font-size:19px;color:var(--gold);letter-spacing:6px;margin-bottom:12px}
+.staged{border:2px solid var(--line);background:#0d0824;padding:9px;font-size:16px;color:var(--dim);line-height:1.3;margin-top:12px}
+#dockBet.fixedbet .chiprow,#dockBet.fixedbet #btnClear,#dockBet.fixedbet #btnRepeat{display:none}
+#dockBet.fixedbet .grid2{grid-template-columns:1fr}
+
+/* ---------------- QUERFORMAT ----------------
+   Im Querformat wandert die Dynamic Island an die Seite: --safeL/--safeR greifen,
+   und die Hoehe wird knapp. Alles Vertikale wird gestaucht. */
+@media (orientation:landscape) and (max-height:520px){
+  :root{--cw:clamp(34px, 6.4vw, 48px);--gutter:8px}
+  #hud{padding-top:calc(var(--padT) + 4px);padding-bottom:5px}
+  #dock{padding-top:6px}
+  .money{font-size:12px}
+  .btn{height:44px;font-size:10px}
+  .btn.sm{height:38px}
+  .btn.xs{height:32px}
+  .pchip{height:42px}
+  .felt{padding:7px;margin-bottom:7px}
+  .coach p{-webkit-line-clamp:2}
+  .sheet{max-height:calc(100dvh - 10px)}
+}
 .hidden{display:none!important}
 .flash{animation:fl .4s steps(2) 2}
 @keyframes fl{50%{filter:brightness(2)}}
@@ -274,6 +345,43 @@ table.chart td.lbl{background:#241a52;color:var(--gold)}
 kbd{font-family:'Press Start 2P',monospace;font-size:8px;background:#241a52;border:2px solid var(--line);
   padding:3px 5px;color:var(--cyan)}
 
+/* ===================== STARTBILDSCHIRM ===================== */
+#startscreen{position:fixed;inset:0;z-index:195;display:flex;flex-direction:column;
+  background:radial-gradient(900px 620px at 50% -10%,#3a1f7a 0%,transparent 62%),
+             radial-gradient(700px 500px at 10% 112%,#4d1566 0%,transparent 58%), var(--void);
+  padding:calc(var(--padT) + 14px) calc(var(--safeL) + 14px) calc(var(--padB) + 4px) calc(var(--safeR) + 14px);
+  overflow-y:auto;overscroll-behavior:contain}
+#startscreen.hidden{display:none!important}
+.startwrap{width:100%;max-width:460px;margin:auto;display:flex;flex-direction:column;gap:14px}
+.startlogo{text-align:center;font-family:'Press Start 2P',monospace;font-size:17px;color:var(--gold);
+  text-shadow:3px 3px 0 #6b2c00,0 0 22px rgba(255,207,77,.35);line-height:1.7;margin-bottom:2px}
+.startlogo span{display:block;color:var(--cyan);text-shadow:3px 3px 0 #073b47,0 0 22px rgba(60,232,255,.35)}
+.startsub{text-align:center;font-size:17px;color:var(--dim);margin-top:-6px}
+.modecard{display:flex;align-items:center;gap:12px;text-align:left;width:100%;padding:12px;cursor:pointer;
+  background:#150d31;border:3px solid var(--ink);box-shadow:0 0 0 3px var(--line),0 5px 0 0 rgba(0,0,0,.5);
+  color:var(--paper);font-family:'VT323',monospace;transition:transform .06s steps(2)}
+.modecard:active{transform:translateY(4px)}
+.modecard .ic{font-family:'Press Start 2P',monospace;font-size:18px;width:34px;flex:0 0 auto;text-align:center;color:var(--cyan)}
+.modecard b{font-family:'Press Start 2P',monospace;font-size:10px;display:block;margin-bottom:6px;color:var(--gold)}
+.modecard span{font-size:17px;line-height:1.25;color:var(--dim);display:block}
+.modecard.locked{opacity:.42;cursor:not-allowed}
+.modecard.locked .ic{color:var(--dim)}
+.modecard.m-train{box-shadow:0 0 0 3px var(--green),0 5px 0 0 rgba(0,0,0,.5)}
+.modecard.m-train .ic{color:var(--green)}
+.modecard.m-endless{box-shadow:0 0 0 3px var(--mag),0 5px 0 0 rgba(0,0,0,.5)}
+.modecard.m-endless .ic{color:var(--mag)}
+.modecard.m-learn{box-shadow:0 0 0 3px var(--cyan),0 5px 0 0 rgba(0,0,0,.5)}
+.startfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}
+.startver{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--dim)}
+.soonbadge{font-family:'Press Start 2P',monospace;font-size:6px;border:2px solid var(--dim);color:var(--dim);
+  padding:3px 5px;margin-left:6px;vertical-align:2px;white-space:nowrap}
+@media (orientation:landscape) and (max-height:520px){
+  .startlogo{font-size:13px;line-height:1.5}
+  .modecard{padding:9px}
+  .modecard b{font-size:9px;margin-bottom:3px}
+  .modecard span{font-size:15px}
+}
+
 </style>
 </head>
 <body>
@@ -297,6 +405,7 @@ kbd{font-family:'Press Start 2P',monospace;font-size:8px;background:#241a52;bord
   <main id="stage">
     <div class="deskgrid">
       <div>
+        <div id="careerBar" class="hidden"></div>
         <section class="felt">
           <div class="shoebox" id="shoeStack"><i></i><i></i><i></i></div>
           <div style="display:flex;justify-content:space-between;align-items:center">
@@ -360,8 +469,17 @@ kbd{font-family:'Press Start 2P',monospace;font-size:8px;background:#241a52;bord
     </div>
     <!-- CONTINUE / NEXT -->
     <div id="dockCont" class="hidden"><button class="btn b-double" onclick="resumeAfterMistake()" id="btnCont">WEITER</button></div>
+    <div id="dockJoker" class="hidden">
+      <div class="grid2">
+        <button class="btn sm b-double" onclick="careerUseJoker()" id="btnJoker">JOKER</button>
+        <button class="btn sm b-stand" onclick="careerAcceptMistake()" id="btnAccept">TROTZDEM</button>
+      </div>
+    </div>
     <div id="dockNext" class="hidden"><button class="btn b-ghost" onclick="toBetting()" id="btnNext">NÄCHSTE HAND</button></div>
-    <div id="dockRebuy" class="hidden"><button class="btn b-double" onclick="rebuy()" id="btnRebuy">REBUY $1,000</button></div>
+    <div id="dockRebuy" class="hidden">
+      <button class="btn b-double" onclick="rebuy()" id="btnRebuy">REBUY $1,000</button>
+      <button class="btn xs b-ghost" style="margin-top:8px" onclick="redeemCoins()" id="btnRedeem">COINS</button>
+    </div>
     <div id="dockTut" class="hidden"></div>
     <div id="dockQuiz" class="hidden"></div>
   </footer>
@@ -374,6 +492,21 @@ kbd{font-family:'Press Start 2P',monospace;font-size:8px;background:#241a52;bord
 <div class="sheet" id="sheetInstall"><div class="grab"></div>
   <div class="sheet-head"><span class="px" id="siTitle">ALS APP INSTALLIEREN</span><button class="btn xs b-ghost" style="width:auto;padding:0 12px" onclick="closeSheets()">OK</button></div>
   <div class="sheet-body" id="siBody"></div></div>
+
+<div id="startscreen" class="hidden">
+  <div class="startwrap">
+    <div class="startlogo px">DEALER'S<span>EDGE</span></div>
+    <div class="startsub" id="startSub"></div>
+    <div id="startModes" style="display:grid;gap:10px"></div>
+    <div class="startfoot">
+      <div class="seg" style="flex:1 1 auto">
+        <button onclick="setLang('de')" aria-pressed="false" id="stLangDe">DEUTSCH</button>
+        <button onclick="setLang('en')" aria-pressed="false" id="stLangEn">ENGLISH</button>
+      </div>
+      <span class="startver" id="startVer"></span>
+    </div>
+  </div>
+</div>
 
 <div id="scrim" onclick="closeSheets()"></div>
 <div id="toast"><span class="px" id="toastTitle"></span><span id="toastBody"></span></div>
@@ -399,6 +532,14 @@ kbd{font-family:'Press Start 2P',monospace;font-size:8px;background:#241a52;bord
   <div class="sheet-head"><span class="px" id="scTitle">BASIC STRATEGY</span><button class="btn xs b-ghost" style="width:auto;padding:0 12px" onclick="closeSheets()">OK</button></div>
   <div class="sheet-body" id="scBody"></div></div>
 
+<div class="sheet" id="sheetCareer"><div class="grab"></div>
+  <div class="sheet-head"><span class="px" id="cvTitle">KARRIERE</span><button class="btn xs b-ghost" style="width:auto;padding:0 12px" onclick="closeSheets()">OK</button></div>
+  <div class="sheet-body" id="cvBody"></div></div>
+
+<div class="sheet" id="sheetCareerEnd"><div class="grab"></div>
+  <div class="sheet-head"><span class="px" id="ceTitle">LEVEL</span><button class="btn xs b-ghost" style="width:auto;padding:0 12px" onclick="closeSheets()">OK</button></div>
+  <div class="sheet-body" id="ceBody"></div></div>
+
 <div class="sheet" id="sheetMath"><div class="grab"></div>
   <div class="sheet-head"><span class="px" id="smaTitle">MATHEMATIK</span><button class="btn xs b-ghost" style="width:auto;padding:0 12px" onclick="closeSheets()">OK</button></div>
   <div class="sheet-body" id="smaBody"></div></div>
@@ -422,6 +563,8 @@ function rnd(n){
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(i+1);const t=a[i];a[i]=a[j];a[j]=t}return a}
 
 /* ---------- 1. RULES ---------- */
+/* Diese Nummer muss mit dem Cache-Namen in sw.js uebereinstimmen (Backlog B1). */
+const APP_VERSION='0.4.0';
 const RULES={decks:6,penetration:0.75,h17:false,das:true,ls:true,maxHands:4,rsa:false,bjPays:1.5,
              minBet:5,maxBet:2000,startBank:1000};
 
@@ -602,11 +745,16 @@ function actionEVs(cards,up,o){
    ========================================================================= */
 const S={
   lang:'de',mode:'random',
+  /* gameMode: null = Startbildschirm sichtbar, 'training' = frei mit Auffuellung,
+     'endless' = Bankroll mit Rebuy. 'career' folgt mit Backlog A6. */
+  gameMode:null,
+  career:null,
+  careerData:{coins:0,done:{}},
   shoe:[],count:0,
   dealer:[],hole:null,holeShown:false,
   hands:[],active:0,
   phase:'bet',pending:null,lastChoice:null,keepCoach:false,
-  bank:RULES.startBank,bet:25,lastBet:25,insuranceBet:0,
+  bank:RULES.startBank,bankEndless:RULES.startBank,bet:25,lastBet:25,insuranceBet:0,
   coachData:null,
   stats:{dec:0,ok:0,streak:0,best:0,hands:0,won:0,lost:0,pushed:0,rebuys:0,peak:RULES.startBank,
          xp:0,lvl:1,shoeDec:0,shoeErr:0,
@@ -622,7 +770,9 @@ function T(){return UI[S.lang]}
 function freshShoe(){S.shoe=buildShoe();S.count=0;S.stats.shoeDec=0;S.stats.shoeErr=0}
 function needShuffle(){return S.shoe.length<52*RULES.decks*(1-RULES.penetration)}
 function hiLo(c){if(c.v>=10)return -1;if(c.v<=6)return 1;return 0}
-function draw(){if(!S.shoe.length)freshShoe();const c=S.shoe.pop();c.id=++cardSeq;S.count+=hiLo(c);return c}
+function draw(){
+  if(!S.shoe.length){ if(S.gameMode==='career')careerRefill(); else freshShoe(); }
+  const c=S.shoe.pop();c.id=++cardSeq;S.count+=hiLo(c);return c}
 function drawValue(v){
   let i=S.shoe.length-1;
   while(i>=0&&S.shoe[i].v!==v)i--;
@@ -649,6 +799,51 @@ const UI={
   insY:'VERSICHERN',insN:'ABLEHNEN',surr:'SURR',more:'MEHR ▸',
   coach:'COACH',correct:'RICHTIG',wrong:'FEHLER',perfect:'PERFEKT',info:'INFO',
   csTitle:'STRATEGY COACH',ssTitle:'SESSION',saTitle:'ERFOLGE',smTitle:'MENÜ',scTitle:'BASIC STRATEGY',smaTitle:'MATHEMATIK',
+  startSub:'Basic Strategy, bis sie sitzt.',
+  careerTitle:'KARRIERE',
+  careerFailDirty:'Ein Fehler ohne Joker. Das Level ist damit nicht bestanden — unabhängig davon, wie die Karten danach gefallen sind. Genau das ist der Punkt: bewertet wird die Entscheidung, nicht das Glück.',
+  uncorrected:'FEHLER',
+  mistakeKeptToast:'Ohne Joker ist das Level verloren. Du kannst es trotzdem zu Ende spielen.',
+  careerLvl:'LEVEL',
+  careerRd:'HAND',
+  careerTargetLbl:'ZIEL',
+  careerJok:'JOKER',
+  jokerBtn:'JOKER EINSETZEN',
+  acceptBtn:'TROTZDEM SO',
+  careerPass:'Level geschafft.',
+  careerFail:'Ziel verfehlt.',
+  careerPassBody:'Du hast das Ziel erreicht. Die Coins sind gutgeschrieben.',
+  careerFailBody:'Das Kapital reicht nicht. Nichts verloren — spiel das Level noch einmal.',
+  coinsLbl:'COINS',
+  coinsEarned:'Verdient',
+  retry:'NOCHMAL',
+  backToList:'ZUR LEVELLISTE',
+  careerLocked:'Erst das Level davor schaffen.',
+  careerStaged:'Hinweis: Die Karten dieser Level sind fest gelegt. Deshalb führt richtiges Spiel hier immer genau zum Ziel. Am echten Tisch ist das nicht so — dort verliert auch eine perfekte Entscheidung regelmäßig. Genau darum wird hier die Entscheidung bewertet und nicht das Ergebnis.',
+  careerIntro:'Feste Situationen, festes Ziel. Zwei Joker pro Level machen je einen Fehler rückgängig.',
+  redeemBtn:'COINS EINLÖSEN',
+  redeemNone:'Keine Coins vorhanden.',
+  redeemBody:'Coins aus der Karriere kannst du hier in Bankroll umwandeln. 1 Coin = $1. Das zählt nicht als Rebuy.',
+  careerRoundInfo:'Einsatz steht fest.',
+  careerRoundBody:'In der Karriere ist der Einsatz vorgegeben. Drücke DEAL.',
+  jokerLeft:'Joker übrig',
+  jokerNone:'Keine Joker mehr.',
+  jokerUsedMsg:'Joker eingesetzt.',
+  jokerUsedBody:'Der richtige Zug wird ausgeführt. Der Fehler bleibt trotzdem in deiner Statistik stehen — sonst würde die App dir einen Lernstand melden, den es nicht gibt.',
+  mistakeKept:'Dein Zug wird ausgeführt.',
+  mistakeKeptBody:'Du bleibst bei deiner Entscheidung. Das kostet dich möglicherweise das Ziel.',
+  careerModeName:'Karriere',
+  careerNames:['Harte Hände','Verdoppeln','Weiche Hände','Achten und Asse','Zehner und Fünfer','Soft 18','Aufgeben','Kleine Paare','Neuner und Zwölfen','Prüfung'],
+  careerHints:['Wann stehst du auf einer schlechten Hand, wann ziehst du?','Neun, zehn und elf sind die Hände, mit denen du Geld verdienst.','Ein Ass zählt elf oder eins. Das ändert alles.','Zwei Regeln ohne Ausnahme: Achten immer teilen, Asse immer teilen.','Und zwei Regeln, die genauso hart sind: Zehner nie teilen, Fünfer nie teilen.','Ass und Sieben ist die Hand, an der die meisten scheitern.','Aufgeben ist kein Rückzug, sondern die billigste Rechnung.','Sechser, Siebener, Dreier, Zweier und Vierer — teilen oder nicht?','Zwei Neuner sind stark. Aber nicht gegen alles.','Alles zusammen. Sieben Hände, kein Thema angekündigt.'],
+  startCareer:'KARRIERE', startCareerBody:'Feste Situationen, Startkapital, zwei Joker. Schaffe das Ziel und verdiene Coins.',
+  startTraining:'TRAINING', startTrainingBody:'Frei spielen und lernen. Die Bankroll füllt sich von selbst auf, nichts kostet etwas.',
+  startEndless:'ENDLESS', startEndlessBody:'Echte Bankroll, echter Einsatz. Hier zählt jede Entscheidung im Geldbeutel.',
+  startLearn:'LEKTIONEN', startLearnBody:'Neun Kapitel mit Erklärung, gespielten Händen und Quiz.',
+  soon:'BALD', changeMode:'Modus wechseln', modeLbl:'Modus',
+  careerSoon:'Karriere ist noch nicht fertig.',
+  careerSoonBody:'Der Modus kommt als Nächstes. Bis dahin: Training zum Üben, Endless für den Ernstfall.',
+  trainingHint:'Trainingsmodus.', trainingHintBody:'Die Bankroll füllt sich hier von selbst auf. Kein Rebuy, kein Druck — nur Wiederholung.',
+  endlessHint:'Endless.', endlessHintBody:'Deine Bankroll bleibt bestehen. Geht sie aus, kostet es einen Rebuy.',
   ready:'Bereit.',readyBody:'Setze deinen Einsatz und drücke DEAL.',
   yourTurn:'Du bist am Zug.',yourTurnBody:'Triff die mathematisch korrekte Entscheidung.',
   needBet:'Einsatz zu niedrig.',needBetBody:'Mindesteinsatz ist $5.',
@@ -695,6 +890,51 @@ const UI={
   insY:'INSURE',insN:'DECLINE',surr:'SURR',more:'MORE ▸',
   coach:'COACH',correct:'CORRECT',wrong:'MISTAKE',perfect:'PERFECT',info:'INFO',
   csTitle:'STRATEGY COACH',ssTitle:'SESSION',saTitle:'ACHIEVEMENTS',smTitle:'MENU',scTitle:'BASIC STRATEGY',smaTitle:'THE MATH',
+  startSub:'Basic strategy, until it sticks.',
+  careerTitle:'CAREER',
+  careerFailDirty:'A mistake with no joker. That fails the level, no matter how the cards fell afterwards. Which is the whole point: the decision is scored, not the luck.',
+  uncorrected:'MISTAKES',
+  mistakeKeptToast:'With no joker left the level is lost. You can still play it out.',
+  careerLvl:'LEVEL',
+  careerRd:'HAND',
+  careerTargetLbl:'TARGET',
+  careerJok:'JOKERS',
+  jokerBtn:'USE A JOKER',
+  acceptBtn:'KEEP MY MOVE',
+  careerPass:'Level cleared.',
+  careerFail:'Target missed.',
+  careerPassBody:'You reached the target. The coins are yours.',
+  careerFailBody:'Not enough capital. Nothing lost — run the level again.',
+  coinsLbl:'COINS',
+  coinsEarned:'Earned',
+  retry:'RETRY',
+  backToList:'BACK TO LEVELS',
+  careerLocked:'Clear the previous level first.',
+  careerStaged:'Note: the cards in these levels are fixed. That is why correct play always lands exactly on the target here. A real table does not work that way — there, a perfect decision loses regularly. Which is exactly why this app scores the decision and not the result.',
+  careerIntro:'Fixed situations, a fixed target. Two jokers per level, each undoing one mistake.',
+  redeemBtn:'REDEEM COINS',
+  redeemNone:'No coins yet.',
+  redeemBody:'Coins from career mode convert to bankroll here. 1 coin = $1. It does not count as a rebuy.',
+  careerRoundInfo:'Bet is fixed.',
+  careerRoundBody:'Career mode sets the bet for you. Press DEAL.',
+  jokerLeft:'jokers left',
+  jokerNone:'No jokers left.',
+  jokerUsedMsg:'Joker spent.',
+  jokerUsedBody:'The correct move is played out. The mistake still stays in your statistics — otherwise the app would report a skill level you do not have.',
+  mistakeKept:'Your move stands.',
+  mistakeKeptBody:'You are sticking with your decision. It may well cost you the target.',
+  careerModeName:'Career',
+  careerNames:['Hard hands','Doubling down','Soft hands','Eights and aces','Tens and fives','Soft 18','Surrender','Small pairs','Nines and twelves','Final exam'],
+  careerHints:['When do you stand on a bad hand, and when do you hit?','Nine, ten and eleven are the hands that make you money.','An ace counts eleven or one. That changes everything.','Two rules with no exceptions: always split eights, always split aces.','And two that are just as strict: never split tens, never split fives.','Ace-seven is the hand most players get wrong.','Surrender is not retreat. It is the cheapest bill on the table.','Sixes, sevens, threes, twos and fours — split or not?','Two nines are strong. But not against everything.','Everything at once. Seven hands, no topic announced.'],
+  startCareer:'CAREER', startCareerBody:'Fixed situations, a starting stack, two jokers. Hit the target and earn coins.',
+  startTraining:'TRAINING', startTrainingBody:'Play and learn freely. The bankroll tops itself up, nothing costs you anything.',
+  startEndless:'ENDLESS', startEndlessBody:'Real bankroll, real stakes. Every decision shows up in your wallet.',
+  startLearn:'LESSONS', startLearnBody:'Nine chapters with explanation, played hands and a quiz.',
+  soon:'SOON', changeMode:'Change mode', modeLbl:'Mode',
+  careerSoon:'Career is not finished yet.',
+  careerSoonBody:'That mode is next up. Until then: Training to practise, Endless for the real thing.',
+  trainingHint:'Training mode.', trainingHintBody:'The bankroll tops itself up here. No rebuy, no pressure — just repetition.',
+  endlessHint:'Endless.', endlessHintBody:'Your bankroll carries over. Run it dry and it costs you a rebuy.',
   ready:'Ready.',readyBody:'Place your bet and press DEAL.',
   yourTurn:'Your move.',yourTurnBody:'Make the mathematically correct decision.',
   needBet:'Bet too low.',needBetBody:'Minimum bet is $5.',
@@ -928,10 +1168,13 @@ function save(){
   saveTimer=setTimeout(async()=>{
     try{
       if(window.storage&&window.storage.set){
+        /* Nur die Endless-Bankroll wird gespeichert. Training laeuft auf einem
+           eigenen, nicht persistenten Stapel und kann Endless nicht beschaedigen. */
+        if(S.gameMode!=='training')S.bankEndless=S.bank;
         await window.storage.set('dealers_edge_v1',JSON.stringify({
-          bank:S.bank,stats:S.stats,ach:S.ach,lang:S.lang,mode:S.mode,
+          bank:S.bankEndless,stats:S.stats,ach:S.ach,lang:S.lang,mode:S.mode,
           sound:S.sound,autoSheet:S.autoSheet,showCount:S.showCount,autoNext:S.autoNext,lastBet:S.lastBet,
-          tutDone:S.tut.done,seenTut:S.seenTut
+          tutDone:S.tut.done,seenTut:S.seenTut,careerData:S.careerData
         }));
       }
     }catch(e){}
@@ -946,7 +1189,7 @@ async function load(){
         if(o.stats)S.stats=Object.assign(S.stats,o.stats);
         if(o.stats&&o.stats.cat)S.stats.cat=o.stats.cat;
         if(o.stats&&o.stats.c)S.stats.c=Object.assign(S.stats.c,o.stats.c);
-        if(typeof o.bank==='number')S.bank=o.bank;
+        if(typeof o.bank==='number'){S.bank=o.bank;S.bankEndless=o.bank}
         if(o.ach)S.ach=o.ach;
         if(o.lang)S.lang=o.lang;
         if(o.mode)S.mode=o.mode;
@@ -957,6 +1200,10 @@ async function load(){
         if(o.lastBet){S.lastBet=o.lastBet;S.bet=o.lastBet}
         if(o.tutDone)S.tut.done=o.tutDone;
         if(o.seenTut)S.seenTut=true;
+        if(o.careerData){
+          if(typeof o.careerData.coins==='number')S.careerData.coins=o.careerData.coins;
+          if(o.careerData.done)S.careerData.done=o.careerData.done;
+        }
       }
     }
   }catch(e){}
@@ -982,6 +1229,10 @@ const DRILL={
    ========================================================================= */
 function toBetting(){
   S.tut.active=false;
+  if(S.gameMode==='career'&&S.career&&S.career.running){S.career.round++;careerRound();return}
+  /* Training kennt keine Pleite: es wird still aufgefuellt, damit der Uebungsrhythmus
+     nie unterbrochen wird (Entscheidung E8). Rebuys werden dabei nicht gezaehlt. */
+  if(S.gameMode==='training'&&S.bank<RULES.minBet)S.bank=RULES.startBank;
   if(S.bank<RULES.minBet){S.phase='broke';coach('bad',T().broke,T().brokeBody);render();return}
   S.phase='bet';S.dealer=[];S.hole=null;S.holeShown=false;S.hands=[];S.active=0;
   S.bet=Math.min(S.lastBet,Math.floor(S.bank));
@@ -1009,7 +1260,7 @@ function deal(){
   if(S.phase!=='bet')return;
   if(S.bet<RULES.minBet){coach('bad',T().needBet,T().needBetBody);render();return}
   if(S.bet>S.bank)return;
-  if(needShuffle()){freshShoe();coach('info',T().shuffle,T().shuffleBody)}
+  if(S.gameMode!=='career'&&needShuffle()){freshShoe();coach('info',T().shuffle,T().shuffleBody)}
   S.lastBet=S.bet;S.bank-=S.bet;
   S.dealer=[];S.hole=null;S.holeShown=false;S.hands=[];S.active=0;S.pending=null;S.keepCoach=false;S.insuranceBet=0;
 
@@ -1241,7 +1492,7 @@ function settle(){
   setTimeout(animatePayout,60);
 }
 function finishRoundStats(){
-  if(S.bank>S.stats.peak)S.stats.peak=S.bank;
+  if(S.gameMode!=='training'&&S.bank>S.stats.peak)S.stats.peak=S.bank;
   if(needShuffle()&&S.stats.shoeDec>=20&&S.stats.shoeErr===0)S.stats.c.cleanShoe++;
 }
 function maybeAuto(){if(S.autoNext)setTimeout(()=>{if(S.phase==='settled')toBetting()},2400)}
@@ -1279,14 +1530,18 @@ function money(n){return '$'+Math.round(n).toLocaleString(S.lang==='de'?'de-DE':
 
 function render(){
   const t=T();
-  // card sizing
+  // Kartengroesse: eine einzige Quelle. Die Basis kommt aus der Viewportbreite
+  // (identisch zur clamp-Regel im CSS), die Staffelung nach Handzahl liegt hier.
   const maxCards=Math.max(2,...S.hands.map(h=>h.cards.length),S.dealer.length+1);
   const nh=S.hands.length;
-  let cw=56;
-  if(nh>=3||maxCards>=6)cw=40; else if(nh===2||maxCards>=5)cw=48;
+  const base=Math.round(Math.min(58,Math.max(42,window.innerWidth*0.132)));
+  let cw=base;
+  if(nh>=4)cw=Math.round(base*0.60);
+  else if(nh===3||maxCards>=6)cw=Math.round(base*0.72);
+  else if(nh===2||maxCards>=5)cw=Math.round(base*0.86);
   if(window.innerWidth>=900)cw=Math.max(cw,58);
   document.documentElement.style.setProperty('--cw',cw+'px');
-  document.documentElement.style.setProperty('--ch',Math.round(cw*1.42)+'px');
+  document.documentElement.style.setProperty('--ch',Math.round(cw*1.43)+'px');
 
   dealDelay=0;
   // dealer
@@ -1318,6 +1573,7 @@ function render(){
   if(ab&&ab.scrollIntoView)ab.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
 
   // hud
+  renderCareerBar();
   renderBank();
   document.getElementById('tutPanel').classList.toggle('hidden',!S.tut.active);
   document.getElementById('coach').classList.toggle('hidden',S.tut.active);
@@ -1331,8 +1587,10 @@ function render(){
   document.getElementById('shoeInfo').textContent=shoeTxt;
 
   // dock
-  const show=id=>['dockBet','dockPlay','dockIns','dockCont','dockNext','dockRebuy','dockTut','dockQuiz']
+  const show=id=>['dockBet','dockPlay','dockIns','dockCont','dockJoker','dockNext','dockRebuy','dockTut','dockQuiz']
     .forEach(k=>document.getElementById(k).classList.toggle('hidden',k!==id));
+  const inCareer=S.gameMode==='career'&&S.career&&S.career.running;
+  document.getElementById('dockBet').classList.toggle('fixedbet',!!inCareer);
   if(S.tut.active){
     if(S.phase==='tut_hand')show('dockPlay');
     else if(S.phase==='tut_quiz'||(S.phase==='tut_after'&&LESSONS[S.tut.lesson].steps[S.tut.step].t==='quiz'))show('dockQuiz');
@@ -1341,8 +1599,13 @@ function render(){
   else if(S.phase==='bet'){show('dockBet');renderChips()}
   else if(S.phase==='player')show('dockPlay');
   else if(S.phase==='insurance')show('dockIns');
-  else if(S.phase==='mistake')show('dockCont');
-  else if(S.phase==='broke')show('dockRebuy');
+  else if(S.phase==='mistake')show(inCareer?'dockJoker':'dockCont');
+  else if(S.phase==='broke'){
+    show('dockRebuy');
+    const rb=document.getElementById('btnRedeem');
+    rb.classList.toggle('hidden',S.careerData.coins<1);
+    rb.textContent=t.redeemBtn+' ('+S.careerData.coins+')';
+  }
   else show('dockNext');
 
   if(S.phase==='player'||S.phase==='tut_hand'){
@@ -1354,6 +1617,11 @@ function render(){
     document.getElementById('aSURRENDER').disabled=!o.canSurrender;
   }
   document.getElementById('betAmount').textContent=money(S.bet);
+  if(inCareer&&S.phase==='mistake'){
+    const jb=document.getElementById('btnJoker');
+    jb.disabled=S.career.jokers<=0;
+    jb.textContent=S.career.jokers>0?(T().jokerBtn+' ('+S.career.jokers+')'):T().jokerNone;
+  }
 }
 function renderChips(){
   const vals=[5,25,100,500],cols=['#3ce8ff','#42f08c','#ff3355','#ffcf4d'];
@@ -1494,11 +1762,22 @@ function buildMenu(){
       <button class="btn sm b-ghost" onclick="openSheet('sheetChart')">${t.chartBtn}</button>
       <button class="btn sm b-ghost" onclick="openSheet('sheetMath')">${t.mathBtn}</button>
       <button class="btn sm b-stand" onclick="resetAll()">${t.resetAll}</button></div>`;
+  h+=`<div style="margin-top:14px"><h4>${t.modeLbl}</h4><div style="display:grid;gap:8px">
+      <button class="btn sm b-double" onclick="closeSheets();openCareer()">${t.careerTitle}</button>`;
+  if(S.gameMode==='endless'){
+    h+=`<button class="btn sm b-ghost" onclick="redeemCoins()">${t.redeemBtn} (${S.careerData.coins})</button>`;
+  }
+  h+=`<button class="btn sm b-ghost" onclick="closeSheets();showStartScreen()">${t.changeMode}</button></div>`;
+  if(S.gameMode==='endless')h+=`<p style="font-size:16px;color:var(--dim);margin-top:8px">${t.redeemBody}</p>`;
+  h+=`</div>`;
+  h+=`<div style="margin-top:18px;text-align:center" class="px">
+      <span style="font-size:7px;color:var(--dim)">DEALER'S EDGE · V${APP_VERSION}</span></div>`;
   document.getElementById('smBody').innerHTML=h;
 }
 function setMode(m){S.mode=m;buildMenu();save()}
 function resetAll(){
-  S.bank=RULES.startBank;S.bet=25;S.lastBet=25;S.ach={};S.mistakes=[];
+  S.bank=RULES.startBank;S.bankEndless=RULES.startBank;S.bet=25;S.lastBet=25;S.ach={};S.mistakes=[];
+  S.career=null;S.careerData={coins:0,done:{}};
   S.stats={dec:0,ok:0,streak:0,best:0,hands:0,won:0,lost:0,pushed:0,rebuys:0,peak:RULES.startBank,
     xp:0,lvl:1,shoeDec:0,shoeErr:0,
     cat:{hard:{d:0,o:0},soft:{d:0,o:0},pair:{d:0,o:0},surrender:{d:0,o:0},insurance:{d:0,o:0}},
@@ -1668,7 +1947,11 @@ function setLang(l){
   document.getElementById('siTitle').textContent=t.siTitle;
   if(S.phase==='bet')coach('info',t.ready,t.readyBody);
   else if(S.phase==='player')coach('info',t.yourTurn,t.yourTurnBody);
-  buildMenu();render();save();
+  document.getElementById('cvTitle').textContent=t.careerTitle;
+  document.getElementById('btnAccept').textContent=t.acceptBtn;
+  buildMenu();renderStartScreen();
+  if(document.getElementById('cvBody').innerHTML)buildCareerSheet();
+  render();save();
 }
 
 /* ---------- keyboard (desktop) ---------- */
@@ -2165,6 +2448,325 @@ function initPWA(){
 }
 
 /* ============================================================================
+   19. STARTBILDSCHIRM — Modus-Auswahl
+   Reine Huelle: legt nur fest, in welchem Modus gespielt wird. Es wird nichts
+   an der Strategie-Engine, der EV-Engine oder den Auszahlungen veraendert.
+   ========================================================================= */
+const MODES=[
+  {id:'career', cls:'m-career', ic:'♛', locked:false, t:'startCareer',   b:'startCareerBody'},
+  {id:'training',cls:'m-train', ic:'✎', locked:false, t:'startTraining', b:'startTrainingBody'},
+  {id:'endless', cls:'m-endless',ic:'♠', locked:false, t:'startEndless',  b:'startEndlessBody'},
+  {id:'lessons', cls:'m-learn',  ic:'▤', locked:false, t:'startLearn',    b:'startLearnBody'}
+];
+
+function renderStartScreen(){
+  const t=T();
+  const sub=document.getElementById('startSub');
+  if(sub)sub.textContent=t.startSub;
+  const ver=document.getElementById('startVer');
+  if(ver)ver.textContent='V'+APP_VERSION;
+  const de=document.getElementById('stLangDe'), en=document.getElementById('stLangEn');
+  if(de)de.setAttribute('aria-pressed',String(S.lang==='de'));
+  if(en)en.setAttribute('aria-pressed',String(S.lang==='en'));
+  const box=document.getElementById('startModes');
+  if(!box)return;
+  box.innerHTML=MODES.map(m=>
+    `<button class="modecard ${m.cls}${m.locked?' locked':''}" onclick="chooseMode('${m.id}')">
+       <span class="ic">${m.ic}</span>
+       <span style="flex:1 1 auto;min-width:0">
+         <b>${t[m.t]}${m.locked?`<span class="soonbadge">${t.soon}</span>`:''}</b>
+         <span>${t[m.b]}</span>
+       </span>
+     </button>`).join('');
+}
+function showStartScreen(){
+  S.gameMode=null;
+  closeSheets();
+  renderStartScreen();
+  document.getElementById('startscreen').classList.remove('hidden');
+}
+function hideStartScreen(){
+  document.getElementById('startscreen').classList.add('hidden');
+}
+function chooseMode(id){
+  unlockAudio();
+  const t=T();
+  if(id==='career'){openCareer();return}
+  if(id==='lessons'){
+    S.gameMode='training';S.bank=RULES.startBank;
+    hideStartScreen();freshShoe();toBetting();save();
+    openSheet('sheetTut');
+    return;
+  }
+  S.gameMode=id;
+  /* Training startet jedes Mal frisch, Endless setzt die gespeicherte Bankroll fort. */
+  S.bank = (id==='training') ? RULES.startBank : S.bankEndless;
+  hideStartScreen();
+  sfx('chip');
+  freshShoe();
+  toBetting();
+  coach('info', id==='training'?t.trainingHint:t.endlessHint,
+                id==='training'?t.trainingHintBody:t.endlessHintBody);
+  render();save();
+}
+
+/* ============================================================================
+   20. KARRIERE
+   Feste Situationen, festes Ziel, zwei Joker.
+
+   Die Level sind vollstaendig deterministisch: jede Runde legt ihren eigenen
+   Kartenstapel fest, der zu Beginn der Runde neu gesetzt wird. Ein Fehler in
+   Runde 3 kann Runde 4 deshalb nicht verschieben.
+
+   Das Ziel ist KEINE gesetzte Zahl, sondern das Endkapital bei perfektem Spiel,
+   ausgerechnet von genau der Engine aus Abschnitt 4 (siehe E10). Der Generator
+   und das Pruefskript liegen im Projekt unter tools/.
+
+   Anders als in Training und Endless wird ein falscher Zug hier wirklich
+   ausgefuehrt. Sonst waere ein Joker, der Fehler rueckgaengig macht, wertlos.
+   ========================================================================= */
+const CAREER=[
+ {id:1,start:500,bet:50,target:650,rounds:[
+  '10,6,7,10,4,3,5,6,A,10,A,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '9,4,5,10,10,2,8,5,10,7,2,3,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '10,3,10,2,10,8,5,10,6,9,3,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '8,5,6,10,10,7,10,3,10,A,5,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '10,7,9,4,10,10,6,10,10,2,3,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
+ {id:2,start:500,bet:50,target:800,rounds:[
+  '6,5,7,4,8,7,6,5,10,2,2,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '7,3,4,5,10,10,10,4,2,10,10,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '5,4,5,4,10,7,10,10,10,10,A,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '6,5,10,9,6,6,A,5,10,2,2,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '4,6,6,5,10,4,8,6,4,2,6,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
+ {id:3,start:500,bet:50,target:800,rounds:[
+  'A,6,5,2,10,7,A,8,A,10,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  'A,2,6,8,9,10,2,8,10,A,10,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  'A,4,4,10,10,9,9,7,8,9,10,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  'A,8,6,10,4,8,4,10,3,10,10,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  'A,9,7,10,2,10,3,7,7,8,10,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
+ {id:4,start:600,bet:50,target:1000,rounds:[
+  '8,8,6,10,6,10,6,5,8,3,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  'A,A,5,6,10,A,3,9,8,7,4,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '8,8,10,10,5,7,4,2,8,9,10,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  'A,A,6,10,A,10,10,10,4,9,A,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '8,8,9,3,6,5,2,9,6,A,10,7,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
+ {id:5,start:500,bet:50,target:650,rounds:[
+  '10,10,6,4,3,10,7,5,10,10,5,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '5,5,6,9,6,10,6,6,A,6,7,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '10,10,5,2,10,10,5,10,10,10,5,7,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '5,5,4,10,7,4,10,10,10,9,7,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '10,10,9,10,4,2,8,2,7,7,10,3,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
+ {id:6,start:500,bet:50,target:700,rounds:[
+  'A,7,9,8,3,7,9,3,8,3,A,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  'A,7,5,7,10,A,A,10,10,9,3,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  'A,7,8,8,A,3,3,7,3,8,10,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  'A,7,2,3,10,4,2,7,10,10,8,3,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  'A,7,10,4,2,A,3,A,3,2,4,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
+ {id:7,start:500,bet:50,target:525,rounds:[
+  '10,6,10,7,A,8,3,4,10,7,3,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '10,5,10,4,6,5,10,7,3,10,10,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '9,7,9,9,10,3,10,6,10,6,5,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '10,6,6,10,10,9,10,3,9,3,A,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '10,6,2,10,10,5,3,5,6,10,3,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
+ {id:8,start:700,bet:50,target:950,rounds:[
+  '6,6,5,10,10,10,10,2,4,10,6,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '7,7,6,10,9,10,10,9,8,4,10,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '3,3,6,2,10,9,2,5,10,9,6,A,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '2,2,5,5,5,10,10,10,3,10,7,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '4,4,5,3,7,10,8,10,10,3,7,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
+ {id:9,start:600,bet:50,target:800,rounds:[
+  '9,9,9,10,10,5,6,9,9,8,A,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '9,9,7,6,9,3,3,7,4,3,7,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '10,2,3,10,8,10,3,8,9,10,2,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '10,2,4,7,10,8,9,4,8,7,10,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  'A,A,10,3,10,10,A,2,7,4,10,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
+ {id:10,start:800,bet:50,target:1175,rounds:[
+  '8,8,10,6,10,2,4,A,3,8,3,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  'A,7,6,9,10,A,10,10,7,5,2,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '10,6,10,4,7,10,10,10,10,3,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '5,5,9,10,10,7,5,8,A,A,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  'A,A,5,5,2,10,2,A,3,8,A,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '9,2,4,10,4,6,7,6,8,A,7,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
+  '7,7,6,10,6,9,9,5,6,10,A,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']}
+];
+
+const CAREER_FILL='7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2'.split(',');
+let careerSuit=0;
+function careerCard(r){
+  const v = r==='A' ? 11 : parseInt(r,10);
+  const su=SUITS[careerSuit++%4];
+  return {r:r,v:v,s:su.s,c:su.c};
+}
+/* Sicherheitsnetz: laeuft der Stapel durch sehr schlechtes Spiel doch leer,
+   wird deterministisch nachgelegt statt zufaellig gemischt. Die Pruefung zeigt,
+   dass perfektes Spiel nie mehr als 15 der mindestens 30 Karten braucht. */
+function careerRefill(){
+  for(let i=CAREER_FILL.length-1;i>=0;i--)S.shoe.push(careerCard(CAREER_FILL[i]));
+}
+
+function careerUnlocked(i){
+  if(i===0)return true;
+  return !!(S.careerData.done && S.careerData.done[CAREER[i-1].id]);
+}
+
+function openCareer(){
+  S.gameMode='career';
+  hideStartScreen();
+  buildCareerSheet();
+  openSheet('sheetCareer');
+}
+
+function buildCareerSheet(){
+  const t=T();
+  let h=`<p>${t.careerIntro}</p>`;
+  h+=`<div class="coinline"><span class="k">${t.coinsLbl}</span><span class="v">${S.careerData.coins}</span></div>`;
+  CAREER.forEach((lv,i)=>{
+    const rec=S.careerData.done[lv.id];
+    const open=careerUnlocked(i);
+    const stars=rec?'\u2605'.repeat(rec.stars)+'\u2606'.repeat(3-rec.stars):'';
+    h+=`<button class="lvitem${rec?' done':''}${open?'':' locked'}" ${open?`onclick="careerStart(${i})"`:''}>
+          <span class="num">${lv.id}</span>
+          <span style="flex:1 1 auto;min-width:0">
+            <b>${t.careerNames[i]}</b>
+            <span>${open?t.careerHints[i]:t.careerLocked}</span>
+            <span style="color:var(--cyan);font-family:'Press Start 2P',monospace;font-size:7px;margin-top:5px">
+              $${lv.start} \u2192 $${lv.target} \u00b7 ${lv.rounds.length} ${t.careerRd}</span>
+          </span>
+          <span class="st">${stars}</span>
+        </button>`;
+  });
+  h+=`<div class="staged">${t.careerStaged}</div>`;
+  document.getElementById('cvBody').innerHTML=h;
+}
+
+function careerStart(i){
+  unlockAudio();
+  if(!careerUnlocked(i))return;
+  const lv=CAREER[i];
+  S.gameMode='career';
+  S.career={idx:i,round:0,jokers:2,jokersUsed:0,errors:0,target:lv.target,start:lv.start,running:true};
+  S.bank=lv.start;
+  closeSheets();hideStartScreen();
+  careerRound();
+}
+
+function careerRound(){
+  const c=S.career,lv=CAREER[c.idx],t=T();
+  if(c.round>=lv.rounds.length){careerFinish();return}
+  S.shoe=lv.rounds[c.round].split(',').map(careerCard).reverse();
+  S.count=0;
+  S.dealer=[];S.hole=null;S.holeShown=false;S.hands=[];S.active=0;
+  S.pending=null;S.keepCoach=false;S.insuranceBet=0;
+  S.bet=lv.bet;S.lastBet=lv.bet;
+  S.phase='bet';
+  coach('info',t.careerRoundInfo,t.careerRoundBody);
+  render();
+}
+
+function careerFinish(){
+  const c=S.career,lv=CAREER[c.idx],t=T();
+  c.running=false;
+  /* Zwei Bedingungen. Das Kapital allein reicht nicht: sonst koennte ein
+     unkorrigierter Fehler das Level durch Glueck bestehen, und genau das
+     schliesst E7 aus. Ein Fehler ohne Joker verliert das Level, unabhaengig
+     davon, wie die Karten danach fallen. */
+  const clean=c.errors===0;
+  const reached=S.bank>=c.target;
+  const passed=reached&&clean;
+  const stars=passed?Math.max(1,3-c.jokersUsed):0;
+  let earned=0;
+  if(passed){
+    const prev=S.careerData.done[lv.id];
+    const full=40+10*lv.id+25*stars;
+    earned=prev?Math.round(full*0.25):full;
+    S.careerData.coins+=earned;
+    if(!prev||stars>prev.stars)S.careerData.done[lv.id]={stars:stars};
+    sfx('star');
+  }else sfx('lose');
+
+  document.getElementById('ceTitle').textContent=t.careerLvl+' '+lv.id;
+  let h=`<div class="endbig" style="color:${passed?'var(--green)':'var(--red)'}">${passed?t.careerPass:t.careerFail}</div>`;
+  if(passed)h+=`<div class="endstars">${'\u2605'.repeat(stars)}${'\u2606'.repeat(3-stars)}</div>`;
+  h+=`<p>${passed?t.careerPassBody:(clean?t.careerFailBody:t.careerFailDirty)}</p>`;
+  h+=`<div class="statgrid" style="margin:12px 0">
+        <div class="stat"><div class="k">${t.careerTargetLbl}</div><div class="v" style="color:var(--cyan)">${money(c.target)}</div></div>
+        <div class="stat"><div class="k">${t.bank}</div><div class="v" style="color:${passed?'var(--green)':'var(--red)'}">${money(S.bank)}</div></div>
+        <div class="stat"><div class="k">${t.careerJok}</div><div class="v">${c.jokers}/2</div></div>
+        <div class="stat"><div class="k">${t.uncorrected}</div><div class="v" style="color:${clean?'var(--green)':'var(--red)'}">${c.errors}</div></div>
+        <div class="stat"><div class="k">${t.coinsEarned}</div><div class="v" style="color:var(--gold)">+${earned}</div></div>
+      </div>`;
+  h+=`<div style="display:grid;gap:8px;margin-top:6px">
+        <button class="btn sm b-hit" onclick="careerStart(${c.idx})">${t.retry}</button>
+        <button class="btn sm b-ghost" onclick="closeSheets();openCareer()">${t.backToList}</button>
+      </div>`;
+  h+=`<div class="staged">${t.careerStaged}</div>`;
+  document.getElementById('ceBody').innerHTML=h;
+  openSheet('sheetCareerEnd');
+  render();save();
+}
+
+/* ---------- Joker ---------- */
+function careerUseJoker(){
+  const c=S.career,t=T();
+  if(S.phase!=='mistake'||!c||c.jokers<=0)return;
+  c.jokers--;c.jokersUsed++;
+  clearHighlight();closeSheets();
+  coach('info',t.jokerUsedMsg,t.jokerUsedBody);
+  sfx('star');
+  S.phase='player';
+  execute(S.pending);
+  render();save();
+}
+function careerAcceptMistake(){
+  const t=T();
+  if(S.phase!=='mistake')return;
+  /* Erst hier wird gezaehlt: ein per Joker geheilter Fehler ist kein
+     unkorrigierter Fehler und darf das Level nicht kosten. */
+  if(S.career)S.career.errors++;
+  clearHighlight();closeSheets();
+  coach('bad',t.mistakeKept,t.mistakeKeptBody);
+  toast(t.careerFail,t.mistakeKeptToast);
+  S.phase='player';
+  execute(S.lastChoice);
+  render();save();
+}
+
+/* ---------- Anzeige ueber dem Tisch ---------- */
+function renderCareerBar(){
+  const el=document.getElementById('careerBar');
+  const on=S.gameMode==='career'&&S.career&&S.career.running;
+  el.classList.toggle('hidden',!on);
+  if(!on)return;
+  const c=S.career,lv=CAREER[c.idx],t=T();
+  const pct=Math.max(0,Math.min(100,S.bank/c.target*100));
+  const hit=S.bank>=c.target?' hit':'';
+  let jok='';
+  for(let i=0;i<2;i++)jok+=`<i class="${i<c.jokers?'':'used'}"></i>`;
+  el.innerHTML=
+    `<div class="cbtop">
+       <span class="lv">${t.careerLvl} ${lv.id} \u00b7 ${t.careerNames[c.idx]}</span>
+       <span class="rd">${t.careerRd} ${Math.min(c.round+1,lv.rounds.length)}/${lv.rounds.length}</span>
+     </div>
+     <div class="cbgoal"><span>${money(S.bank)}</span><span>${t.careerTargetLbl} <b>${money(c.target)}</b></span></div>
+     <div class="cbbar${hit}"><i style="width:${pct}%"></i></div>
+     <div class="cbjok">${jok}<span style="margin-left:4px">${c.jokers} ${t.jokerLeft}</span>
+       ${c.errors?`<span style="margin-left:auto;color:var(--red)">${t.uncorrected}: ${c.errors}</span>`:''}</div>`;
+}
+
+/* ---------- Coins in Endless einloesen ---------- */
+function redeemCoins(){
+  const t=T();
+  if(S.gameMode!=='endless'){return}
+  const c=Math.floor(S.careerData.coins);
+  if(c<1){toast(t.coinsLbl,t.redeemNone);return}
+  S.bank+=c;S.careerData.coins=0;
+  sfx('chip');closeSheets();
+  toast(t.coinsLbl,'+'+money(c));
+  if(S.phase==='broke')toBetting(); else render();
+  save();
+}
+
+/* ============================================================================
    15. BOOT
    ========================================================================= */
 (async function boot(){
@@ -2173,10 +2775,8 @@ function initPWA(){
   freshShoe();
   setLang(S.lang);
   toBetting();
-  if(!S.seenTut){
-    S.seenTut=true;save();
-    setTimeout(()=>{coach('info',T().tutPrompt,T().tutPromptBody);openSheet('sheetTut')},600);
-  }
+  showStartScreen();
+  if(!S.seenTut){S.seenTut=true;save()}
 })();
 </script>
 </body>

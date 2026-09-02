@@ -1,6 +1,8 @@
 /* Dealer's Edge — offline service worker.
-   Bump CACHE when you ship a new index.html. */
-const CACHE = 'dealers-edge-v1';
+   CACHE traegt die Versionsnummer und muss mit APP_VERSION in index.html
+   uebereinstimmen. Wird sie nicht erhoeht, bekommen bestehende Installationen
+   die neue Datei nicht. */
+const CACHE = 'dealers-edge-0.4.0';
 const ASSETS = ['./', './index.html', './manifest.webmanifest'];
 
 self.addEventListener('install', e => {
