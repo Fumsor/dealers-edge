@@ -144,9 +144,24 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
 
 /* ---------------- CHIPS / BET ---------------- */
 .chiprow{display:flex;gap:7px;justify-content:space-between;margin-bottom:8px}
-.pchip{flex:1 1 0;height:52px;border-radius:50%;border:3px solid var(--ink);font-family:'Press Start 2P',monospace;font-size:9px;
-  color:#fff;cursor:pointer;box-shadow:0 4px 0 0 rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;
-  background:repeating-conic-gradient(from 0deg,var(--c) 0 30deg,#ffffff30 30deg 60deg)}
+.pchip{--edge:#f4f0e2;
+  flex:1 1 0;height:54px;border-radius:50%;border:3px solid var(--ink);position:relative;
+  font-family:'Press Start 2P',monospace;font-size:9px;color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 0 0 rgba(0,0,0,.55),0 0 0 2px rgba(0,0,0,.35);
+  /* Zwei Lagen: oben die Scheibe in Chipfarbe, darunter der Rand mit acht
+     hellen Kerben. Harte Farbstopps, damit es pixelig bleibt. */
+  background:
+    radial-gradient(circle closest-side at 50% 50%, var(--c) 0 72%, transparent 72.5%),
+    repeating-conic-gradient(from 11.25deg, var(--edge) 0deg 22.5deg, var(--c) 22.5deg 45deg)}
+/* Innerer Ring, wie die Praegung auf einem echten Jeton */
+.pchip::before{content:"";position:absolute;inset:26%;border-radius:50%;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.4),0 0 0 2px rgba(0,0,0,.3);pointer-events:none}
+/* Lichtkante oben, Schatten unten — gibt der Scheibe Tiefe */
+.pchip::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.22) 0 34%,transparent 34% 66%,rgba(0,0,0,.28) 66% 100%)}
+.pchip b{position:relative;z-index:2;font-weight:normal;
+  text-shadow:1px 1px 0 rgba(0,0,0,.75),-1px -1px 0 rgba(0,0,0,.45)}
 .pchip:active{transform:translateY(4px);box-shadow:none}
 .pchip:disabled{opacity:.25}
 .betline{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;
@@ -203,12 +218,17 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
 .ach b{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--paper);display:block;margin-bottom:5px}
 .ach.on b{color:var(--gold)}
 .ach span{font-size:17px;color:var(--dim);line-height:1.2}
-#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(220%);
-  bottom:calc(var(--dockh, 130px) + 10px);z-index:210;
-  background:#150d31;border:3px solid var(--gold);box-shadow:0 0 0 3px var(--ink),0 8px 30px rgba(255,207,77,.3);
-  padding:10px 14px;transition:transform .3s cubic-bezier(.2,1.3,.4,1);text-align:center;
+/* Sitzt direkt unter dem HUD: unterhalb der Dynamic Island und trotzdem weit
+   weg von den Aktionsknoepfen. Versteckt wird ueber Sichtbarkeit statt ueber
+   eine Verschiebung — eine leere Einblendung ist so flach, dass sie sonst
+   trotz Verschiebung im Bild stehen bleibt. */
+#toast{position:fixed;left:50%;top:calc(var(--hudh, 96px) + 8px);z-index:210;
+  transform:translateX(-50%) translateY(-14px);opacity:0;visibility:hidden;pointer-events:none;
+  background:#150d31;border:3px solid var(--gold);box-shadow:0 0 0 3px var(--ink),0 8px 30px rgba(255,207,77,.35);
+  padding:10px 14px;text-align:center;
+  transition:transform .28s cubic-bezier(.2,1.3,.4,1),opacity .2s,visibility .2s;
   max-width:calc(100vw - var(--safeL) - var(--safeR) - 24px)}
-#toast.on{transform:translateX(-50%) translateY(0)}
+#toast.on{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
 #toast .px{font-size:8px;color:var(--gold);display:block;margin-bottom:6px}
 
 /* ---------------- CHART ---------------- */
@@ -305,9 +325,11 @@ table.chart td.lbl{background:#241a52;color:var(--gold)}
 .card.pop{animation:cardPop .3s steps(3)}
 @keyframes cardPop{50%{transform:translateY(-7px)}}
 
-.chipfly{position:fixed;width:26px;height:26px;border-radius:50%;z-index:190;pointer-events:none;
-  border:3px solid var(--ink);box-shadow:0 3px 0 rgba(0,0,0,.4);
-  background:repeating-conic-gradient(from 0deg,var(--c,#3ce8ff) 0 30deg,#ffffff35 30deg 60deg);
+.chipfly{position:fixed;width:28px;height:28px;border-radius:50%;z-index:190;pointer-events:none;
+  border:3px solid var(--ink);box-shadow:0 3px 0 rgba(0,0,0,.45),inset 0 0 0 2px rgba(255,255,255,.3);
+  background:
+    radial-gradient(circle closest-side at 50% 50%, var(--c,#3ce8ff) 0 70%, transparent 70.5%),
+    repeating-conic-gradient(from 11.25deg,#f4f0e2 0deg 22.5deg,var(--c,#3ce8ff) 22.5deg 45deg);
   transition:transform .5s cubic-bezier(.3,.9,.3,1),opacity .5s}
 .moneypop{position:fixed;z-index:190;pointer-events:none;font-family:'Press Start 2P',monospace;font-size:12px;
   text-shadow:2px 2px 0 rgba(0,0,0,.6);transition:transform .9s ease-out,opacity .9s;opacity:1}
@@ -572,7 +594,7 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(i+1);const t=a[i];
 
 /* ---------- 1. RULES ---------- */
 /* Diese Nummer muss mit dem Cache-Namen in sw.js uebereinstimmen (Backlog B1). */
-const APP_VERSION='0.5.0';
+const APP_VERSION='0.5.1';
 const RULES={decks:6,penetration:0.75,h17:false,das:true,ls:true,maxHands:4,rsa:false,bjPays:1.5,
              minBet:5,maxBet:2000,startBank:1000};
 
@@ -1661,10 +1683,10 @@ function render(){
     document.getElementById('aSURRENDER').disabled=!o.canSurrender;
   }
   document.getElementById('betAmount').textContent=money(S.bet);
-  /* Der Toast sitzt unten und muss ueber dem Dock bleiben, dessen Hoehe je nach
-     Phase wechselt. Deshalb wird sie bei jedem Rendern nachgemessen. */
-  const dk=document.getElementById('dock');
-  if(dk&&dk.offsetHeight)document.documentElement.style.setProperty('--dockh',dk.offsetHeight+'px');
+  /* Der Toast haengt unter dem HUD, dessen Hoehe je nach Geraet und Insets
+     wechselt. Deshalb wird sie bei jedem Rendern nachgemessen. */
+  const hd=document.getElementById('hud');
+  if(hd&&hd.offsetHeight)document.documentElement.style.setProperty('--hudh',hd.offsetHeight+'px');
   if(inCareer&&S.phase==='mistake'){
     const jb=document.getElementById('btnJoker');
     jb.disabled=S.career.jokers<=0;
@@ -1674,7 +1696,7 @@ function render(){
 function renderChips(){
   const vals=[5,25,100,500],cols=['#3ce8ff','#42f08c','#ff3355','#ffcf4d'];
   document.getElementById('chipRow').innerHTML=vals.map((v,i)=>
-    `<button class="pchip" style="--c:${cols[i]}" onclick="addChip(${v},this)" ${S.bet+v>Math.min(RULES.maxBet,S.bank)?'disabled':''}>${v}</button>`).join('');
+    `<button class="pchip" style="--c:${cols[i]}" onclick="addChip(${v},this)" ${S.bet+v>Math.min(RULES.maxBet,S.bank)?'disabled':''}><b>${v}</b></button>`).join('');
 }
 
 
