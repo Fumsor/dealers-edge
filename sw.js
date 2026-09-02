@@ -2,7 +2,7 @@
    CACHE traegt die Versionsnummer und muss mit APP_VERSION in index.html
    uebereinstimmen. Wird sie nicht erhoeht, bekommen bestehende Installationen
    die neue Datei nicht. */
-const CACHE = 'dealers-edge-0.4.0';
+const CACHE = 'dealers-edge-0.5.0';
 const ASSETS = ['./', './index.html', './manifest.webmanifest'];
 
 self.addEventListener('install', e => {

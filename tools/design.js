@@ -1,108 +1,54 @@
-/* Leveldesign — nur der Lehrinhalt, keine Karten des Dealers.
+/* Lehrinhalte nach Thema. Jeder Eintrag ist eine Ausgangslage:
+   [Spielerkarte 1, Spielerkarte 2, Upcard des Dealers].
+   Welche Entscheidung richtig ist, sagt die Engine — hier wird nichts behauptet.
 
-   spot: [Spielerkarte 1, Spielerkarte 2, Upcard des Dealers]
-   keys: Strategieschluessel, die beim perfekten Spiel vorkommen muessen
-   want: gewuenschtes Rundenergebnis
+   Dealer-Ass als Upcard kommt nicht vor: Insurance laeuft ueber einen eigenen
+   Zweig, den der Joker nicht abdeckt. Steht als eigener Punkt im Backlog. */
+const POOLS={
+  stiff:[['10','6','7'],['10','6','8'],['10','5','7'],['10','5','9'],['9','4','5'],
+    ['10','3','10'],['8','5','6'],['9','3','2'],['10','2','3'],['10','2','5'],
+    ['9','5','4'],['8','6','7'],['10','4','2'],['9','6','8'],['8','4','3'],
+    ['10','7','9'],['10','8','7'],['9','8','10'],['10','3','4'],['8','7','6']],
+  dbl:[['6','5','7'],['7','4','4'],['5','6','9'],['8','3','6'],['9','2','5'],
+    ['7','3','4'],['6','4','8'],['5','5','6'],['4','6','3'],['8','2','7'],
+    ['5','4','5'],['6','3','6'],['4','5','4'],['7','2','3'],['2','8','9'],
+    ['5','6','10'],['6','5','10'],['7','4','10'],['4','5','2'],['3','6','7']],
+  soft:[['A','6','5'],['A','2','6'],['A','4','4'],['A','3','5'],['A','5','6'],
+    ['A','6','3'],['A','2','5'],['A','4','6'],['A','3','4'],['A','5','4'],
+    ['A','6','9'],['A','2','9'],['A','4','10'],['A','3','8'],['A','5','7'],
+    ['A','8','6'],['A','9','7'],['A','8','9'],['A','9','10'],['A','8','2']],
+  soft18:[['A','7','9'],['A','7','5'],['A','7','8'],['A','7','2'],['A','7','10'],
+    ['A','7','3'],['A','7','6'],['A','7','7'],['A','7','4']],
+  always:[['8','8','6'],['A','A','5'],['8','8','10'],['A','A','6'],['8','8','9'],
+    ['A','A','10'],['8','8','2'],['A','A','8'],['8','8','7'],['A','A','3'],
+    ['8','8','5'],['A','A','9'],['8','8','4'],['A','A','2'],['8','8','3']],
+  never:[['10','10','6'],['5','5','6'],['10','10','5'],['5','5','4'],['10','10','9'],
+    ['5','5','9'],['10','10','2'],['5','5','7'],['10','10','7'],['5','5','3'],
+    ['10','10','4'],['5','5','8'],['10','10','8'],['5','5','5'],['10','10','3']],
+  surr:[['10','6','10'],['10','5','10'],['9','7','9'],['10','6','9'],['9','6','10'],
+    ['10','6','6'],['10','6','2'],['10','5','6'],['9','7','5'],['10','5','4']],
+  small:[['6','6','5'],['7','7','6'],['3','3','6'],['2','2','5'],['4','4','5'],
+    ['6','6','3'],['7','7','4'],['3','3','2'],['2','2','7'],['4','4','6'],
+    ['6','6','7'],['7','7','8'],['3','3','8'],['2','2','8'],['6','6','2'],
+    ['7','7','2'],['3','3','7'],['2','2','3'],['6','6','6'],['7','7','7']],
+  nine12:[['9','9','9'],['9','9','7'],['10','2','3'],['10','2','4'],['9','9','6'],
+    ['9','9','10'],['10','2','2'],['10','2','6'],['9','9','3'],['9','9','8'],
+    ['10','2','10'],['9','9','2'],['10','2','9'],['9','9','4'],['9','9','5']]
+};
 
-   Bewusst enthaelt fast jedes Level mindestens eine Runde, in der richtiges
-   Spiel trotzdem verliert. Das ist der Kern von E7: Die Entscheidung ist gut
-   oder schlecht, nicht das Ergebnis. Die Summe bleibt trotzdem positiv, damit
-   das Ziel oberhalb des Startkapitals liegt.
-
-   Dealer-Ass als Upcard kommt hier nicht vor — Insurance laeuft ueber einen
-   eigenen Zweig und wird spaeter nachgezogen (Backlog).
-*/
-const DESIGN=[
-{ id:1, key:'l1', start:500, bet:50,
-  rounds:[
-    {spot:['10','6','7'],  keys:['hard.stiffhit'],   want:'win'},
-    {spot:['9','4','5'],   keys:['hard.stiffstand'], want:'win'},
-    {spot:['10','3','10'], keys:['hard.stiffhit'],   want:'lose'},
-    {spot:['8','5','6'],   keys:['hard.stiffstand'], want:'win'},
-    {spot:['10','7','9'],  keys:['hard.17plus'],     want:'win'}
-  ]},
-
-{ id:2, key:'l2', start:500, bet:50,
-  rounds:[
-    {spot:['6','5','7'],  keys:['hard.11double'], want:'win'},
-    {spot:['7','3','4'],  keys:['hard.10double'], want:'win'},
-    {spot:['5','4','5'],  keys:['hard.9double'],  want:'win'},
-    {spot:['6','5','10'], keys:['hard.11double'], want:'lose'},
-    {spot:['4','6','6'],  keys:['hard.10double'], want:'win'}
-  ]},
-
-{ id:3, key:'l3', start:500, bet:50,
-  rounds:[
-    {spot:['A','6','5'],  keys:['soft.17double'],   want:'win'},
-    {spot:['A','2','6'],  keys:['soft.1314double'], want:'win'},
-    {spot:['A','4','4'],  keys:['soft.1516double'], want:'win'},
-    {spot:['A','8','6'],  keys:['soft.19'],         want:'lose'},
-    {spot:['A','9','7'],  keys:['soft.20'],         want:'win'}
-  ]},
-
-{ id:4, key:'l4', start:600, bet:50,
-  rounds:[
-    {spot:['8','8','6'],  keys:['pair.8'], want:'win'},
-    {spot:['A','A','5'],  keys:['pair.A'], want:'win'},
-    {spot:['8','8','10'], keys:['pair.8'], want:'lose'},
-    {spot:['A','A','6'],  keys:['pair.A'], want:'win'},
-    {spot:['8','8','9'],  keys:['pair.8'], want:'win'}
-  ]},
-
-{ id:5, key:'l5', start:500, bet:50,
-  rounds:[
-    {spot:['10','10','6'], keys:['pair.10'], want:'win'},
-    {spot:['5','5','6'],   keys:['pair.5'],  want:'win'},
-    {spot:['10','10','5'], keys:['pair.10'], want:'win'},
-    {spot:['5','5','4'],   keys:['pair.5'],  want:'lose'},
-    {spot:['10','10','9'], keys:['pair.10'], want:'win'}
-  ]},
-
-{ id:6, key:'l6', start:500, bet:50,
-  rounds:[
-    {spot:['A','7','9'],  keys:['soft.18hit'],   want:'win'},
-    {spot:['A','7','5'],  keys:['soft.18double'], want:'win'},
-    {spot:['A','7','8'],  keys:['soft.18stand'], want:'win'},
-    {spot:['A','7','2'],  keys:['soft.18stand'], want:'lose'},
-    {spot:['A','7','10'], keys:['soft.18hit'],   want:'win'}
-  ]},
-
-{ id:7, key:'l7', start:500, bet:50,
-  rounds:[
-    {spot:['10','6','10'], keys:['surr.16v10'], want:'lose'},
-    {spot:['10','5','10'], keys:['surr.15v10'], want:'lose'},
-    {spot:['9','7','9'],   keys:['surr.16v9'],  want:'lose'},
-    {spot:['10','6','6'],  keys:['hard.stiffstand'], want:'win'},
-    {spot:['10','6','2'],  keys:['hard.stiffstand'], want:'win'}
-  ]},
-
-{ id:8, key:'l8', start:700, bet:50,
-  rounds:[
-    {spot:['6','6','5'], keys:['pair.6split'],  want:'win'},
-    {spot:['7','7','6'], keys:['pair.7split'],  want:'win'},
-    {spot:['3','3','6'], keys:['pair.23split'], want:'win'},
-    {spot:['2','2','5'], keys:['pair.23split'], want:'lose'},
-    {spot:['4','4','5'], keys:['pair.4split'],  want:'win'}
-  ]},
-
-{ id:9, key:'l9', start:600, bet:50,
-  rounds:[
-    {spot:['9','9','9'],  keys:['pair.9split'], want:'win'},
-    {spot:['9','9','7'],  keys:['pair.9stand'], want:'win'},
-    {spot:['10','2','3'], keys:['hard.12hit'],  want:'win'},
-    {spot:['10','2','4'], keys:['hard.12stand'],want:'lose'},
-    {spot:['A','A','10'], keys:['pair.A'],      want:'win'}
-  ]},
-
-{ id:10, key:'l10', start:800, bet:50,
-  rounds:[
-    {spot:['8','8','10'], keys:['pair.8'],        want:'win'},
-    {spot:['A','7','6'],  keys:['soft.18double'], want:'win'},
-    {spot:['10','6','10'],keys:['surr.16v10'],    want:'lose'},
-    {spot:['5','5','9'],  keys:['pair.5'],        want:'win'},
-    {spot:['A','A','5'],  keys:['pair.A'],        want:'win'},
-    {spot:['9','2','4'],  keys:['hard.11double'], want:'lose'},
-    {spot:['7','7','6'],  keys:['pair.7split'],   want:'win'}
-  ]}
+/* Aufbau der zehn Level. Sie werden laenger und mischen spaeter mehrere Themen.
+   Wie viele Fehler ein Level vertraegt, wird ausgerechnet, nicht gesetzt. */
+const PLAN=[
+  {id:1,  themes:['stiff'],                         hands:10, start:600,  bet:50},
+  {id:2,  themes:['dbl'],                           hands:11, start:600,  bet:50},
+  {id:3,  themes:['soft'],                          hands:12, start:600,  bet:50},
+  {id:4,  themes:['always'],                        hands:12, start:800,  bet:50},
+  {id:5,  themes:['never','dbl'],                   hands:13, start:700,  bet:50},
+  {id:6,  themes:['soft18','soft'],                 hands:14, start:700,  bet:50},
+  {id:7,  themes:['surr','stiff'],                  hands:15, start:700,  bet:50},
+  {id:8,  themes:['small','always'],                hands:15, start:900,  bet:50},
+  {id:9,  themes:['nine12','stiff','soft'],         hands:16, start:900,  bet:50},
+  {id:10, themes:['stiff','dbl','soft18','always','never','surr','small','nine12'],
+                                                    hands:18, start:1100, bet:50}
 ];
-module.exports={DESIGN};
+module.exports={POOLS,PLAN};

@@ -102,8 +102,8 @@ console.log('\n5. ZWEISPRACHIGKEIT — jeder Schluessel in beiden Sprachen (E9)'
 }
 
 console.log('\n6. VERSION');
-ok(X.APP_VERSION==='0.4.0',`APP_VERSION = ${X.APP_VERSION}`);
-ok(fs.readFileSync('/home/claude/app/sw.js','utf8').includes("'dealers-edge-0.4.0'"),'Cache-Name des Service Workers passt zur Version');
+ok(X.APP_VERSION==='0.5.0',`APP_VERSION = ${X.APP_VERSION}`);
+ok(fs.readFileSync('/home/claude/app/sw.js','utf8').includes("'dealers-edge-0.5.0'"),'Cache-Name des Service Workers passt zur Version');
 
 console.log('\n'+'='.repeat(70));
 console.log(fail?`${fail} PRUEFUNG(EN) FEHLGESCHLAGEN`:'Alle Pruefungen bestanden.');

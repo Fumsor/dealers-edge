@@ -47,10 +47,11 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
 .px{font-family:'Press Start 2P',monospace;letter-spacing:.02em}
 
 /* ---------------- SHELL ---------------- */
-#app{height:100vh;height:100dvh;display:flex;flex-direction:column;max-width:520px;margin:0 auto;position:relative;
+#app{height:100vh;height:100dvh;max-height:100dvh;overflow:hidden;
+     display:flex;flex-direction:column;max-width:520px;margin:0 auto;position:relative;
      padding-left:var(--safeL);padding-right:var(--safeR)}
 @media(min-width:900px){#app{max-width:1180px}}
-#hud{flex:0 0 auto;padding:calc(var(--padT) + 10px) var(--gutter) 8px;background:linear-gradient(180deg,#150d31,#100a26);
+#hud{flex:0 0 auto;padding:calc(var(--padT) + 16px) var(--gutter) 8px;background:linear-gradient(180deg,#150d31,#100a26);
      border-bottom:3px solid var(--ink);box-shadow:0 3px 0 0 var(--line)}
 #stage{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:var(--gutter)}
 #dock{flex:0 0 auto;padding:8px var(--gutter) var(--padB);background:linear-gradient(180deg,#100a26,#0b0718);
@@ -202,7 +203,8 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
 .ach b{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--paper);display:block;margin-bottom:5px}
 .ach.on b{color:var(--gold)}
 .ach span{font-size:17px;color:var(--dim);line-height:1.2}
-#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(-140%);top:calc(var(--padT) + 10px);z-index:210;
+#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(220%);
+  bottom:calc(var(--dockh, 130px) + 10px);z-index:210;
   background:#150d31;border:3px solid var(--gold);box-shadow:0 0 0 3px var(--ink),0 8px 30px rgba(255,207,77,.3);
   padding:10px 14px;transition:transform .3s cubic-bezier(.2,1.3,.4,1);text-align:center;
   max-width:calc(100vw - var(--safeL) - var(--safeR) - 24px)}
@@ -229,6 +231,10 @@ table.chart td.lbl{background:#241a52;color:var(--gold)}
 .cbbar{height:11px;background:#07050f;border:2px solid var(--line);overflow:hidden}
 .cbbar i{display:block;height:100%;background:linear-gradient(90deg,var(--mag),var(--gold));transition:width .4s}
 .cbbar.hit i{background:linear-gradient(90deg,var(--green),var(--cyan))}
+.cbpips{display:flex;gap:3px;margin-bottom:7px;flex-wrap:wrap}
+.cbpips i{flex:1 1 6px;min-width:5px;height:7px;background:#07050f;border:1px solid var(--line);display:block}
+.cbpips i.done{background:var(--gold);border-color:var(--gold)}
+.cbpips i.now{background:var(--cyan);border-color:var(--cyan);animation:blink 1s steps(2) infinite}
 .cbjok{display:flex;align-items:center;gap:5px;margin-top:7px;font-family:'Press Start 2P',monospace;font-size:7px;color:var(--dim)}
 .cbjok i{width:13px;height:13px;border:2px solid var(--gold);background:var(--gold);display:inline-block;
   transform:rotate(45deg);font-style:normal}
@@ -447,6 +453,8 @@ kbd{font-family:'Press Start 2P',monospace;font-size:8px;background:#241a52;bord
         <button class="btn sm b-ghost" onclick="repeatBet()" id="btnRepeat">REPEAT</button>
         <button class="btn sm b-hit" onclick="deal()" id="btnDeal">DEAL</button>
       </div>
+      <button class="btn xs b-double hidden" style="margin-top:8px" onclick="setRecBet()" id="btnRecBet">EMPFEHLUNG</button>
+      <button class="btn xs b-ghost hidden" style="margin-top:8px" onclick="careerCashOut()" id="btnCashOut">ABSCHLIESSEN</button>
     </div>
     <!-- ACTIONS -->
     <div id="dockPlay" class="hidden">
@@ -564,7 +572,7 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(i+1);const t=a[i];
 
 /* ---------- 1. RULES ---------- */
 /* Diese Nummer muss mit dem Cache-Namen in sw.js uebereinstimmen (Backlog B1). */
-const APP_VERSION='0.4.0';
+const APP_VERSION='0.5.0';
 const RULES={decks:6,penetration:0.75,h17:false,das:true,ls:true,maxHands:4,rsa:false,bjPays:1.5,
              minBet:5,maxBet:2000,startBank:1000};
 
@@ -801,6 +809,15 @@ const UI={
   csTitle:'STRATEGY COACH',ssTitle:'SESSION',saTitle:'ERFOLGE',smTitle:'MENÜ',scTitle:'BASIC STRATEGY',smaTitle:'MATHEMATIK',
   startSub:'Basic Strategy, bis sie sitzt.',
   careerTitle:'KARRIERE',
+  handsLeft:'HÄNDE ÜBRIG',stillNeed:'NOCH',targetHit:'ZIEL ERREICHT',
+  cashOut:'ABSCHLIESSEN',recBet:'EMPFEHLUNG',
+  betFree:'Du entscheidest den Einsatz.',
+  betFreeBody:'Der empfohlene Einsatz ist vorgewählt. Höher setzen bringt dich schneller ans Ziel und lässt Hände übrig, die Coins zahlen — geht eine Hand daneben, fehlt dir aber Puffer. Über das Bestehen entscheidet nur das Ziel.',
+  tolNote:'Dieses Level verträgt bis zu {n} Fehler und ist trotzdem zu schaffen. Ausgerechnet, nicht geschätzt.',
+  cashOutMsg:'Level abgeschlossen.',
+  diagTitle:'ANZEIGE (MESSWERTE)',diagViewport:'Viewport',diagInsets:'Insets o/r/u/l',
+  diagStandalone:'Als App installiert',diagDpr:'Pixelverhältnis',diagRest:'Freie Höhe für den Tisch',
+  diagHint:'Gemessen auf diesem Gerät, nicht geschätzt. Schick mir diese Zahlen, dann sitzt das Layout exakt.',diagFail:'Messwerte auf diesem Gerät nicht verfügbar.',
   careerFailDirty:'Ein Fehler ohne Joker. Das Level ist damit nicht bestanden — unabhängig davon, wie die Karten danach gefallen sind. Genau das ist der Punkt: bewertet wird die Entscheidung, nicht das Glück.',
   uncorrected:'FEHLER',
   mistakeKeptToast:'Ohne Joker ist das Level verloren. Du kannst es trotzdem zu Ende spielen.',
@@ -813,7 +830,7 @@ const UI={
   careerPass:'Level geschafft.',
   careerFail:'Ziel verfehlt.',
   careerPassBody:'Du hast das Ziel erreicht. Die Coins sind gutgeschrieben.',
-  careerFailBody:'Das Kapital reicht nicht. Nichts verloren — spiel das Level noch einmal.',
+  careerFailBody:'Das Kapital reicht nicht ganz. Coins gibt es trotzdem für den Weg, den du geschafft hast.',
   coinsLbl:'COINS',
   coinsEarned:'Verdient',
   retry:'NOCHMAL',
@@ -831,7 +848,7 @@ const UI={
   jokerUsedMsg:'Joker eingesetzt.',
   jokerUsedBody:'Der richtige Zug wird ausgeführt. Der Fehler bleibt trotzdem in deiner Statistik stehen — sonst würde die App dir einen Lernstand melden, den es nicht gibt.',
   mistakeKept:'Dein Zug wird ausgeführt.',
-  mistakeKeptBody:'Du bleibst bei deiner Entscheidung. Das kostet dich möglicherweise das Ziel.',
+  mistakeKeptBody:'Du bleibst bei deiner Entscheidung. Der Fehler bleibt in der Statistik und kostet dich Sterne — das Level kannst du trotzdem noch schaffen.',
   careerModeName:'Karriere',
   careerNames:['Harte Hände','Verdoppeln','Weiche Hände','Achten und Asse','Zehner und Fünfer','Soft 18','Aufgeben','Kleine Paare','Neuner und Zwölfen','Prüfung'],
   careerHints:['Wann stehst du auf einer schlechten Hand, wann ziehst du?','Neun, zehn und elf sind die Hände, mit denen du Geld verdienst.','Ein Ass zählt elf oder eins. Das ändert alles.','Zwei Regeln ohne Ausnahme: Achten immer teilen, Asse immer teilen.','Und zwei Regeln, die genauso hart sind: Zehner nie teilen, Fünfer nie teilen.','Ass und Sieben ist die Hand, an der die meisten scheitern.','Aufgeben ist kein Rückzug, sondern die billigste Rechnung.','Sechser, Siebener, Dreier, Zweier und Vierer — teilen oder nicht?','Zwei Neuner sind stark. Aber nicht gegen alles.','Alles zusammen. Sieben Hände, kein Thema angekündigt.'],
@@ -892,6 +909,15 @@ const UI={
   csTitle:'STRATEGY COACH',ssTitle:'SESSION',saTitle:'ACHIEVEMENTS',smTitle:'MENU',scTitle:'BASIC STRATEGY',smaTitle:'THE MATH',
   startSub:'Basic strategy, until it sticks.',
   careerTitle:'CAREER',
+  handsLeft:'HANDS LEFT',stillNeed:'NEED',targetHit:'TARGET REACHED',
+  cashOut:'CASH OUT',recBet:'SUGGESTED',
+  betFree:'The bet is yours.',
+  betFreeBody:'The suggested bet is pre-selected. Betting more gets you to the target sooner and leaves hands over, which pay coins — but a bad hand then hurts more. Only the target decides whether you pass.',
+  tolNote:'This level tolerates up to {n} mistakes and is still winnable. Calculated, not guessed.',
+  cashOutMsg:'Level closed out.',
+  diagTitle:'DISPLAY (MEASURED)',diagViewport:'Viewport',diagInsets:'Insets t/r/b/l',
+  diagStandalone:'Installed as app',diagDpr:'Pixel ratio',diagRest:'Free height for the table',
+  diagHint:'Measured on this device, not guessed. Send me these numbers and the layout can be exact.',diagFail:'Measurements not available on this device.',
   careerFailDirty:'A mistake with no joker. That fails the level, no matter how the cards fell afterwards. Which is the whole point: the decision is scored, not the luck.',
   uncorrected:'MISTAKES',
   mistakeKeptToast:'With no joker left the level is lost. You can still play it out.',
@@ -904,7 +930,7 @@ const UI={
   careerPass:'Level cleared.',
   careerFail:'Target missed.',
   careerPassBody:'You reached the target. The coins are yours.',
-  careerFailBody:'Not enough capital. Nothing lost — run the level again.',
+  careerFailBody:'Not quite enough capital. You still earn coins for how far you got.',
   coinsLbl:'COINS',
   coinsEarned:'Earned',
   retry:'RETRY',
@@ -922,7 +948,7 @@ const UI={
   jokerUsedMsg:'Joker spent.',
   jokerUsedBody:'The correct move is played out. The mistake still stays in your statistics — otherwise the app would report a skill level you do not have.',
   mistakeKept:'Your move stands.',
-  mistakeKeptBody:'You are sticking with your decision. It may well cost you the target.',
+  mistakeKeptBody:'You are sticking with your decision. The mistake stays in your statistics and costs you stars — you can still clear the level.',
   careerModeName:'Career',
   careerNames:['Hard hands','Doubling down','Soft hands','Eights and aces','Tens and fives','Soft 18','Surrender','Small pairs','Nines and twelves','Final exam'],
   careerHints:['When do you stand on a bad hand, and when do you hit?','Nine, ten and eleven are the hands that make you money.','An ace counts eleven or one. That changes everything.','Two rules with no exceptions: always split eights, always split aces.','And two that are just as strict: never split tens, never split fives.','Ace-seven is the hand most players get wrong.','Surrender is not retreat. It is the cheapest bill on the table.','Sixes, sevens, threes, twos and fours — split or not?','Two nines are strong. But not against everything.','Everything at once. Seven hands, no topic announced.'],
@@ -1229,7 +1255,12 @@ const DRILL={
    ========================================================================= */
 function toBetting(){
   S.tut.active=false;
-  if(S.gameMode==='career'&&S.career&&S.career.running){S.career.round++;careerRound();return}
+  if(S.gameMode==='career'&&S.career&&S.career.running){
+    S.career.round++;
+    /* Kein Kapital mehr fuer den Mindesteinsatz: das Level ist hier zu Ende. */
+    if(S.bank<RULES.minBet){careerFinish();return}
+    careerRound();return;
+  }
   /* Training kennt keine Pleite: es wird still aufgefuellt, damit der Uebungsrhythmus
      nie unterbrochen wird (Entscheidung E8). Rebuys werden dabei nicht gezaehlt. */
   if(S.gameMode==='training'&&S.bank<RULES.minBet)S.bank=RULES.startBank;
@@ -1590,7 +1621,20 @@ function render(){
   const show=id=>['dockBet','dockPlay','dockIns','dockCont','dockJoker','dockNext','dockRebuy','dockTut','dockQuiz']
     .forEach(k=>document.getElementById(k).classList.toggle('hidden',k!==id));
   const inCareer=S.gameMode==='career'&&S.career&&S.career.running;
-  document.getElementById('dockBet').classList.toggle('fixedbet',!!inCareer);
+  document.getElementById('dockBet').classList.toggle('fixedbet',false);
+  const cashBtn=document.getElementById('btnCashOut');
+  if(cashBtn){
+    /* Vorzeitig abschliessen ist nur sinnvoll, wenn das Ziel schon steht.
+       Genau das ist die Risikoentscheidung: jetzt sichern oder weiterspielen. */
+    const canCash=!!inCareer&&S.phase==='bet'&&S.bank>=S.career.target&&S.career.round>0;
+    cashBtn.classList.toggle('hidden',!canCash);
+    if(canCash)cashBtn.textContent=t.cashOut+' ('+Math.max(0,S.career.hands-S.career.round)+')';
+  }
+  const recBtn=document.getElementById('btnRecBet');
+  if(recBtn){
+    recBtn.classList.toggle('hidden',!inCareer||S.phase!=='bet');
+    if(inCareer)recBtn.textContent=t.recBet+' '+money(Math.min(CAREER[S.career.idx].bet,Math.floor(S.bank)));
+  }
   if(S.tut.active){
     if(S.phase==='tut_hand')show('dockPlay');
     else if(S.phase==='tut_quiz'||(S.phase==='tut_after'&&LESSONS[S.tut.lesson].steps[S.tut.step].t==='quiz'))show('dockQuiz');
@@ -1617,6 +1661,10 @@ function render(){
     document.getElementById('aSURRENDER').disabled=!o.canSurrender;
   }
   document.getElementById('betAmount').textContent=money(S.bet);
+  /* Der Toast sitzt unten und muss ueber dem Dock bleiben, dessen Hoehe je nach
+     Phase wechselt. Deshalb wird sie bei jedem Rendern nachgemessen. */
+  const dk=document.getElementById('dock');
+  if(dk&&dk.offsetHeight)document.documentElement.style.setProperty('--dockh',dk.offsetHeight+'px');
   if(inCareer&&S.phase==='mistake'){
     const jb=document.getElementById('btnJoker');
     jb.disabled=S.career.jokers<=0;
@@ -1627,6 +1675,58 @@ function renderChips(){
   const vals=[5,25,100,500],cols=['#3ce8ff','#42f08c','#ff3355','#ffcf4d'];
   document.getElementById('chipRow').innerHTML=vals.map((v,i)=>
     `<button class="pchip" style="--c:${cols[i]}" onclick="addChip(${v},this)" ${S.bet+v>Math.min(RULES.maxBet,S.bank)?'disabled':''}>${v}</button>`).join('');
+}
+
+
+/* ---------- Anzeigediagnose (Backlog A2) ----------
+   Misst die tatsaechlichen Safe-Area-Insets und die nutzbare Hoehe auf dem
+   Geraet, statt sie zu schaetzen. Die Werte gehoeren nach dem Ablesen in
+   BACKLOG.md A2, damit die Layoutarbeit auf Zahlen steht und nicht auf
+   Screenshots. */
+function layoutInfo(){
+  const probe=document.createElement('div');
+  probe.style.cssText='position:fixed;top:0;left:0;width:0;height:0;visibility:hidden;'+
+    'padding-top:env(safe-area-inset-top);padding-right:env(safe-area-inset-right);'+
+    'padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);';
+  document.body.appendChild(probe);
+  const cs=getComputedStyle(probe);
+  const ins={t:cs.paddingTop,r:cs.paddingRight,b:cs.paddingBottom,l:cs.paddingLeft};
+  probe.remove();
+
+  const dv=document.createElement('div');
+  dv.style.cssText='position:fixed;top:0;left:0;width:1px;height:100dvh;visibility:hidden';
+  document.body.appendChild(dv);
+  const dvh=dv.offsetHeight;
+  dv.remove();
+
+  const standalone = (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)
+                     || navigator.standalone===true;
+  const app=document.getElementById('app');
+  const dock=document.getElementById('dock');
+  const hud=document.getElementById('hud');
+  return {
+    vw:window.innerWidth, vh:window.innerHeight, dvh:dvh,
+    ins:ins, standalone:standalone, dpr:window.devicePixelRatio||1,
+    appH:app?app.offsetHeight:0, hudH:hud?hud.offsetHeight:0, dockH:dock?dock.offsetHeight:0,
+    rest: app?(app.offsetHeight-(hud?hud.offsetHeight:0)-(dock?dock.offsetHeight:0)):0
+  };
+}
+function layoutInfoHTML(){
+  const t=T();
+  let i;
+  /* Die Messung darf das Menue niemals mitreissen, wenn eine Umgebung
+     getComputedStyle oder env() nicht liefert. */
+  try{ i=layoutInfo(); }catch(e){ return `<p style="font-size:15px;color:var(--dim)">${t.diagFail}</p>`; }
+  const row=(k,v)=>`<tr><td>${k}</td><td class="n">${v}</td></tr>`;
+  return `<table class="evt">
+    ${row(t.diagViewport,i.vw+' \u00d7 '+i.vh)}
+    ${row('100dvh',i.dvh+'px')}
+    ${row(t.diagInsets,`${i.ins.t} / ${i.ins.r} / ${i.ins.b} / ${i.ins.l}`)}
+    ${row(t.diagStandalone,i.standalone?'ja / yes':'nein / no')}
+    ${row(t.diagDpr,i.dpr)}
+    ${row('#app / #hud / #dock',`${i.appH} / ${i.hudH} / ${i.dockH}`)}
+    ${row(t.diagRest,i.rest+'px')}
+  </table><p style="font-size:15px;color:var(--dim);line-height:1.3">${t.diagHint}</p>`;
 }
 
 /* ---------- coach panel ---------- */
@@ -1770,6 +1870,7 @@ function buildMenu(){
   h+=`<button class="btn sm b-ghost" onclick="closeSheets();showStartScreen()">${t.changeMode}</button></div>`;
   if(S.gameMode==='endless')h+=`<p style="font-size:16px;color:var(--dim);margin-top:8px">${t.redeemBody}</p>`;
   h+=`</div>`;
+  h+=`<div style="margin-top:16px"><h4>${t.diagTitle}</h4>${layoutInfoHTML()}</div>`;
   h+=`<div style="margin-top:18px;text-align:center" class="px">
       <span style="font-size:7px;color:var(--dim)">DEALER'S EDGE · V${APP_VERSION}</span></div>`;
   document.getElementById('smBody').innerHTML=h;
@@ -2526,68 +2627,152 @@ function chooseMode(id){
    ausgefuehrt. Sonst waere ein Joker, der Fehler rueckgaengig macht, wertlos.
    ========================================================================= */
 const CAREER=[
- {id:1,start:500,bet:50,target:650,rounds:[
-  '10,6,7,10,4,3,5,6,A,10,A,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '9,4,5,10,10,2,8,5,10,7,2,3,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '10,3,10,2,10,8,5,10,6,9,3,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '8,5,6,10,10,7,10,3,10,A,5,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '10,7,9,4,10,10,6,10,10,2,3,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
- {id:2,start:500,bet:50,target:800,rounds:[
-  '6,5,7,4,8,7,6,5,10,2,2,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '7,3,4,5,10,10,10,4,2,10,10,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '5,4,5,4,10,7,10,10,10,10,A,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '6,5,10,9,6,6,A,5,10,2,2,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '4,6,6,5,10,4,8,6,4,2,6,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
- {id:3,start:500,bet:50,target:800,rounds:[
-  'A,6,5,2,10,7,A,8,A,10,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  'A,2,6,8,9,10,2,8,10,A,10,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  'A,4,4,10,10,9,9,7,8,9,10,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  'A,8,6,10,4,8,4,10,3,10,10,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  'A,9,7,10,2,10,3,7,7,8,10,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
- {id:4,start:600,bet:50,target:1000,rounds:[
-  '8,8,6,10,6,10,6,5,8,3,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  'A,A,5,6,10,A,3,9,8,7,4,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '8,8,10,10,5,7,4,2,8,9,10,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  'A,A,6,10,A,10,10,10,4,9,A,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '8,8,9,3,6,5,2,9,6,A,10,7,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
- {id:5,start:500,bet:50,target:650,rounds:[
-  '10,10,6,4,3,10,7,5,10,10,5,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '5,5,6,9,6,10,6,6,A,6,7,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '10,10,5,2,10,10,5,10,10,10,5,7,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '5,5,4,10,7,4,10,10,10,9,7,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '10,10,9,10,4,2,8,2,7,7,10,3,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
- {id:6,start:500,bet:50,target:700,rounds:[
-  'A,7,9,8,3,7,9,3,8,3,A,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  'A,7,5,7,10,A,A,10,10,9,3,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  'A,7,8,8,A,3,3,7,3,8,10,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  'A,7,2,3,10,4,2,7,10,10,8,3,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  'A,7,10,4,2,A,3,A,3,2,4,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
- {id:7,start:500,bet:50,target:525,rounds:[
-  '10,6,10,7,A,8,3,4,10,7,3,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '10,5,10,4,6,5,10,7,3,10,10,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '9,7,9,9,10,3,10,6,10,6,5,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '10,6,6,10,10,9,10,3,9,3,A,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '10,6,2,10,10,5,3,5,6,10,3,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
- {id:8,start:700,bet:50,target:950,rounds:[
-  '6,6,5,10,10,10,10,2,4,10,6,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '7,7,6,10,9,10,10,9,8,4,10,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '3,3,6,2,10,9,2,5,10,9,6,A,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '2,2,5,5,5,10,10,10,3,10,7,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '4,4,5,3,7,10,8,10,10,3,7,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
- {id:9,start:600,bet:50,target:800,rounds:[
-  '9,9,9,10,10,5,6,9,9,8,A,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '9,9,7,6,9,3,3,7,4,3,7,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '10,2,3,10,8,10,3,8,9,10,2,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '10,2,4,7,10,8,9,4,8,7,10,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  'A,A,10,3,10,10,A,2,7,4,10,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']},
- {id:10,start:800,bet:50,target:1175,rounds:[
-  '8,8,10,6,10,2,4,A,3,8,3,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  'A,7,6,9,10,A,10,10,7,5,2,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '10,6,10,4,7,10,10,10,10,3,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '5,5,9,10,10,7,5,8,A,A,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  'A,A,5,5,2,10,2,A,3,8,A,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '9,2,4,10,4,6,7,6,8,A,7,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7',
-  '7,7,6,10,6,9,9,5,6,10,A,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7']}
+ {id:1,start:600,bet:50,target:700,perfect:1000,tol:3,rounds:[
+  '10,3,10,6,6,10,6,A,4,A,4,5,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '9,5,4,10,A,8,4,A,10,6,A,A,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,4,3,10,A,10,10,7,5,2,2,4,7,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '9,3,2,5,8,A,A,10,10,5,2,10,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,2,3,A,3,8,A,10,3,8,5,A,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,8,7,3,10,10,A,10,10,10,A,10,A,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '9,4,5,7,10,10,10,2,7,4,3,A,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,7,9,5,10,10,4,7,9,5,10,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,5,6,8,10,10,10,5,2,2,10,5,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,6,7,9,A,9,3,5,3,10,6,9,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8']},
+ {id:2,start:600,bet:50,target:750,perfect:1100,tol:3,rounds:[
+  '6,5,10,5,7,2,2,3,7,3,9,10,A,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '6,3,6,10,3,10,10,10,10,6,4,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '7,4,4,9,5,8,6,7,2,8,9,4,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '5,6,10,2,10,6,4,4,2,10,10,4,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '5,5,6,8,7,9,5,10,8,9,10,8,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,2,7,10,3,8,10,A,6,4,4,A,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '2,8,9,3,7,4,7,2,10,10,2,7,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '4,6,3,3,10,6,5,10,10,4,4,4,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '5,6,9,2,4,9,10,10,7,6,2,8,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '9,2,5,3,10,10,10,5,3,9,5,3,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '7,3,4,10,10,A,10,8,4,3,A,2,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8']},
+ {id:3,start:600,bet:50,target:700,perfect:1050,tol:4,rounds:[
+  'A,6,3,10,4,3,9,8,10,5,9,8,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,3,8,10,6,6,4,5,6,7,A,10,A,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,4,10,2,3,8,5,6,5,10,10,3,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,8,2,10,A,8,10,7,10,3,4,6,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,2,9,9,A,3,5,8,8,A,5,5,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,2,5,2,7,10,10,9,10,10,8,2,3,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,8,9,9,8,10,5,10,7,10,2,A,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,9,10,3,8,2,8,9,5,7,6,6,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,4,6,10,10,6,7,10,5,A,10,8,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,6,9,8,4,6,9,A,3,10,4,10,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,5,4,10,4,10,2,10,3,9,2,4,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,5,6,3,6,2,10,2,10,10,10,10,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8']},
+ {id:4,start:800,bet:50,target:950,perfect:1550,tol:4,rounds:[
+  '8,8,3,10,10,10,2,9,3,7,4,4,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,8,9,6,A,10,9,4,4,3,10,5,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,8,5,9,8,10,10,10,9,3,A,7,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,A,8,7,7,6,3,5,7,10,9,3,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,A,10,3,9,7,9,9,2,2,4,5,3,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,8,7,8,2,9,A,10,5,5,5,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,A,9,10,10,10,10,9,10,5,6,7,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,A,6,8,3,7,5,2,5,A,10,10,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,8,4,2,7,2,10,9,10,2,6,2,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,8,10,7,9,10,10,10,10,8,7,10,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,A,5,10,3,9,10,7,4,9,8,10,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,A,2,10,3,A,5,5,10,5,10,8,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8']},
+ {id:5,start:700,bet:50,target:850,perfect:1250,tol:4,rounds:[
+  '10,10,7,7,10,4,8,10,10,5,10,10,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '5,6,10,5,10,10,5,A,6,10,10,10,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '5,5,5,7,8,3,10,9,2,3,A,8,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '4,6,3,7,2,8,10,2,6,9,10,6,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '5,5,3,10,9,9,10,8,9,4,3,5,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '3,6,7,7,10,10,2,3,9,4,2,5,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,10,4,10,10,10,2,9,6,10,2,A,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '5,6,9,10,A,10,2,4,5,6,10,8,7,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '5,5,9,10,A,A,3,9,8,6,7,2,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '7,3,4,10,10,9,9,10,7,5,3,10,7,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '5,5,7,3,8,5,10,10,10,6,4,3,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,2,7,A,5,6,4,10,10,10,5,2,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '5,5,6,7,3,10,8,4,2,8,3,10,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8']},
+ {id:6,start:700,bet:50,target:850,perfect:1250,tol:6,rounds:[
+  'A,7,7,2,3,10,8,A,8,9,A,6,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,5,7,4,5,A,10,8,10,7,10,10,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,7,10,6,10,8,10,10,9,10,A,5,3,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,4,10,3,10,9,4,2,7,8,5,8,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,7,9,4,4,3,3,A,A,9,9,7,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,4,6,A,5,4,8,2,10,10,10,7,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,7,8,6,10,6,6,8,2,10,7,5,A,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,3,8,10,9,9,10,10,5,8,2,6,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,7,6,2,A,9,7,5,8,3,6,4,3,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,8,2,3,10,10,10,A,2,6,9,9,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,7,2,9,2,2,7,10,10,A,10,5,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,3,4,3,A,8,8,5,A,7,9,10,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,7,5,10,9,8,10,5,5,10,10,8,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,8,9,6,9,4,9,4,A,2,6,7,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8']},
+ {id:7,start:700,bet:50,target:825,perfect:1125,tol:3,rounds:[
+  '10,6,2,2,4,5,10,5,6,6,2,10,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,2,5,10,7,10,10,3,2,10,6,10,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,6,10,10,9,9,2,3,7,A,10,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,7,9,2,4,10,6,9,10,8,10,9,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,5,10,5,10,5,9,8,6,10,7,10,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '9,4,5,10,9,7,7,10,10,10,10,5,A,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,5,6,10,10,3,2,9,7,10,10,4,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,7,6,10,8,10,7,8,A,10,10,A,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '9,7,5,7,9,10,8,3,A,5,8,9,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,4,2,10,10,4,10,3,3,10,3,8,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,5,4,10,2,10,3,A,10,7,2,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,6,8,2,4,8,10,3,A,10,5,2,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,6,6,3,5,10,9,5,9,7,10,10,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '9,5,4,9,10,10,2,8,2,10,8,9,A,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '9,6,10,8,3,10,10,5,A,7,10,4,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8']},
+ {id:8,start:900,bet:50,target:1050,perfect:1900,tol:9,rounds:[
+  '3,3,8,10,6,8,7,10,10,5,7,7,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,8,2,7,3,10,A,2,8,2,6,8,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '6,6,2,7,10,10,4,3,6,10,2,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,8,9,10,10,A,A,4,9,A,7,10,4,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '2,2,3,10,4,9,8,8,9,10,2,10,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,8,10,6,A,A,6,9,9,5,10,2,7,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '3,3,2,6,7,10,4,10,9,2,10,10,A,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,A,6,10,9,7,5,10,2,7,7,2,A,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '7,7,2,2,6,3,7,8,2,10,3,6,3,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,A,9,3,2,9,10,6,4,A,4,3,3,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '2,2,8,8,10,2,A,8,3,2,10,10,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,8,6,4,4,5,5,4,10,8,4,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '6,6,3,3,7,7,7,10,4,10,10,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,A,3,9,2,8,A,A,8,4,6,4,3,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '6,6,5,A,3,7,10,10,10,6,3,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8']},
+ {id:9,start:900,bet:50,target:1050,perfect:1450,tol:4,rounds:[
+  '9,9,3,10,10,7,10,9,10,10,5,7,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,6,8,2,2,3,4,A,10,A,5,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,2,9,3,7,3,7,5,7,6,6,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,2,6,10,3,10,10,7,10,4,9,4,A,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,4,3,5,7,10,10,10,A,10,8,4,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,5,7,7,A,4,A,8,A,8,7,10,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '9,9,6,2,10,10,6,8,A,6,8,4,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '9,3,2,8,10,5,3,2,6,6,10,2,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,8,2,7,5,10,10,3,2,6,5,8,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,2,3,A,7,2,9,10,6,10,10,9,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,6,7,7,5,4,4,8,9,6,10,6,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,9,7,3,6,5,10,9,4,6,6,5,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '9,9,4,10,6,10,10,8,10,2,10,5,8,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,4,2,6,7,10,4,10,2,10,2,5,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,5,6,3,3,9,9,6,10,6,4,5,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '9,9,8,6,10,10,A,5,5,A,2,8,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8']},
+ {id:10,start:1100,bet:50,target:1400,perfect:1900,tol:7,rounds:[
+  '10,7,9,4,2,9,5,10,10,10,4,10,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '7,4,10,5,6,10,6,5,5,A,4,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,7,9,5,10,10,8,10,10,2,2,A,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,A,8,7,9,10,10,4,10,4,7,2,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,10,9,9,7,10,7,10,4,2,6,2,9,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,5,10,7,9,10,10,A,3,9,10,9,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '3,3,6,6,10,4,10,A,10,9,9,A,7,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '9,9,5,10,3,10,9,A,10,10,9,4,A,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '8,7,6,10,10,10,10,10,3,8,10,4,6,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '2,8,9,5,10,A,10,4,9,3,4,10,2,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,7,7,10,10,6,3,10,A,7,10,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  'A,A,5,6,6,7,10,9,9,10,3,5,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '5,5,6,10,8,10,7,9,4,6,10,10,A,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,6,10,3,4,10,9,10,10,4,3,4,7,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '3,3,2,10,5,5,2,9,A,3,10,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,2,4,9,9,9,7,10,8,9,6,10,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '10,4,2,10,10,10,5,10,10,A,6,3,5,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8',
+  '4,6,3,10,9,7,4,10,9,10,A,A,10,7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2,9,7,5,8']}
 ];
 
 const CAREER_FILL='7,5,9,4,8,6,10,3,9,5,7,6,8,4,10,2'.split(',');
@@ -2630,7 +2815,7 @@ function buildCareerSheet(){
             <b>${t.careerNames[i]}</b>
             <span>${open?t.careerHints[i]:t.careerLocked}</span>
             <span style="color:var(--cyan);font-family:'Press Start 2P',monospace;font-size:7px;margin-top:5px">
-              $${lv.start} \u2192 $${lv.target} \u00b7 ${lv.rounds.length} ${t.careerRd}</span>
+              $${lv.start} \u2192 $${lv.target} \u00b7 ${lv.rounds.length} ${t.careerRd} \u00b7 ${lv.tol} ${t.uncorrected}</span>
           </span>
           <span class="st">${stars}</span>
         </button>`;
@@ -2644,7 +2829,9 @@ function careerStart(i){
   if(!careerUnlocked(i))return;
   const lv=CAREER[i];
   S.gameMode='career';
-  S.career={idx:i,round:0,jokers:2,jokersUsed:0,errors:0,target:lv.target,start:lv.start,running:true};
+  S.career={idx:i,round:0,jokers:2,jokersUsed:0,errors:0,decisions:0,
+            target:lv.target,start:lv.start,tol:lv.tol,hands:lv.rounds.length,
+            running:true,ended:false};
   S.bank=lv.start;
   closeSheets();hideStartScreen();
   careerRound();
@@ -2657,42 +2844,61 @@ function careerRound(){
   S.count=0;
   S.dealer=[];S.hole=null;S.holeShown=false;S.hands=[];S.active=0;
   S.pending=null;S.keepCoach=false;S.insuranceBet=0;
-  S.bet=lv.bet;S.lastBet=lv.bet;
+  /* Der Empfehlungseinsatz ist vorgewaehlt. Wer hoeher setzt, ist frueher am
+     Ziel und hat Haende uebrig; wer sich verschaetzt, hat weniger Puffer.
+     Ueber das Bestehen entscheidet er nicht — das haengt am Ziel. */
+  S.bet=Math.min(lv.bet,Math.floor(S.bank));
+  S.lastBet=S.bet;
   S.phase='bet';
-  coach('info',t.careerRoundInfo,t.careerRoundBody);
+  coach('info',t.betFree,t.betFreeBody);
   render();
 }
 
 function careerFinish(){
   const c=S.career,lv=CAREER[c.idx],t=T();
   c.running=false;
-  /* Zwei Bedingungen. Das Kapital allein reicht nicht: sonst koennte ein
-     unkorrigierter Fehler das Level durch Glueck bestehen, und genau das
-     schliesst E7 aus. Ein Fehler ohne Joker verliert das Level, unabhaengig
-     davon, wie die Karten danach fallen. */
+  /* Bestanden ist, wer das Ziel erreicht. Das Ziel ist so gerechnet, dass bis
+     zu c.tol unkorrigierte Fehler es in mindestens neun von zehn Laeufen noch
+     zulassen — ein Fehler wirft also niemanden aus dem Level.
+     Bewertet wird trotzdem die Entscheidung: die Sterne haengen an den Fehlern
+     und am Jokerverbrauch, nicht am Kapital (E7). */
   const clean=c.errors===0;
-  const reached=S.bank>=c.target;
-  const passed=reached&&clean;
-  const stars=passed?Math.max(1,3-c.jokersUsed):0;
+  const passed=S.bank>=c.target;
+  const stars=!passed?0:(c.errors===0&&c.jokersUsed===0?3
+              :(c.errors+c.jokersUsed<=Math.ceil(c.tol/2)?2:1));
+  const handsLeft=Math.max(0,c.hands-c.round);
+  const over=Math.max(0,S.bank-c.target);
   let earned=0;
   if(passed){
     const prev=S.careerData.done[lv.id];
-    const full=40+10*lv.id+25*stars;
+    /* Grundwert plus Sterne, dazu Bonus fuer uebrige Haende und Ueberschuss.
+       Genau hier zahlt sich das Risiko aus: frueh am Ziel und aufhoeren. */
+    const full=40+10*lv.id+25*stars+handsLeft*8+Math.floor(over/25)*5;
     earned=prev?Math.round(full*0.25):full;
     S.careerData.coins+=earned;
     if(!prev||stars>prev.stars)S.careerData.done[lv.id]={stars:stars};
     sfx('star');
-  }else sfx('lose');
+  }else{
+    /* Auch ein verlorener Anlauf zahlt etwas. Wer zwoelf Haende gespielt hat,
+       soll nicht mit leeren Haenden dastehen. */
+    const progress=Math.max(0,Math.min(1,(S.bank-c.start)/Math.max(1,c.target-c.start)));
+    /* Untergrenze: wer ein Level durchspielt, geht nie mit leeren Haenden raus. */
+    earned=Math.max(8,Math.round((10+5*lv.id)*progress));
+    S.careerData.coins+=earned;
+    sfx('lose');
+  }
 
   document.getElementById('ceTitle').textContent=t.careerLvl+' '+lv.id;
   let h=`<div class="endbig" style="color:${passed?'var(--green)':'var(--red)'}">${passed?t.careerPass:t.careerFail}</div>`;
   if(passed)h+=`<div class="endstars">${'\u2605'.repeat(stars)}${'\u2606'.repeat(3-stars)}</div>`;
-  h+=`<p>${passed?t.careerPassBody:(clean?t.careerFailBody:t.careerFailDirty)}</p>`;
+  h+=`<p>${passed?t.careerPassBody:t.careerFailBody}</p>`;
+  h+=`<p style="font-size:16px;color:var(--dim)">${t.tolNote.replace('{n}',c.tol)}</p>`;
   h+=`<div class="statgrid" style="margin:12px 0">
         <div class="stat"><div class="k">${t.careerTargetLbl}</div><div class="v" style="color:var(--cyan)">${money(c.target)}</div></div>
         <div class="stat"><div class="k">${t.bank}</div><div class="v" style="color:${passed?'var(--green)':'var(--red)'}">${money(S.bank)}</div></div>
         <div class="stat"><div class="k">${t.careerJok}</div><div class="v">${c.jokers}/2</div></div>
-        <div class="stat"><div class="k">${t.uncorrected}</div><div class="v" style="color:${clean?'var(--green)':'var(--red)'}">${c.errors}</div></div>
+        <div class="stat"><div class="k">${t.uncorrected}</div><div class="v" style="color:${clean?'var(--green)':(c.errors<=c.tol?'var(--gold)':'var(--red)')}">${c.errors}/${c.tol}</div></div>
+        <div class="stat"><div class="k">${t.handsLeft}</div><div class="v">${handsLeft}</div></div>
         <div class="stat"><div class="k">${t.coinsEarned}</div><div class="v" style="color:var(--gold)">+${earned}</div></div>
       </div>`;
   h+=`<div style="display:grid;gap:8px;margin-top:6px">
@@ -2703,6 +2909,20 @@ function careerFinish(){
   document.getElementById('ceBody').innerHTML=h;
   openSheet('sheetCareerEnd');
   render();save();
+}
+
+function setRecBet(){
+  if(S.gameMode!=='career'||!S.career||S.phase!=='bet')return;
+  S.bet=Math.min(CAREER[S.career.idx].bet,Math.floor(S.bank));
+  sfx('chip');render();
+}
+function careerCashOut(){
+  const c=S.career;
+  if(!c||!c.running||S.phase!=='bet'||S.bank<c.target)return;
+  /* Level wird vorzeitig beendet. c.round bleibt stehen, damit die uebrigen
+     Haende in careerFinish() noch gezaehlt und verguetet werden. */
+  c.ended=true;
+  careerFinish();
 }
 
 /* ---------- Joker ---------- */
@@ -2725,7 +2945,6 @@ function careerAcceptMistake(){
   if(S.career)S.career.errors++;
   clearHighlight();closeSheets();
   coach('bad',t.mistakeKept,t.mistakeKeptBody);
-  toast(t.careerFail,t.mistakeKeptToast);
   S.phase='player';
   execute(S.lastChoice);
   render();save();
@@ -2738,19 +2957,29 @@ function renderCareerBar(){
   el.classList.toggle('hidden',!on);
   if(!on)return;
   const c=S.career,lv=CAREER[c.idx],t=T();
-  const pct=Math.max(0,Math.min(100,S.bank/c.target*100));
+  /* Fortschritt vom Startkapital zum Ziel, nicht von null. Sonst steht der
+     Balken schon zu Beginn bei zwei Dritteln und sagt nichts aus. */
+  const span=Math.max(1,c.target-c.start);
+  const pct=Math.max(0,Math.min(100,(S.bank-c.start)/span*100));
   const hit=S.bank>=c.target?' hit':'';
   let jok='';
   for(let i=0;i<2;i++)jok+=`<i class="${i<c.jokers?'':'used'}"></i>`;
+  const played=Math.min(c.round,c.hands), left=Math.max(0,c.hands-played);
+  let pips='';
+  for(let i=0;i<c.hands;i++)
+    pips+=`<i class="${i<played?'done':(i===played?'now':'')}"></i>`;
+  const need=c.target-S.bank;
   el.innerHTML=
     `<div class="cbtop">
        <span class="lv">${t.careerLvl} ${lv.id} \u00b7 ${t.careerNames[c.idx]}</span>
-       <span class="rd">${t.careerRd} ${Math.min(c.round+1,lv.rounds.length)}/${lv.rounds.length}</span>
+       <span class="rd">${left} ${t.handsLeft}</span>
      </div>
-     <div class="cbgoal"><span>${money(S.bank)}</span><span>${t.careerTargetLbl} <b>${money(c.target)}</b></span></div>
+     <div class="cbpips">${pips}</div>
+     <div class="cbgoal"><span>${money(S.bank)}</span>
+       <span>${need>0?`${t.stillNeed} <b>${money(need)}</b>`:`<b style="color:var(--green)">${t.targetHit}</b>`}</span></div>
      <div class="cbbar${hit}"><i style="width:${pct}%"></i></div>
      <div class="cbjok">${jok}<span style="margin-left:4px">${c.jokers} ${t.jokerLeft}</span>
-       ${c.errors?`<span style="margin-left:auto;color:var(--red)">${t.uncorrected}: ${c.errors}</span>`:''}</div>`;
+       <span style="margin-left:auto;color:${c.errors>c.tol?'var(--red)':'var(--dim)'}">${t.uncorrected} ${c.errors}/${c.tol}</span></div>`;
 }
 
 /* ---------- Coins in Endless einloesen ---------- */
